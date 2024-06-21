@@ -10,6 +10,8 @@ import com.vincennlin.flashcardwebbackend.service.FlashcardService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class FlashcardServiceImpl implements FlashcardService {
 
@@ -25,6 +27,27 @@ public class FlashcardServiceImpl implements FlashcardService {
         this.flashcardRepository = flashcardRepository;
         this.modelMapper = modelMapper;
         this.noteRepository = noteRepository;
+    }
+
+    @Override
+    public List<FlashcardDto> getFlashcardsByNoteId(Long noteId) {
+
+        Note note = noteRepository.findById(noteId).orElseThrow(() ->
+                new ResourceNotFoundException("Note", "id", noteId));
+
+        List<Flashcard> flashcards = note.getFlashcards();
+
+        return flashcards.stream()
+                .map(flashcard -> modelMapper.map(flashcard, FlashcardDto.class)).toList();
+    }
+
+    @Override
+    public FlashcardDto getFlashcardById(Long flashcardId) {
+
+        Flashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
+                new ResourceNotFoundException("Flashcard", "id", flashcardId));
+
+        return modelMapper.map(flashcard, FlashcardDto.class);
     }
 
     @Override
