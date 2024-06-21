@@ -50,4 +50,17 @@ public class NoteServiceImpl implements NoteService {
 
         return modelMapper.map(newNote, NoteDto.class);
     }
+
+    @Override
+    public NoteDto updateNote(Long noteId, NoteDto noteDto) {
+
+        Note note = noteRepository.findById(noteId).orElseThrow(() ->
+                new ResourceNotFoundException("Note", "id", noteId));
+
+        note.setContent(noteDto.getContent());
+
+        Note updatedNote = noteRepository.save(note);
+
+        return modelMapper.map(updatedNote, NoteDto.class);
+    }
 }

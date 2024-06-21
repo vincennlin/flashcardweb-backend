@@ -43,4 +43,13 @@ public class NoteController {
 
         return new ResponseEntity<>(noteResponse, HttpStatus.CREATED);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<NoteDto> updateNote(@PathVariable Long id,
+                                              @RequestBody NoteDto noteDto) {
+
+        NoteDto noteResponse = noteService.updateNote(id, noteDto);
+
+        return new ResponseEntity<>(noteResponse, HttpStatus.OK);
+    }
 }
