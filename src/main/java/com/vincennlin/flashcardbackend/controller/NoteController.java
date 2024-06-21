@@ -4,12 +4,13 @@ import com.vincennlin.flashcardbackend.payload.NoteDto;
 import com.vincennlin.flashcardbackend.service.NoteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
+@Validated
 @RequestMapping("/api/v1/notes")
 public class NoteController {
 
@@ -17,6 +18,22 @@ public class NoteController {
 
     public NoteController(NoteService noteService) {
         this.noteService = noteService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<NoteDto>> getAllNotes() {
+
+        List<NoteDto> notes = noteService.getAllNotes();
+
+        return new ResponseEntity<>(notes, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<NoteDto> getNoteById(@PathVariable Long id) {
+
+        NoteDto note = noteService.getNoteById(id);
+
+        return new ResponseEntity<>(note, HttpStatus.OK);
     }
 
     @PostMapping
