@@ -1,7 +1,8 @@
-CREATE TABLE IF NOT EXISTS notes
+create table IF NOT EXISTS notes
 (
-    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    content VARCHAR(1024) NOT NULL,
-    date_created TIMESTAMP,
-    last_updated TIMESTAMP
-    );
+    id           bigint auto_increment
+        primary key,
+    content      varchar(255) not null,
+    date_created datetime(6)  null,
+    last_updated datetime(6)  null
+);
