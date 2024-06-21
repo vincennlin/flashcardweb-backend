@@ -64,4 +64,19 @@ public class FlashcardServiceImpl implements FlashcardService {
 
         return modelMapper.map(newFlashcard, FlashcardDto.class);
     }
+
+    @Override
+    public FlashcardDto updateFlashcard(Long flashcardId, FlashcardDto flashcardDto) {
+
+        Flashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
+                new ResourceNotFoundException("Flashcard", "id", flashcardId));
+
+        flashcard.setQuestion(flashcardDto.getQuestion());
+        flashcard.setAnswer(flashcardDto.getAnswer());
+        flashcard.setExtraInfo(flashcardDto.getExtraInfo());
+
+        Flashcard updatedFlashcard = flashcardRepository.save(flashcard);
+
+        return modelMapper.map(updatedFlashcard, FlashcardDto.class);
+    }
 }

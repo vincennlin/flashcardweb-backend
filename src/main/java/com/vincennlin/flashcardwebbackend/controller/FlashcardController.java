@@ -46,4 +46,12 @@ public class FlashcardController {
         return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
     }
 
+    @PutMapping("/flashcards/{flashcardId}")
+    public ResponseEntity<FlashcardDto> updateFlashcard(@PathVariable Long flashcardId,
+                                                        @Valid @RequestBody FlashcardDto flashcardDto) {
+
+        FlashcardDto flashcardResponse = flashcardService.updateFlashcard(flashcardId, flashcardDto);
+
+        return new ResponseEntity<>(flashcardResponse, HttpStatus.OK);
+    }
 }

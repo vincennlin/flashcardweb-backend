@@ -11,4 +11,6 @@ public interface FlashcardService {
     FlashcardDto getFlashcardById(Long flashcardId);
 
     FlashcardDto createFlashcard(Long noteId, FlashcardDto flashcardDto);
+
+    FlashcardDto updateFlashcard(Long flashcardId, FlashcardDto flashcardDto);
 }
