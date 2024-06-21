@@ -79,4 +79,13 @@ public class FlashcardServiceImpl implements FlashcardService {
 
         return modelMapper.map(updatedFlashcard, FlashcardDto.class);
     }
+
+    @Override
+    public void deleteFlashcardById(Long flashcardId) {
+
+        Flashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
+                new ResourceNotFoundException("Flashcard", "id", flashcardId));
+
+        flashcardRepository.delete(flashcard);
+    }
 }
