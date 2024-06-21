@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS notes
+(
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    content VARCHAR(1024) NOT NULL,
+    date_created TIMESTAMP,
+    last_updated TIMESTAMP
+    );
