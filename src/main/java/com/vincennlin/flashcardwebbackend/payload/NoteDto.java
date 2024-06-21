@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class NoteDto {
@@ -19,4 +20,7 @@ public class NoteDto {
 
     @JsonProperty("last_updated")
     private LocalDateTime lastUpdated;
+
+    @JsonProperty("flashcards")
+    private List<FlashcardDto> flashcards;
 }

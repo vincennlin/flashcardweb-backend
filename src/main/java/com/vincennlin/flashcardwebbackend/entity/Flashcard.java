@@ -1,7 +1,6 @@
 package com.vincennlin.flashcardwebbackend.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,35 +8,34 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 
 @Entity
-@Table(name = "notes")
-public class Note {
+@Table(name = "flashcards")
+public class Flashcard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "content", nullable = false)
-    private String content;
+    private String question;
+    private String answer;
+
+    @Column(name = "extra_info")
+    private String extraInfo;
 
     @CreationTimestamp
     @Column(name = "date_created")
-    private LocalDateTime dateCreated;
+    private String dateCreated;
 
     @UpdateTimestamp
     @Column(name = "last_updated")
-    private LocalDateTime lastUpdated;
+    private String lastUpdated;
 
-    @OneToMany(mappedBy = "note", fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Flashcard> flashcards = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "note_id")
+    private Note note;
 }
