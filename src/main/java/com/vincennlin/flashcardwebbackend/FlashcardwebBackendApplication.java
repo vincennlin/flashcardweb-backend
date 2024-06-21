@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 @OpenAPIDefinition(
         info = @Info(
-                title = "Flashcardweb Backend API",
+                title = "Flashcardweb 後端 API",
                 version = "1.0",
                 description = "Flashcardweb Backend API",
                 contact = @io.swagger.v3.oas.annotations.info.Contact(
