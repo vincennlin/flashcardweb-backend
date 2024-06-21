@@ -1,4 +1,4 @@
-package com.vincennlin.flashcardbackend.payload;
+package com.vincennlin.flashcardwebbackend.payload;
 
 import lombok.Getter;
 

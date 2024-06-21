@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.vincennlin</groupId>
-    <artifactId>flashcard-backend</artifactId>
+    <artifactId>flashcardweb-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>flashcard-backend</name>
-    <description>flashcard-backend</description>
+    <name>flashcardweb-backend</name>
+    <description>flashcardweb-backend</description>
     <url/>
     <licenses>
         <license/>

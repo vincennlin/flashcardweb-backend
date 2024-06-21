@@ -1,6 +1,6 @@
-package com.vincennlin.flashcardbackend.service;
+package com.vincennlin.flashcardwebbackend.service;
 
-import com.vincennlin.flashcardbackend.payload.NoteDto;
+import com.vincennlin.flashcardwebbackend.payload.NoteDto;
 
 import java.util.List;
 

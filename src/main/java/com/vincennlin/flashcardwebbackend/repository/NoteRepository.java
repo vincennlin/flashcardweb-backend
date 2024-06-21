@@ -1,6 +1,6 @@
-package com.vincennlin.flashcardbackend.repository;
+package com.vincennlin.flashcardwebbackend.repository;
 
-import com.vincennlin.flashcardbackend.entity.Note;
+import com.vincennlin.flashcardwebbackend.entity.Note;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface NoteRepository extends JpaRepository<Note, Long> {

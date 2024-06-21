@@ -1,10 +1,10 @@
-package com.vincennlin.flashcardbackend.service.impl;
+package com.vincennlin.flashcardwebbackend.service.impl;
 
-import com.vincennlin.flashcardbackend.entity.Note;
-import com.vincennlin.flashcardbackend.exception.ResourceNotFoundException;
-import com.vincennlin.flashcardbackend.payload.NoteDto;
-import com.vincennlin.flashcardbackend.repository.NoteRepository;
-import com.vincennlin.flashcardbackend.service.NoteService;
+import com.vincennlin.flashcardwebbackend.entity.Note;
+import com.vincennlin.flashcardwebbackend.exception.ResourceNotFoundException;
+import com.vincennlin.flashcardwebbackend.payload.NoteDto;
+import com.vincennlin.flashcardwebbackend.repository.NoteRepository;
+import com.vincennlin.flashcardwebbackend.service.NoteService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 

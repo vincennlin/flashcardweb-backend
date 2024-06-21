@@ -1,4 +1,4 @@
-package com.vincennlin.flashcardbackend.entity;
+package com.vincennlin.flashcardwebbackend.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

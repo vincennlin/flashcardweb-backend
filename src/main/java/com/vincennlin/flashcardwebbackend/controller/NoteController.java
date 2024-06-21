@@ -1,7 +1,7 @@
-package com.vincennlin.flashcardbackend.controller;
+package com.vincennlin.flashcardwebbackend.controller;
 
-import com.vincennlin.flashcardbackend.payload.NoteDto;
-import com.vincennlin.flashcardbackend.service.NoteService;
+import com.vincennlin.flashcardwebbackend.payload.NoteDto;
+import com.vincennlin.flashcardwebbackend.service.NoteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

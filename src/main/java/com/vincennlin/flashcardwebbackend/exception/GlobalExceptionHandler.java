@@ -1,6 +1,6 @@
-package com.vincennlin.flashcardbackend.exception;
+package com.vincennlin.flashcardwebbackend.exception;
 
-import com.vincennlin.flashcardbackend.payload.ErrorDetails;
+import com.vincennlin.flashcardwebbackend.payload.ErrorDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

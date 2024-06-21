@@ -1,4 +1,4 @@
-package com.vincennlin.flashcardbackend.exception;
+package com.vincennlin.flashcardwebbackend.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

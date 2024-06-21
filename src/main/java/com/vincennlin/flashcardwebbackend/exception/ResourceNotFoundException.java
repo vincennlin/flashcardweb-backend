@@ -1,4 +1,4 @@
-package com.vincennlin.flashcardbackend.exception;
+package com.vincennlin.flashcardwebbackend.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
