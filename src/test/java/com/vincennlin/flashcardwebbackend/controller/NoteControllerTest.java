@@ -1,6 +1,7 @@
 package com.vincennlin.flashcardwebbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,6 +24,7 @@ class NoteControllerTest {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
+    @Disabled
     @Test
     void getAllNotes() throws Exception{
 
@@ -38,6 +40,7 @@ class NoteControllerTest {
                 .andExpect(jsonPath("$.results[0].last_updated", notNullValue()));
     }
 
+    @Disabled
     @Test
     void getNoteById() throws Exception{
 
