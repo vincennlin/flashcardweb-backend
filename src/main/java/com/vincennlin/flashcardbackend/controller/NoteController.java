@@ -52,4 +52,12 @@ public class NoteController {
 
         return new ResponseEntity<>(noteResponse, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteNoteById(@PathVariable Long id) {
+
+        noteService.deleteNoteById(id);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
