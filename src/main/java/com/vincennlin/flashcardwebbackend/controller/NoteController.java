@@ -4,6 +4,7 @@ import com.vincennlin.flashcardwebbackend.payload.NoteDto;
 import com.vincennlin.flashcardwebbackend.payload.NotePageResponse;
 import com.vincennlin.flashcardwebbackend.service.NoteService;
 import com.vincennlin.flashcardwebbackend.utils.AppConstants;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -49,7 +50,7 @@ public class NoteController {
     }
 
     @PostMapping
-    public ResponseEntity<NoteDto> createNote(@RequestBody NoteDto noteDto) {
+    public ResponseEntity<NoteDto> createNote(@Valid @RequestBody NoteDto noteDto) {
 
         NoteDto noteResponse = noteService.createNote(noteDto);
 
