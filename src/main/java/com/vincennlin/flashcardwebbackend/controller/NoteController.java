@@ -1,7 +1,12 @@
 package com.vincennlin.flashcardwebbackend.controller;
 
 import com.vincennlin.flashcardwebbackend.payload.NoteDto;
+import com.vincennlin.flashcardwebbackend.payload.NotePageResponse;
 import com.vincennlin.flashcardwebbackend.service.NoteService;
+import com.vincennlin.flashcardwebbackend.utils.AppConstants;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -21,11 +26,18 @@ public class NoteController {
     }
 
     @GetMapping
-    public ResponseEntity<List<NoteDto>> getAllNotes() {
+    public ResponseEntity<NotePageResponse> getAllNotes(
+            @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) Integer pageNo,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) Integer pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir) {
 
-        List<NoteDto> notes = noteService.getAllNotes();
+        Pageable pageable = PageRequest.of(pageNo, pageSize,
+                sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending());
 
-        return new ResponseEntity<>(notes, HttpStatus.OK);
+        NotePageResponse notePageResponse = noteService.getAllNotes(pageable);
+
+        return new ResponseEntity<>(notePageResponse, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

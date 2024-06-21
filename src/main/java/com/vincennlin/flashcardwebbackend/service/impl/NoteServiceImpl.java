@@ -3,13 +3,15 @@ package com.vincennlin.flashcardwebbackend.service.impl;
 import com.vincennlin.flashcardwebbackend.entity.Note;
 import com.vincennlin.flashcardwebbackend.exception.ResourceNotFoundException;
 import com.vincennlin.flashcardwebbackend.payload.NoteDto;
+import com.vincennlin.flashcardwebbackend.payload.NotePageResponse;
 import com.vincennlin.flashcardwebbackend.repository.NoteRepository;
 import com.vincennlin.flashcardwebbackend.service.NoteService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class NoteServiceImpl implements NoteService {
@@ -24,12 +26,24 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public List<NoteDto> getAllNotes() {
+    public NotePageResponse getAllNotes(Pageable pageable) {
 
-        List<Note> notes = noteRepository.findAll();
+        Page<Note> pageOfNotes = noteRepository.findAll(pageable);
 
-        return notes.stream().map(note -> modelMapper.map(note, NoteDto.class))
-                .collect(Collectors.toList());
+        List<Note> listOfNotes = pageOfNotes.getContent();
+
+        List<NoteDto> content = listOfNotes.stream().map(note ->
+                modelMapper.map(note, NoteDto.class)).toList();
+
+        NotePageResponse notePageResponse = new NotePageResponse();
+        notePageResponse.setContent(content);
+        notePageResponse.setPageNo(pageOfNotes.getNumber());
+        notePageResponse.setPageSize(pageOfNotes.getSize());
+        notePageResponse.setTotalElements(pageOfNotes.getTotalElements());
+        notePageResponse.setTotalPages(pageOfNotes.getTotalPages());
+        notePageResponse.setLast(pageOfNotes.isLast());
+
+        return notePageResponse;
     }
 
     @Override
