@@ -54,4 +54,12 @@ public class FlashcardController {
 
         return new ResponseEntity<>(flashcardResponse, HttpStatus.OK);
     }
+
+    @DeleteMapping("/flashcards/{flashcardId}")
+    public ResponseEntity<Void> deleteFlashcardById(@PathVariable Long flashcardId) {
+
+        flashcardService.deleteFlashcardById(flashcardId);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
