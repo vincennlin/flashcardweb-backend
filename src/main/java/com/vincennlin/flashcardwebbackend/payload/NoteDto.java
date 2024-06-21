@@ -1,6 +1,7 @@
 package com.vincennlin.flashcardwebbackend.payload;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -9,6 +10,8 @@ import java.time.LocalDateTime;
 public class NoteDto {
 
     private Long id;
+
+    @NotEmpty(message = "content cannot be empty")
     private String content;
 
     @JsonProperty("date_created")
