@@ -20,7 +20,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "筆記 API", description = "筆記的 CRUD API")
+@Tag(
+        name = "筆記 API",
+        description = "筆記的 CRUD API"
+)
 @RestController
 @Validated
 @RequestMapping("/api/v1/notes")

@@ -12,7 +12,6 @@ import java.util.List;
 @Schema(
         name = "NoteDto",
         description = "筆記的 Data Transfer Object"
-
 )
 public class NoteDto {
 
@@ -21,6 +20,7 @@ public class NoteDto {
             description = "筆記 id",
             example = "1"
     )
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @Schema(
@@ -36,7 +36,8 @@ public class NoteDto {
             description = "筆記建立日期",
             example = "2024-06-21T18:50:00"
     )
-    @JsonProperty("date_created")
+    @JsonProperty(value = "date_created",
+            access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime dateCreated;
 
     @Schema(
@@ -44,14 +45,15 @@ public class NoteDto {
             description = "筆記最後更新日期",
             example = "2024-06-21T18:50:00"
     )
-    @JsonProperty("last_updated")
+    @JsonProperty(value = "last_updated",
+            access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime lastUpdated;
 
     @Schema(
             name = "flashcards",
-            description = "筆記的所有字卡",
-            example = "[{\"id\":1,\"question\":\"What is Java?\",\"answer\":\"Java is a programming language.\",\"extra_info\":\"Java is a high-level, class-based, object-oriented programming language that is designed to have as few implementation dependencies as possible.\"},{\"id\":2,\"question\":\"What is Spring Boot?\",\"answer\":\"Spring Boot is a Spring module that provides the RAD (Rapid Application Development) feature to the Spring framework.\",\"extra_info\":\"Spring Boot is a Spring module that provides the RAD (Rapid Application Development) feature to the Spring framework.\"]"
+            description = "筆記的所有字卡"
     )
-    @JsonProperty("flashcards")
+    @JsonProperty(value = "flashcards",
+            access = JsonProperty.Access.READ_ONLY)
     private List<FlashcardDto> flashcards;
 }
