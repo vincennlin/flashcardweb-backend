@@ -11,9 +11,7 @@ import lombok.Data;
 @Schema(
         name = "FlashcardDto",
         description = "字卡的 Data Transfer Object"
-
 )
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class FlashcardDto {
 
     @Schema(
@@ -21,6 +19,7 @@ public class FlashcardDto {
             description = "字卡 id",
             example = "1"
     )
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @Schema(
@@ -44,6 +43,7 @@ public class FlashcardDto {
             description = "字卡補充資訊",
             example = "Java is a high-level, class-based, object-oriented programming language that is designed to have as few implementation dependencies as possible."
     )
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonProperty("extra_info")
     private String extraInfo;
 }
