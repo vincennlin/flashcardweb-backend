@@ -16,7 +16,6 @@ import java.util.List;
 @Tag(
         name = "字卡 API",
         description = "字卡的 CRUD API"
-
 )
 @RestController
 @Validated
