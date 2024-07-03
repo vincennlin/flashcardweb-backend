@@ -2,6 +2,7 @@ package com.vincennlin.flashcardwebbackend.controller;
 
 import com.vincennlin.flashcardwebbackend.payload.note.NoteDto;
 import com.vincennlin.flashcardwebbackend.payload.note.NotePageResponse;
+import com.vincennlin.flashcardwebbackend.service.FlashcardService;
 import com.vincennlin.flashcardwebbackend.service.NoteService;
 import com.vincennlin.flashcardwebbackend.utils.AppConstants;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
         name = "筆記 API",
         description = "筆記的 CRUD API"
 )
+@AllArgsConstructor
 @RestController
 @Validated
 @RequestMapping("/api/v1/notes")
@@ -29,9 +32,7 @@ public class NoteController {
 
     private NoteService noteService;
 
-    public NoteController(NoteService noteService) {
-        this.noteService = noteService;
-    }
+    private FlashcardService flashcardService;
 
     @Operation(
             summary = "取得所有筆記",
@@ -67,9 +68,9 @@ public class NoteController {
     @GetMapping("/{id}")
     public ResponseEntity<NoteDto> getNoteById(@PathVariable Long id) {
 
-        NoteDto note = noteService.getNoteById(id);
+        NoteDto noteResponse = noteService.getNoteById(id);
 
-        return new ResponseEntity<>(note, HttpStatus.OK);
+        return new ResponseEntity<>(noteResponse, HttpStatus.OK);
     }
 
     @Operation(

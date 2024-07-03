@@ -184,7 +184,9 @@ public class FlashcardServiceImpl implements FlashcardService {
             blankAnswers.get(i).setFlashcard(fillInTheBlankFlashcard);
         }
 
-        Flashcard updatedFlashcard = flashcardRepository.save(fillInTheBlankFlashcard);
+        newFillInTheBlankFlashcard.setBlankAnswers(blankAnswers);
+
+        Flashcard updatedFlashcard = flashcardRepository.save(newFillInTheBlankFlashcard);
 
         return modelMapper.map(updatedFlashcard, FillInTheBlankFlashcardDto.class);
     }
@@ -202,10 +204,10 @@ public class FlashcardServiceImpl implements FlashcardService {
         MultipleChoiceFlashcard multipleChoiceFlashcard = (MultipleChoiceFlashcard) flashcard;
 
         MultipleChoiceFlashcard newMultipleChoiceFlashcard = modelMapper.map(multipleChoiceFlashcardDto, MultipleChoiceFlashcard.class);
-        multipleChoiceFlashcard.setType(FlashcardType.MULTIPLE_CHOICE);
+        newMultipleChoiceFlashcard.setType(FlashcardType.MULTIPLE_CHOICE);
 
-        multipleChoiceFlashcard.setNote(multipleChoiceFlashcard.getNote());
-        multipleChoiceFlashcard.setId(multipleChoiceFlashcard.getId());
+        newMultipleChoiceFlashcard.setNote(multipleChoiceFlashcard.getNote());
+        newMultipleChoiceFlashcard.setId(multipleChoiceFlashcard.getId());
 
         List<Option> options = multipleChoiceFlashcard.getOptions();
         int optionSize = options.size();
@@ -220,9 +222,10 @@ public class FlashcardServiceImpl implements FlashcardService {
         }
 
         List<Option> savedOptions = optionRepository.saveAll(options);
-        multipleChoiceFlashcard.setAnswer(savedOptions.get(multipleChoiceFlashcardDto.getAnswerIndex() - 1));
+        newMultipleChoiceFlashcard.setOptions(savedOptions);
+        newMultipleChoiceFlashcard.setAnswer(savedOptions.get(multipleChoiceFlashcardDto.getAnswerIndex() - 1));
 
-        Flashcard updatedFlashcard = flashcardRepository.save(multipleChoiceFlashcard);
+        Flashcard updatedFlashcard = flashcardRepository.save(newMultipleChoiceFlashcard);
 
         return modelMapper.map(updatedFlashcard, MultipleChoiceFlashcardDto.class);
     }

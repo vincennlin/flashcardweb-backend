@@ -4,12 +4,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vincennlin.flashcardwebbackend.payload.flashcard.FlashcardDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Schema(
         name = "NoteDto",
         description = "筆記的 Data Transfer Object"
@@ -56,5 +60,5 @@ public class NoteDto {
     )
     @JsonProperty(value = "flashcards",
             access = JsonProperty.Access.READ_ONLY)
-    private List<FlashcardDto> flashcards;
+    private List<? extends FlashcardDto> flashcards;
 }

@@ -2,10 +2,13 @@ package com.vincennlin.flashcardwebbackend.service.impl;
 
 import com.vincennlin.flashcardwebbackend.entity.Note;
 import com.vincennlin.flashcardwebbackend.exception.ResourceNotFoundException;
+import com.vincennlin.flashcardwebbackend.payload.flashcard.FlashcardDto;
 import com.vincennlin.flashcardwebbackend.payload.note.NoteDto;
 import com.vincennlin.flashcardwebbackend.payload.note.NotePageResponse;
 import com.vincennlin.flashcardwebbackend.repository.NoteRepository;
+import com.vincennlin.flashcardwebbackend.service.FlashcardService;
 import com.vincennlin.flashcardwebbackend.service.NoteService;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@AllArgsConstructor
 @Service
 public class NoteServiceImpl implements NoteService {
 
@@ -20,10 +24,7 @@ public class NoteServiceImpl implements NoteService {
 
     private ModelMapper modelMapper;
 
-    public NoteServiceImpl(NoteRepository noteRepository, ModelMapper modelMapper) {
-        this.noteRepository = noteRepository;
-        this.modelMapper = modelMapper;
-    }
+    private FlashcardService flashcardService;
 
     @Override
     public NotePageResponse getAllNotes(Pageable pageable) {
@@ -34,6 +35,11 @@ public class NoteServiceImpl implements NoteService {
 
         List<NoteDto> content = listOfNotes.stream().map(note ->
                 modelMapper.map(note, NoteDto.class)).toList();
+
+        for (NoteDto noteDto : content) {
+            List<FlashcardDto> flashcardDtoList = flashcardService.getFlashcardsByNoteId(noteDto.getId());
+            noteDto.setFlashcards(flashcardDtoList);
+        }
 
         NotePageResponse notePageResponse = new NotePageResponse();
         notePageResponse.setContent(content);
@@ -52,7 +58,13 @@ public class NoteServiceImpl implements NoteService {
         Note note = noteRepository.findById(noteId).orElseThrow(() ->
                 new ResourceNotFoundException("Note", "id", noteId));
 
-        return modelMapper.map(note, NoteDto.class);
+        List<FlashcardDto> flashcardDtoList = flashcardService.getFlashcardsByNoteId(noteId);
+
+        NoteDto noteDto = modelMapper.map(note, NoteDto.class);
+
+        noteDto.setFlashcards(flashcardDtoList);
+
+        return noteDto;
     }
 
     @Override
@@ -75,7 +87,11 @@ public class NoteServiceImpl implements NoteService {
 
         Note updatedNote = noteRepository.save(note);
 
-        return modelMapper.map(updatedNote, NoteDto.class);
+        NoteDto updatedNoteDto = modelMapper.map(updatedNote, NoteDto.class);
+
+        updatedNoteDto.setFlashcards(flashcardService.getFlashcardsByNoteId(noteId));
+
+        return updatedNoteDto;
     }
 
     @Override
