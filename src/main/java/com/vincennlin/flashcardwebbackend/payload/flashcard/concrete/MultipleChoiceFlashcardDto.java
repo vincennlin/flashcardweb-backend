@@ -26,23 +26,29 @@ public class MultipleChoiceFlashcardDto extends FlashcardDto {
     @Schema(
             name = "options",
             description = "選項列表",
-            example = "[\"Option 1\", \"Option 2\", \"Option 3\"]"
+            example = "[{\"text\":\"Java is a programming language.\"}, {\"text\":\"Java is a type of coffee.\"}, {\"text\":\"Java is a type of tea.\"}, {\"text\":\"Java is a type of fruit.\"}]"
     )
     @NotEmpty(message = "Options cannot be empty")
     private List<OptionDto> options;
 
 
     @Schema(
-            name = "answer",
-            description = "正確答案",
-            example = "Option 1"
+            name = "answer_option",
+            description = "正確選項",
+            example = "{\"text\":\"Java is a programming language.\"}"
     )
     @JsonProperty(
+            value = "answer_option",
             access = JsonProperty.Access.READ_ONLY
     )
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private OptionDto answer;
+    private OptionDto answerOption;
 
+    @Schema(
+            name = "answer_index",
+            description = "正確選項在所有選項裡的順序",
+            example = "1"
+    )
     @JsonProperty(value = "answer_index")
     @Positive
     private Integer answerIndex;

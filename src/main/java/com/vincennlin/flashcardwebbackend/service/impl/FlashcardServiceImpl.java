@@ -1,10 +1,10 @@
 package com.vincennlin.flashcardwebbackend.service.impl;
 
 import com.vincennlin.flashcardwebbackend.constant.FlashcardType;
-import com.vincennlin.flashcardwebbackend.entity.flashcard.BlankAnswer;
+import com.vincennlin.flashcardwebbackend.entity.flashcard.concrete.InBlankAnswer;
 import com.vincennlin.flashcardwebbackend.entity.flashcard.Flashcard;
 import com.vincennlin.flashcardwebbackend.entity.Note;
-import com.vincennlin.flashcardwebbackend.entity.flashcard.Option;
+import com.vincennlin.flashcardwebbackend.entity.flashcard.concrete.Option;
 import com.vincennlin.flashcardwebbackend.entity.flashcard.concrete.FillInTheBlankFlashcard;
 import com.vincennlin.flashcardwebbackend.entity.flashcard.concrete.MultipleChoiceFlashcard;
 import com.vincennlin.flashcardwebbackend.entity.flashcard.concrete.ShortAnswerFlashcard;
@@ -83,8 +83,8 @@ public class FlashcardServiceImpl implements FlashcardService {
 
         fillInTheBlankFlashcard.setNote(note);
 
-        fillInTheBlankFlashcard.getBlankAnswers().forEach(
-                blankAnswer -> blankAnswer.setFlashcard(fillInTheBlankFlashcard));
+        fillInTheBlankFlashcard.getInBlankAnswers().forEach(
+                inBlankAnswers -> inBlankAnswers.setFlashcard(fillInTheBlankFlashcard));
 
         Flashcard newFlashcard = flashcardRepository.save(fillInTheBlankFlashcard);
 
@@ -109,7 +109,7 @@ public class FlashcardServiceImpl implements FlashcardService {
         if (multipleChoiceFlashcardDto.getAnswerIndex() > savedOptions.size()) {
             throw new IllegalArgumentException("Answer index is out of range of options");
         }
-        multipleChoiceFlashcard.setAnswer(savedOptions.get(multipleChoiceFlashcardDto.getAnswerIndex() - 1));
+        multipleChoiceFlashcard.setAnswerOption(savedOptions.get(multipleChoiceFlashcardDto.getAnswerIndex() - 1));
 
         Flashcard newFlashcard = flashcardRepository.save(multipleChoiceFlashcard);
 
@@ -172,19 +172,19 @@ public class FlashcardServiceImpl implements FlashcardService {
         newFillInTheBlankFlashcard.setNote(fillInTheBlankFlashcard.getNote());
         newFillInTheBlankFlashcard.setId(fillInTheBlankFlashcard.getId());
 
-        List<BlankAnswer> blankAnswers = fillInTheBlankFlashcard.getBlankAnswers();
-        int blankAnswerSize = blankAnswers.size();
+        List<InBlankAnswer> inBlankAnswers = fillInTheBlankFlashcard.getInBlankAnswers();
+        int blankAnswerSize = inBlankAnswers.size();
 
-        if (newFillInTheBlankFlashcard.getBlankAnswers().size() != blankAnswerSize) {
+        if (newFillInTheBlankFlashcard.getInBlankAnswers().size() != blankAnswerSize) {
             throw new IllegalArgumentException("Number of blank answers cannot be changed");
         }
 
         for (int i = 0; i < blankAnswerSize; i++) {
-            blankAnswers.get(i).setAnswer(newFillInTheBlankFlashcard.getBlankAnswers().get(i).getAnswer());
-            blankAnswers.get(i).setFlashcard(fillInTheBlankFlashcard);
+            inBlankAnswers.get(i).setText(newFillInTheBlankFlashcard.getInBlankAnswers().get(i).getText());
+            inBlankAnswers.get(i).setFlashcard(fillInTheBlankFlashcard);
         }
 
-        newFillInTheBlankFlashcard.setBlankAnswers(blankAnswers);
+        newFillInTheBlankFlashcard.setInBlankAnswers(inBlankAnswers);
 
         Flashcard updatedFlashcard = flashcardRepository.save(newFillInTheBlankFlashcard);
 
@@ -225,7 +225,7 @@ public class FlashcardServiceImpl implements FlashcardService {
 
         List<Option> savedOptions = optionRepository.saveAll(options);
         newMultipleChoiceFlashcard.setOptions(savedOptions);
-        newMultipleChoiceFlashcard.setAnswer(savedOptions.get(multipleChoiceFlashcardDto.getAnswerIndex() - 1));
+        newMultipleChoiceFlashcard.setAnswerOption(savedOptions.get(multipleChoiceFlashcardDto.getAnswerIndex() - 1));
 
         Flashcard updatedFlashcard = flashcardRepository.save(newMultipleChoiceFlashcard);
 
@@ -264,7 +264,7 @@ public class FlashcardServiceImpl implements FlashcardService {
     }
 
     private FlashcardDto mapToDto(Flashcard flashcard) {
-        FlashcardDto flashcardDto = null;
+        FlashcardDto flashcardDto;
         if (flashcard.getType() == FlashcardType.SHORT_ANSWER){
             flashcardDto = modelMapper.map(flashcard, ShortAnswerFlashcardDto.class);
         } else if (flashcard.getType() == FlashcardType.FILL_IN_THE_BLANK){

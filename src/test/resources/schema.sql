@@ -30,13 +30,13 @@ create table if not exists fill_in_the_blank
         foreign key (id) references flashcards (id)
 );
 
-create table if not exists blank_answers
+create table if not exists in_blank_answers
 (
     id           bigint auto_increment
         primary key,
-    blank_answer varchar(255) null,
+    text         varchar(255) null,
     flashcard_id bigint       null,
-    constraint FKn5x6gblx13atade7nlgcfovtm
+    constraint FKb6vs7hp860udja6cx4ejf0o7r
         foreign key (flashcard_id) references fill_in_the_blank (id)
 );
 
@@ -61,7 +61,7 @@ create table if not exists options
         foreign key (flashcard_id) references multiple_choice (id)
 );
 
-alter table  multiple_choice
+alter table multiple_choice
     add constraint if not exists FKratayhbwedodds55sn2dxori7
         foreign key (answer_option_id) references options (id);
 
@@ -82,4 +82,3 @@ create table if not exists true_false_answers
     constraint FKban1y1ti26o7hacos2uhptww8
         foreign key (id) references flashcards (id)
 );
-

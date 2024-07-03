@@ -15,7 +15,7 @@ import lombok.*;
 @NoArgsConstructor
 @Schema(
         name = "FlashcardDto",
-        description = "字卡的 Data Transfer Object"
+        description = "不會用到，只是拿來給其他字卡繼承用的 Data Transfer Object"
 )
 public abstract class FlashcardDto {
 
@@ -37,7 +37,7 @@ public abstract class FlashcardDto {
 
     @Schema(
             name = "extra_info",
-            description = "字卡補充資訊",
+            description = "字卡補充資訊，不一定要有",
             example = "Java is a high-level, class-based, object-oriented programming language that is designed to have as few implementation dependencies as possible."
     )
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -46,7 +46,8 @@ public abstract class FlashcardDto {
 
     @Schema(
             name = "type",
-            description = "字卡類型"
+            description = "字卡類型，共有四種：SHORT_ANSWER, FILL_IN_THE_BLANK, MULTIPLE_CHOICE, TRUE_FALSE",
+            example = "SHORT_ANSWER"
     )
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private FlashcardType type;

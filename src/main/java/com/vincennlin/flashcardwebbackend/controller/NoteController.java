@@ -2,10 +2,11 @@ package com.vincennlin.flashcardwebbackend.controller;
 
 import com.vincennlin.flashcardwebbackend.payload.note.NoteDto;
 import com.vincennlin.flashcardwebbackend.payload.note.NotePageResponse;
-import com.vincennlin.flashcardwebbackend.service.FlashcardService;
 import com.vincennlin.flashcardwebbackend.service.NoteService;
 import com.vincennlin.flashcardwebbackend.utils.AppConstants;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -32,15 +33,98 @@ public class NoteController {
 
     private NoteService noteService;
 
-    private FlashcardService flashcardService;
-
     @Operation(
             summary = "取得所有筆記",
             description = "取得所有筆記，並且可以加入分頁、排序等參數"
     )
     @ApiResponse(
             responseCode = "200",
-            description = "成功取得所有筆記"
+            description = "成功取得所有筆記",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                "content": [
+                                    {
+                                        "id": 1,
+                                        "content": "This is a note about Java",
+                                        "date_created": "2024-07-03T22:16:07.129041",
+                                        "last_updated": "2024-07-03T22:16:07.129134",
+                                        "flashcards": [
+                                            {
+                                                "id": 1,
+                                                "question": "What is Java?",
+                                                "type": "SHORT_ANSWER",
+                                                "note_id": 1,
+                                                "short_answer": "Java is a programming language."
+                                            },
+                                            {
+                                                "id": 2,
+                                                "question": "In Java, ___ allows an object to take on many forms, enabling a single method to have ___ behaviors depending on the object's ___.",
+                                                "type": "FILL_IN_THE_BLANK",
+                                                "note_id": 1,
+                                                "in_blank_answers": [
+                                                    {
+                                                        "id": 1,
+                                                        "text": "polymorphism"
+                                                    },
+                                                    {
+                                                        "id": 2,
+                                                        "text": "different"
+                                                    },
+                                                    {
+                                                        "id": 3,
+                                                        "text": "type"
+                                                    }
+                                                ],
+                                                "full_answer": "In Java, polymorphism allows an object to take on many forms, enabling a single method to have different behaviors depending on the object's type."
+                                            },
+                                            {
+                                                "id": 3,
+                                                "question": "What is Java??",
+                                                "type": "MULTIPLE_CHOICE",
+                                                "options": [
+                                                    {
+                                                        "id": 1,
+                                                        "text": "Java is a programming language."
+                                                    },
+                                                    {
+                                                        "id": 2,
+                                                        "text": "Java is a type of coffee."
+                                                    },
+                                                    {
+                                                        "id": 3,
+                                                        "text": "Java is a type of tea."
+                                                    },
+                                                    {
+                                                        "id": 4,
+                                                        "text": "Java is a type of fruit."
+                                                    }
+                                                ],
+                                                "note_id": 1,
+                                                "answer_option": {
+                                                    "id": 1,
+                                                    "text": "Java is a programming language."
+                                                }
+                                            },
+                                            {
+                                                "id": 4,
+                                                "question": "Java is an object-oriented programming language.",
+                                                "type": "TRUE_FALSE",
+                                                "note_id": 1,
+                                                "true_false_answer": true
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "pageNo": 0,
+                                "pageSize": 10,
+                                "totalElements": 1,
+                                "totalPages": 1,
+                                "last": true
+                            }
+                            """)
+            )
     )
     @GetMapping
     public ResponseEntity<NotePageResponse> getAllNotes(
@@ -59,14 +143,90 @@ public class NoteController {
 
     @Operation(
             summary = "取得特定筆記",
-            description = "根據 noteId 取得特定筆記"
+            description = "根據 note_id 取得特定筆記"
     )
     @ApiResponse(
             responseCode = "200",
-            description = "成功取得特定筆記"
+            description = "成功取得特定筆記",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                "id": 1,
+                                "content": "This is a note about Java",
+                                "date_created": "2024-07-03T22:16:07.129041",
+                                "last_updated": "2024-07-03T22:16:07.129134",
+                                "flashcards": [
+                                    {
+                                        "id": 1,
+                                        "question": "What is Java?",
+                                        "type": "SHORT_ANSWER",
+                                        "note_id": 1,
+                                        "short_answer": "Java is a programming language."
+                                    },
+                                    {
+                                        "id": 2,
+                                        "question": "In Java, ___ allows an object to take on many forms, enabling a single method to have ___ behaviors depending on the object's ___.",
+                                        "type": "FILL_IN_THE_BLANK",
+                                        "note_id": 1,
+                                        "in_blank_answers": [
+                                            {
+                                                "id": 1,
+                                                "text": "polymorphism"
+                                            },
+                                            {
+                                                "id": 2,
+                                                "text": "different"
+                                            },
+                                            {
+                                                "id": 3,
+                                                "text": "type"
+                                            }
+                                        ],
+                                        "full_answer": "In Java, polymorphism allows an object to take on many forms, enabling a single method to have different behaviors depending on the object's type."
+                                    },
+                                    {
+                                        "id": 3,
+                                        "question": "What is Java??",
+                                        "type": "MULTIPLE_CHOICE",
+                                        "options": [
+                                            {
+                                                "id": 1,
+                                                "text": "Java is a programming language."
+                                            },
+                                            {
+                                                "id": 2,
+                                                "text": "Java is a type of coffee."
+                                            },
+                                            {
+                                                "id": 3,
+                                                "text": "Java is a type of tea."
+                                            },
+                                            {
+                                                "id": 4,
+                                                "text": "Java is a type of fruit."
+                                            }
+                                        ],
+                                        "note_id": 1,
+                                        "answer_option": {
+                                            "id": 1,
+                                            "text": "Java is a programming language."
+                                        }
+                                    },
+                                    {
+                                        "id": 4,
+                                        "question": "Java is an object-oriented programming language.",
+                                        "type": "TRUE_FALSE",
+                                        "note_id": 1,
+                                        "true_false_answer": true
+                                    }
+                                ]
+                            }
+                            """)
+            )
     )
-    @GetMapping("/{id}")
-    public ResponseEntity<NoteDto> getNoteById(@PathVariable @Min(1) Long id) {
+    @GetMapping("/{note_id}")
+    public ResponseEntity<NoteDto> getNoteById(@PathVariable(name = "note_id") @Min(1) Long id) {
 
         NoteDto noteResponse = noteService.getNoteById(id);
 
@@ -79,10 +239,32 @@ public class NoteController {
     )
     @ApiResponse(
             responseCode = "201",
-            description = "成功新增筆記"
+            description = "成功新增筆記",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                "id": 1,
+                                "content": "This is a note about Java",
+                                "date_created": "2024-07-03T22:16:07.129041",
+                                "last_updated": "2024-07-03T22:16:07.129134",
+                                "flashcards": null
+                            }
+                            """)
+            )
     )
     @PostMapping
-    public ResponseEntity<NoteDto> createNote(@Valid @RequestBody NoteDto noteDto) {
+    public ResponseEntity<NoteDto> createNote(@Valid @RequestBody
+                                                  @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                          content = @Content(
+                                                                    mediaType = "application/json",
+                                                                    examples = @ExampleObject(value = """
+                                                                            {
+                                                                                "content": "This is a note about Java"
+                                                                            }
+                                                                            """)
+                                                                    )
+                                                  ) NoteDto noteDto) {
 
         NoteDto noteResponse = noteService.createNote(noteDto);
 
@@ -91,15 +273,100 @@ public class NoteController {
 
     @Operation(
             summary = "更新筆記",
-            description = "根據 noteId 更新筆記"
+            description = "根據 note_id 更新筆記"
     )
     @ApiResponse(
             responseCode = "200",
-            description = "成功更新筆記"
+            description = "成功更新筆記",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                 "id": 1,
+                                 "content": "(Updated) This is a note about Java.",
+                                 "date_created": "2024-07-03T22:16:07.129041",
+                                 "last_updated": "2024-07-03T22:19:34.485403",
+                                 "flashcards": [
+                                     {
+                                         "id": 1,
+                                         "question": "What is Java?",
+                                         "type": "SHORT_ANSWER",
+                                         "note_id": 1,
+                                         "short_answer": "Java is a programming language."
+                                     },
+                                     {
+                                         "id": 2,
+                                         "question": "In Java, ___ allows an object to take on many forms, enabling a single method to have ___ behaviors depending on the object's ___.",
+                                         "type": "FILL_IN_THE_BLANK",
+                                         "note_id": 1,
+                                         "in_blank_answers": [
+                                             {
+                                                 "id": 1,
+                                                 "text": "polymorphism"
+                                             },
+                                             {
+                                                 "id": 2,
+                                                 "text": "different"
+                                             },
+                                             {
+                                                 "id": 3,
+                                                 "text": "type"
+                                             }
+                                         ],
+                                         "full_answer": "In Java, polymorphism allows an object to take on many forms, enabling a single method to have different behaviors depending on the object's type."
+                                     },
+                                     {
+                                         "id": 3,
+                                         "question": "What is Java??",
+                                         "type": "MULTIPLE_CHOICE",
+                                         "options": [
+                                             {
+                                                 "id": 1,
+                                                 "text": "Java is a programming language."
+                                             },
+                                             {
+                                                 "id": 2,
+                                                 "text": "Java is a type of coffee."
+                                             },
+                                             {
+                                                 "id": 3,
+                                                 "text": "Java is a type of tea."
+                                             },
+                                             {
+                                                 "id": 4,
+                                                 "text": "Java is a type of fruit."
+                                             }
+                                         ],
+                                         "note_id": 1,
+                                         "answer_option": {
+                                             "id": 1,
+                                             "text": "Java is a programming language."
+                                         }
+                                     },
+                                     {
+                                         "id": 4,
+                                         "question": "Java is an object-oriented programming language.",
+                                         "type": "TRUE_FALSE",
+                                         "note_id": 1,
+                                         "true_false_answer": true
+                                     }
+                                 ]
+                             }
+                            """)
+            )
     )
-    @PutMapping("/{id}")
-    public ResponseEntity<NoteDto> updateNote(@PathVariable @Min(1) Long id,
-                                              @Valid @RequestBody NoteDto noteDto) {
+    @PutMapping("/{note_id}")
+    public ResponseEntity<NoteDto> updateNote(@PathVariable(name = "note_id") @Min(1) Long id,
+                                              @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                      content = @Content(
+                                                              mediaType = "application/json",
+                                                              examples = @ExampleObject(value = """
+                                                                      {
+                                                                          "content":"(Updated) This is a note about Java."
+                                                                      }
+                                                                      """)
+                                                      )
+                                              ) NoteDto noteDto) {
 
         NoteDto noteResponse = noteService.updateNote(id, noteDto);
 
@@ -108,14 +375,14 @@ public class NoteController {
 
     @Operation(
             summary = "刪除筆記",
-            description = "根據 noteId 刪除筆記"
+            description = "根據 note_id 刪除筆記"
     )
     @ApiResponse(
             responseCode = "204",
             description = "成功刪除筆記"
     )
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteNoteById(@PathVariable @Min(1) Long id) {
+    @DeleteMapping("/{note_id}")
+    public ResponseEntity<Void> deleteNoteById(@PathVariable(name = "note_id") @Min(1) Long id) {
 
         noteService.deleteNoteById(id);
 

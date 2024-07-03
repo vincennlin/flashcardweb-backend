@@ -19,5 +19,5 @@ import lombok.Setter;
 public class TrueFalseFlashcard extends Flashcard {
 
     @Column(name = "true_false_answer")
-    private boolean answer;
+    private boolean trueFalseAnswer;
 }

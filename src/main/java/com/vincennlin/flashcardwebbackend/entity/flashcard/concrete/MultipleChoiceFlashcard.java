@@ -1,8 +1,6 @@
 package com.vincennlin.flashcardwebbackend.entity.flashcard.concrete;
 
-import com.vincennlin.flashcardwebbackend.constant.FlashcardType;
 import com.vincennlin.flashcardwebbackend.entity.flashcard.Flashcard;
-import com.vincennlin.flashcardwebbackend.entity.flashcard.Option;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +23,6 @@ public class MultipleChoiceFlashcard extends Flashcard {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "answer_option_id")
-    private Option answer;
+    private Option answerOption;
 }
 
