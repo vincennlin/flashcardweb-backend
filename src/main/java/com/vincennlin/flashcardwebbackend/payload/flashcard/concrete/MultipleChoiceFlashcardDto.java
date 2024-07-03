@@ -1,11 +1,12 @@
 package com.vincennlin.flashcardwebbackend.payload.flashcard.concrete;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vincennlin.flashcardwebbackend.payload.flashcard.FlashcardDto;
 import com.vincennlin.flashcardwebbackend.operation.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(
         name = "MultipleChoiceFlashcardDto",
         description = "選擇題的 Data Transfer Object"
@@ -38,13 +40,11 @@ public class MultipleChoiceFlashcardDto extends FlashcardDto {
     @JsonProperty(
             access = JsonProperty.Access.READ_ONLY
     )
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private OptionDto answer;
 
-    @JsonProperty(
-            value = "answer_index",
-            access = JsonProperty.Access.WRITE_ONLY
-    )
-    @Min(value = 1, message = "Answer index must be greater than or equal to 1")
+    @JsonProperty(value = "answer_index")
+    @Positive
     private Integer answerIndex;
 
     @Override

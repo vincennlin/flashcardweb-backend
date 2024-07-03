@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vincennlin.flashcardwebbackend.payload.flashcard.FlashcardDto;
 import com.vincennlin.flashcardwebbackend.operation.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
@@ -34,7 +35,7 @@ public class FillInTheBlankFlashcardDto extends FlashcardDto {
             description = "完整答案",
             example = "This is the full answer with all blanks filled in."
     )
-    @NotEmpty(message = "Full answer cannot be empty")
+    @NotBlank(message = "Full answer cannot be blank")
     @JsonProperty("full_answer")
     private String fullAnswer;
 

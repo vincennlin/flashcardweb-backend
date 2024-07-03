@@ -66,7 +66,7 @@ public class NoteController {
             description = "成功取得特定筆記"
     )
     @GetMapping("/{id}")
-    public ResponseEntity<NoteDto> getNoteById(@PathVariable Long id) {
+    public ResponseEntity<NoteDto> getNoteById(@PathVariable @Min(1) Long id) {
 
         NoteDto noteResponse = noteService.getNoteById(id);
 
@@ -98,7 +98,7 @@ public class NoteController {
             description = "成功更新筆記"
     )
     @PutMapping("/{id}")
-    public ResponseEntity<NoteDto> updateNote(@PathVariable Long id,
+    public ResponseEntity<NoteDto> updateNote(@PathVariable @Min(1) Long id,
                                               @Valid @RequestBody NoteDto noteDto) {
 
         NoteDto noteResponse = noteService.updateNote(id, noteDto);
@@ -115,7 +115,7 @@ public class NoteController {
             description = "成功刪除筆記"
     )
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteNoteById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteNoteById(@PathVariable @Min(1) Long id) {
 
         noteService.deleteNoteById(id);
 
