@@ -1,7 +1,5 @@
-package com.vincennlin.flashcardwebbackend.entity.flashcard;
+package com.vincennlin.flashcardwebbackend.entity.flashcard.concrete;
 
-
-import com.vincennlin.flashcardwebbackend.entity.flashcard.concrete.MultipleChoiceFlashcard;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

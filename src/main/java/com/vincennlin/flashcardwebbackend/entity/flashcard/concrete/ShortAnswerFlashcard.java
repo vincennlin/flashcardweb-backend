@@ -1,6 +1,5 @@
 package com.vincennlin.flashcardwebbackend.entity.flashcard.concrete;
 
-import com.vincennlin.flashcardwebbackend.constant.FlashcardType;
 import com.vincennlin.flashcardwebbackend.entity.flashcard.Flashcard;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,5 +17,5 @@ import lombok.Setter;
 public class ShortAnswerFlashcard extends Flashcard {
 
     @Column(name = "short_answer")
-    private String answer;
+    private String shortAnswer;
 }

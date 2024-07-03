@@ -22,13 +22,13 @@ import java.util.List;
 public class FillInTheBlankFlashcardDto extends FlashcardDto {
 
     @Schema(
-            name = "blank_answers",
-            description = "填空答案列表",
-            example = "[\"Answer 1\", \"Answer 2\"]"
+            name = "in_blank_answers",
+            description = "填空答案列表，儲存 BlankAnswerDto 的陣列",
+            example = "[{\"text\":\"answer 1\"}, {\"text\":\"answer 2\"}]"
     )
-    @NotEmpty(message = "Blank answers cannot be empty")
-    @JsonProperty("blank_answers")
-    private List<BlankAnswerDto> blankAnswers;
+    @NotEmpty(message = "In blank answers cannot be empty")
+    @JsonProperty("in_blank_answers")
+    private List<InBlankAnswerDto> inBlankAnswers;
 
     @Schema(
             name = "full_answer",

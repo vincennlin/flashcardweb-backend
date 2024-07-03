@@ -1,6 +1,5 @@
-package com.vincennlin.flashcardwebbackend.entity.flashcard;
+package com.vincennlin.flashcardwebbackend.entity.flashcard.concrete;
 
-import com.vincennlin.flashcardwebbackend.entity.flashcard.concrete.FillInTheBlankFlashcard;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,15 +12,14 @@ import lombok.Setter;
 @AllArgsConstructor
 
 @Entity
-@Table(name = "blank_answers")
-public class BlankAnswer {
+@Table(name = "in_blank_answers")
+public class InBlankAnswer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "blank_answer")
-    private String answer;
+    private String text;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flashcard_id")

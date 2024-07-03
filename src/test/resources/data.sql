@@ -49,8 +49,8 @@ UPDATE multiple_choice SET answer_option_id = 1 WHERE id = 3;
 INSERT INTO true_false_answers (id, true_false_answer)
 VALUES (4, TRUE);
 
--- 插入blank_answers表的數據
-INSERT INTO blank_answers (flashcard_id, blank_answer)
+-- 插入in_blank_answers表的數據
+INSERT INTO in_blank_answers (flashcard_id, text)
 VALUES (2, 'Blank answer 1'),
        (2, 'Blank answer 2'),
        (2, 'Blank answer 3');

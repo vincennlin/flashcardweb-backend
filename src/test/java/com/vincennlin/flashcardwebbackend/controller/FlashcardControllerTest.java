@@ -24,7 +24,7 @@ public class FlashcardControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     public void getFlashcardsByNoteId_success() throws Exception{
@@ -36,7 +36,7 @@ public class FlashcardControllerTest {
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$", hasSize(4)))
                 .andExpect(jsonPath("$[0].question").value("Test question 1"))
-                .andExpect(jsonPath("$[0].answer").value("Test short answer 1"))
+                .andExpect(jsonPath("$[0].short_answer").value("Test short answer 1"))
                 .andExpect(jsonPath("$[0].id").isNumber())
         ;
     }
@@ -61,7 +61,7 @@ public class FlashcardControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.question").value("Test question 1"))
-                .andExpect(jsonPath("$.answer").value("Test short answer 1"))
+                .andExpect(jsonPath("$.short_answer").value("Test short answer 1"))
                 .andExpect(jsonPath("$.type").value("SHORT_ANSWER"))
                 .andExpect(jsonPath("$.id").isNumber());
     }
@@ -75,8 +75,8 @@ public class FlashcardControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.question").value("Test question 2"))
-                .andExpect(jsonPath("$.blank_answers", hasSize(3)))
-                .andExpect(jsonPath("$.blank_answers[0].answer").value("Blank answer 1"))
+                .andExpect(jsonPath("$.in_blank_answers", hasSize(3)))
+                .andExpect(jsonPath("$.in_blank_answers[0].text").value("Blank answer 1"))
                 .andExpect(jsonPath("$.full_answer").value("Test fill in the blank answer 1"))
                 .andExpect(jsonPath("$.type").value("FILL_IN_THE_BLANK"))
                 .andExpect(jsonPath("$.id").isNumber());
@@ -95,7 +95,7 @@ public class FlashcardControllerTest {
                 .andExpect(jsonPath("$.options[0].text").value("Test option A"))
                 .andExpect(jsonPath("$.options[1].text").value("Test option B"))
                 .andExpect(jsonPath("$.options[2].text").value("Test option C"))
-                .andExpect(jsonPath("$.answer.text").value("Test option A"))
+                .andExpect(jsonPath("$.answer_option.text").value("Test option A"))
                 .andExpect(jsonPath("$.type").value("MULTIPLE_CHOICE"))
                 .andExpect(jsonPath("$.id").isNumber());
     }
@@ -109,7 +109,7 @@ public class FlashcardControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.question").value("Test question 4"))
-                .andExpect(jsonPath("$.answer").value("true"))
+                .andExpect(jsonPath("$.true_false_answer").value("true"))
                 .andExpect(jsonPath("$.type").value("TRUE_FALSE"))
                 .andExpect(jsonPath("$.id").isNumber());
     }
@@ -161,7 +161,7 @@ public class FlashcardControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(201))
                 .andExpect(jsonPath("$.question").value("New short-answer question"))
-                .andExpect(jsonPath("$.answer").value("New short-answer answer"))
+                .andExpect(jsonPath("$.short_answer").value("New short-answer answer"))
                 .andExpect(jsonPath("$.type").value("SHORT_ANSWER"))
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.note_id").value(1));
@@ -200,7 +200,7 @@ public class FlashcardControllerTest {
                 .andExpect(status().is(400));
 
         shortAnswerFlashcardDto.setQuestion("New short-answer question");
-        shortAnswerFlashcardDto.setAnswer("");
+        shortAnswerFlashcardDto.setShortAnswer("");
 
         requestBuilder = MockMvcRequestBuilders
                 .post("/api/v1/notes/{noteId}/flashcards/short-answer", 1)
@@ -225,9 +225,9 @@ public class FlashcardControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(201))
                 .andExpect(jsonPath("$.question").value("New fill-in-the-blank question"))
-                .andExpect(jsonPath("$.blank_answers", hasSize(2)))
-                .andExpect(jsonPath("$.blank_answers[0].answer").value("New blank answer 1"))
-                .andExpect(jsonPath("$.blank_answers[1].answer").value("New blank answer 2"))
+                .andExpect(jsonPath("$.in_blank_answers", hasSize(2)))
+                .andExpect(jsonPath("$.in_blank_answers[0].text").value("New blank answer 1"))
+                .andExpect(jsonPath("$.in_blank_answers[1].text").value("New blank answer 2"))
                 .andExpect(jsonPath("$.full_answer").value("New fill-in-the-blank full answer"))
                 .andExpect(jsonPath("$.type").value("FILL_IN_THE_BLANK"))
                 .andExpect(jsonPath("$.id").isNumber())
@@ -261,7 +261,7 @@ public class FlashcardControllerTest {
                 .andExpect(status().is(400));
 
         fillInTheBlankFlashcardDto.setFullAnswer("New fill-in-the-blank full answer");
-        fillInTheBlankFlashcardDto.setBlankAnswers(List.of());
+        fillInTheBlankFlashcardDto.setInBlankAnswers(List.of());
 
         requestBuilder = MockMvcRequestBuilders
                 .post("/api/v1/notes/{noteId}/flashcards/fill-in-the-blank", 1)
@@ -291,7 +291,7 @@ public class FlashcardControllerTest {
                 .andExpect(jsonPath("$.options[0].text").value("Option A"))
                 .andExpect(jsonPath("$.options[1].text").value("Option B"))
                 .andExpect(jsonPath("$.options[2].text").value("Option C"))
-                .andExpect(jsonPath("$.answer.text").value("Option A"))
+                .andExpect(jsonPath("$.answer_option.text").value("Option A"))
                 .andExpect(jsonPath("$.type").value("MULTIPLE_CHOICE"))
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.note_id").value(1));
@@ -356,7 +356,7 @@ public class FlashcardControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(201))
                 .andExpect(jsonPath("$.question").value("New true-false question"))
-                .andExpect(jsonPath("$.answer").value("true"))
+                .andExpect(jsonPath("$.true_false_answer").value("true"))
                 .andExpect(jsonPath("$.type").value("TRUE_FALSE"))
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.note_id").value(1));
@@ -380,7 +380,7 @@ public class FlashcardControllerTest {
                 .andExpect(status().is(400));
 
         trueFalseFlashcardDto.setQuestion("New true-false question");
-        trueFalseFlashcardDto.setAnswer(null);
+        trueFalseFlashcardDto.setTrueFalseAnswer(null);
 
         requestBuilder = MockMvcRequestBuilders
                 .post("/api/v1/notes/{noteId}/flashcards/true-false", 1)
@@ -397,7 +397,7 @@ public class FlashcardControllerTest {
 
         ShortAnswerFlashcardDto shortAnswerFlashcardDto = getShortAnswerFlashcardDtoTemplate();
         shortAnswerFlashcardDto.setQuestion("Updated short-answer question");
-        shortAnswerFlashcardDto.setAnswer("Updated short-answer answer");
+        shortAnswerFlashcardDto.setShortAnswer("Updated short-answer answer");
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/short-answer", 1)
@@ -407,7 +407,7 @@ public class FlashcardControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.question").value("Updated short-answer question"))
-                .andExpect(jsonPath("$.answer").value("Updated short-answer answer"))
+                .andExpect(jsonPath("$.short_answer").value("Updated short-answer answer"))
                 .andExpect(jsonPath("$.type").value("SHORT_ANSWER"))
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.note_id").value(1));
@@ -419,7 +419,7 @@ public class FlashcardControllerTest {
 
         ShortAnswerFlashcardDto shortAnswerFlashcardDto = getShortAnswerFlashcardDtoTemplate();
         shortAnswerFlashcardDto.setQuestion("");
-        shortAnswerFlashcardDto.setAnswer("Updated short-answer answer");
+        shortAnswerFlashcardDto.setShortAnswer("Updated short-answer answer");
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/short-answer", 1)
@@ -430,7 +430,7 @@ public class FlashcardControllerTest {
                 .andExpect(status().is(400));
 
         shortAnswerFlashcardDto.setQuestion("Updated short-answer question");
-        shortAnswerFlashcardDto.setAnswer("");
+        shortAnswerFlashcardDto.setShortAnswer("");
 
         requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/short-answer", 1)
@@ -447,7 +447,7 @@ public class FlashcardControllerTest {
 
         ShortAnswerFlashcardDto shortAnswerFlashcardDto = getShortAnswerFlashcardDtoTemplate();
         shortAnswerFlashcardDto.setQuestion("Updated short-answer question");
-        shortAnswerFlashcardDto.setAnswer("Updated short-answer answer");
+        shortAnswerFlashcardDto.setShortAnswer("Updated short-answer answer");
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/short-answer", 100)
@@ -464,7 +464,7 @@ public class FlashcardControllerTest {
 
         ShortAnswerFlashcardDto shortAnswerFlashcardDto = getShortAnswerFlashcardDtoTemplate();
         shortAnswerFlashcardDto.setQuestion("Updated short-answer question");
-        shortAnswerFlashcardDto.setAnswer("Updated short-answer answer");
+        shortAnswerFlashcardDto.setShortAnswer("Updated short-answer answer");
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/short-answer", 2)
@@ -483,16 +483,16 @@ public class FlashcardControllerTest {
         fillInTheBlankFlashcardDto.setQuestion("Updated fill-in-the-blank question");
         fillInTheBlankFlashcardDto.setFullAnswer("Updated fill-in-the-blank full answer");
 
-        BlankAnswerDto blankAnswerDto1 = new BlankAnswerDto();
-        blankAnswerDto1.setAnswer("Updated blank answer 1");
+        InBlankAnswerDto inBlankAnswerDto1 = new InBlankAnswerDto();
+        inBlankAnswerDto1.setText("Updated blank answer 1");
 
-        BlankAnswerDto blankAnswerDto2 = new BlankAnswerDto();
-        blankAnswerDto2.setAnswer("Updated blank answer 2");
+        InBlankAnswerDto inBlankAnswerDto2 = new InBlankAnswerDto();
+        inBlankAnswerDto2.setText("Updated blank answer 2");
 
-        BlankAnswerDto blankAnswerDto3 = new BlankAnswerDto();
-        blankAnswerDto3.setAnswer("Updated blank answer 3");
+        InBlankAnswerDto inBlankAnswerDto3 = new InBlankAnswerDto();
+        inBlankAnswerDto3.setText("Updated blank answer 3");
 
-        fillInTheBlankFlashcardDto.setBlankAnswers(List.of(blankAnswerDto1, blankAnswerDto2, blankAnswerDto3));
+        fillInTheBlankFlashcardDto.setInBlankAnswers(List.of(inBlankAnswerDto1, inBlankAnswerDto2, inBlankAnswerDto3));
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/fill-in-the-blank", 2)
@@ -502,10 +502,10 @@ public class FlashcardControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.question").value("Updated fill-in-the-blank question"))
-                .andExpect(jsonPath("$.blank_answers", hasSize(3)))
-                .andExpect(jsonPath("$.blank_answers[0].answer").value("Updated blank answer 1"))
-                .andExpect(jsonPath("$.blank_answers[1].answer").value("Updated blank answer 2"))
-                .andExpect(jsonPath("$.blank_answers[2].answer").value("Updated blank answer 3"))
+                .andExpect(jsonPath("$.in_blank_answers", hasSize(3)))
+                .andExpect(jsonPath("$.in_blank_answers[0].text").value("Updated blank answer 1"))
+                .andExpect(jsonPath("$.in_blank_answers[1].text").value("Updated blank answer 2"))
+                .andExpect(jsonPath("$.in_blank_answers[2].text").value("Updated blank answer 3"))
                 .andExpect(jsonPath("$.full_answer").value("Updated fill-in-the-blank full answer"))
                 .andExpect(jsonPath("$.type").value("FILL_IN_THE_BLANK"))
                 .andExpect(jsonPath("$.id").isNumber())
@@ -518,10 +518,10 @@ public class FlashcardControllerTest {
 
         FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto = getFillInTheBlankFlashcardDtoTemplate();
 
-        BlankAnswerDto blankAnswerDto1 = new BlankAnswerDto();
-        blankAnswerDto1.setAnswer("Updated blank answer 1");
+        InBlankAnswerDto inBlankAnswerDto1 = new InBlankAnswerDto();
+        inBlankAnswerDto1.setText("Updated blank answer 1");
 
-        fillInTheBlankFlashcardDto.setBlankAnswers(List.of(blankAnswerDto1));
+        fillInTheBlankFlashcardDto.setInBlankAnswers(List.of(inBlankAnswerDto1));
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/fill-in-the-blank", 2)
@@ -559,7 +559,7 @@ public class FlashcardControllerTest {
                 .andExpect(status().is(400));
 
         fillInTheBlankFlashcardDto.setFullAnswer("Updated fill-in-the-blank full answer");
-        fillInTheBlankFlashcardDto.setBlankAnswers(List.of());
+        fillInTheBlankFlashcardDto.setInBlankAnswers(List.of());
 
         requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/fill-in-the-blank", 2)
@@ -633,7 +633,7 @@ public class FlashcardControllerTest {
                 .andExpect(jsonPath("$.options[0].text").value("Updated Option A"))
                 .andExpect(jsonPath("$.options[1].text").value("Updated Option B"))
                 .andExpect(jsonPath("$.options[2].text").value("Updated Option C"))
-                .andExpect(jsonPath("$.answer.text").value("Updated Option A"))
+                .andExpect(jsonPath("$.answer_option.text").value("Updated Option A"))
                 .andExpect(jsonPath("$.type").value("MULTIPLE_CHOICE"))
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.note_id").value(1));
@@ -720,7 +720,7 @@ public class FlashcardControllerTest {
 
         TrueFalseFlashcardDto trueFalseFlashcardDto = getTrueFalseFlashcardDtoTemplate();
         trueFalseFlashcardDto.setQuestion("Updated true-false question");
-        trueFalseFlashcardDto.setAnswer(false);
+        trueFalseFlashcardDto.setTrueFalseAnswer(false);
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/true-false", 4)
@@ -730,7 +730,7 @@ public class FlashcardControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.question").value("Updated true-false question"))
-                .andExpect(jsonPath("$.answer").value("false"))
+                .andExpect(jsonPath("$.true_false_answer").value("false"))
                 .andExpect(jsonPath("$.type").value("TRUE_FALSE"))
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.note_id").value(1));
@@ -752,7 +752,7 @@ public class FlashcardControllerTest {
                 .andExpect(status().is(400));
 
         trueFalseFlashcardDto.setQuestion("Updated true-false question");
-        trueFalseFlashcardDto.setAnswer(null);
+        trueFalseFlashcardDto.setTrueFalseAnswer(null);
 
         requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/true-false", 4)
@@ -829,7 +829,7 @@ public class FlashcardControllerTest {
     private static ShortAnswerFlashcardDto getShortAnswerFlashcardDtoTemplate() {
         ShortAnswerFlashcardDto shortAnswerFlashcardDto = new ShortAnswerFlashcardDto();
         shortAnswerFlashcardDto.setQuestion("New short-answer question");
-        shortAnswerFlashcardDto.setAnswer("New short-answer answer");
+        shortAnswerFlashcardDto.setShortAnswer("New short-answer answer");
         return shortAnswerFlashcardDto;
     }
 
@@ -838,13 +838,13 @@ public class FlashcardControllerTest {
         fillInTheBlankFlashcardDto.setQuestion("New fill-in-the-blank question");
         fillInTheBlankFlashcardDto.setFullAnswer("New fill-in-the-blank full answer");
 
-        BlankAnswerDto blankAnswerDto1 = new BlankAnswerDto();
-        blankAnswerDto1.setAnswer("New blank answer 1");
+        InBlankAnswerDto inBlankAnswerDto1 = new InBlankAnswerDto();
+        inBlankAnswerDto1.setText("New blank answer 1");
 
-        BlankAnswerDto blankAnswerDto2 = new BlankAnswerDto();
-        blankAnswerDto2.setAnswer("New blank answer 2");
+        InBlankAnswerDto inBlankAnswerDto2 = new InBlankAnswerDto();
+        inBlankAnswerDto2.setText("New blank answer 2");
 
-        fillInTheBlankFlashcardDto.setBlankAnswers(List.of(blankAnswerDto1, blankAnswerDto2));
+        fillInTheBlankFlashcardDto.setInBlankAnswers(List.of(inBlankAnswerDto1, inBlankAnswerDto2));
         return fillInTheBlankFlashcardDto;
     }
 
@@ -869,7 +869,7 @@ public class FlashcardControllerTest {
     private static TrueFalseFlashcardDto getTrueFalseFlashcardDtoTemplate() {
         TrueFalseFlashcardDto trueFalseFlashcardDto = new TrueFalseFlashcardDto();
         trueFalseFlashcardDto.setQuestion("New true-false question");
-        trueFalseFlashcardDto.setAnswer(true);
+        trueFalseFlashcardDto.setTrueFalseAnswer(true);
         return trueFalseFlashcardDto;
     }
 }
