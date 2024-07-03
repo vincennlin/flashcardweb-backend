@@ -64,23 +64,6 @@ public class FlashcardController {
         return new ResponseEntity<>(flashcardResponse, HttpStatus.OK);
     }
 
-//    @Operation(
-//            summary = "新增字卡",
-//            description = "根據 noteId 新增字卡到特定筆記"
-//    )
-//    @ApiResponse(
-//            responseCode = "201",
-//            description = "成功新增字卡"
-//    )
-//    @PostMapping("/notes/{noteId}/flashcards")
-//    public ResponseEntity<FlashcardDto> createTrueFalseFlashcard(@PathVariable Long noteId,
-//                                                        @Valid @RequestBody FlashcardDto flashcardDto) {
-//
-//        FlashcardDto flashcardResponse = flashcardService.createTrueFalseFlashcard(noteId, flashcardDto);
-//
-//        return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
-//    }
-
     @PostMapping("/notes/{noteId}/flashcards/short-answer")
     public ResponseEntity<FlashcardDto> createShortAnswerFlashcard(@PathVariable Long noteId,
                                                         @Valid @RequestBody ShortAnswerFlashcardDto shortAnswerFlashcardDto){
@@ -117,19 +100,38 @@ public class FlashcardController {
         return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
     }
 
-    @Operation(
-            summary = "更新字卡",
-            description = "根據 flashcardId 更新字卡"
-    )
-    @ApiResponse(
-            responseCode = "200",
-            description = "成功更新字卡"
-    )
-    @PutMapping("/flashcards/{flashcardId}")
-    public ResponseEntity<FlashcardDto> updateFlashcard(@PathVariable Long flashcardId,
-                                                        @Valid @RequestBody FlashcardDto flashcardDto) {
+    @PutMapping("/flashcards/{flashcardId}/short-answer")
+    public ResponseEntity<FlashcardDto> updateShortAnswerFlashcard(@PathVariable Long flashcardId,
+                                                        @Valid @RequestBody ShortAnswerFlashcardDto shortAnswerFlashcardDto) {
 
-        FlashcardDto flashcardResponse = flashcardService.updateFlashcard(flashcardId, flashcardDto);
+        FlashcardDto flashcardResponse = flashcardService.updateFlashcard(flashcardId, shortAnswerFlashcardDto);
+
+        return new ResponseEntity<>(flashcardResponse, HttpStatus.OK);
+    }
+
+    @PutMapping("/flashcards/{flashcardId}/fill-in-the-blank")
+    public ResponseEntity<FlashcardDto> updateFillInTheBlankFlashcard(@PathVariable Long flashcardId,
+                                                        @Valid @RequestBody FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto) {
+
+        FlashcardDto flashcardResponse = flashcardService.updateFlashcard(flashcardId, fillInTheBlankFlashcardDto);
+
+        return new ResponseEntity<>(flashcardResponse, HttpStatus.OK);
+    }
+
+    @PutMapping("/flashcards/{flashcardId}/multiple-choice")
+    public ResponseEntity<FlashcardDto> updateMultipleChoiceFlashcard(@PathVariable Long flashcardId,
+                                                        @Valid @RequestBody MultipleChoiceFlashcardDto multipleChoiceFlashcardDto) {
+
+        FlashcardDto flashcardResponse = flashcardService.updateFlashcard(flashcardId, multipleChoiceFlashcardDto);
+
+        return new ResponseEntity<>(flashcardResponse, HttpStatus.OK);
+    }
+
+    @PutMapping("/flashcards/{flashcardId}/true-false")
+    public ResponseEntity<FlashcardDto> updateTrueFalseFlashcard(@PathVariable Long flashcardId,
+                                                        @Valid @RequestBody TrueFalseFlashcardDto trueFalseFlashcardDto) {
+
+        FlashcardDto flashcardResponse = flashcardService.updateFlashcard(flashcardId, trueFalseFlashcardDto);
 
         return new ResponseEntity<>(flashcardResponse, HttpStatus.OK);
     }

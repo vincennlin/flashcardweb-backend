@@ -12,7 +12,4 @@ public class BlankAnswerDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
     private String answer;
-
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long flashcardId;
 }
