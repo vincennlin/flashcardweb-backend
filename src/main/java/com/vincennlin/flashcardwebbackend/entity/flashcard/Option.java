@@ -1,6 +1,7 @@
 package com.vincennlin.flashcardwebbackend.entity.flashcard;
 
-import com.vincennlin.flashcardwebbackend.entity.flashcard.concrete.FillInTheBlankFlashcard;
+
+import com.vincennlin.flashcardwebbackend.entity.flashcard.concrete.MultipleChoiceFlashcard;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,17 +14,16 @@ import lombok.Setter;
 @AllArgsConstructor
 
 @Entity
-@Table(name = "blank_answers")
-public class BlankAnswer {
+@Table(name = "options")
+public class Option {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "blank_answer")
-    private String answer;
+    private String text;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flashcard_id")
-    private FillInTheBlankFlashcard flashcard;
+    private MultipleChoiceFlashcard flashcard;
 }

@@ -7,12 +7,9 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BlankAnswerDto {
+public class OptionDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
-    private String answer;
-
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long flashcardId;
+    private String text;
 }

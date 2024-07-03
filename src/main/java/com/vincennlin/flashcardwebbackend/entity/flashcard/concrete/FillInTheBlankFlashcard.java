@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 
 @Entity
-@Table(name = "fill_in_the_blank_flashcards")
+@Table(name = "fill_in_the_blank")
 public class FillInTheBlankFlashcard extends Flashcard {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "flashcard")
