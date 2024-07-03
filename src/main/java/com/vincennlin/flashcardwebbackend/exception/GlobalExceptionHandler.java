@@ -2,13 +2,16 @@ package com.vincennlin.flashcardwebbackend.exception;
 
 import com.vincennlin.flashcardwebbackend.payload.ErrorDetails;
 import jakarta.validation.ConstraintViolationException;
+import org.modelmapper.MappingException;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.Date;
@@ -28,6 +31,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(WebAPIException.class)
     public ResponseEntity<ErrorDetails> handleWebAPIException(WebAPIException exception,
                                                                WebRequest webRequest) {
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(),
+                webRequest.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(FlashcardTypeException.class)
+    public ResponseEntity<ErrorDetails> handleFlashcardTypeException(FlashcardTypeException exception,
+                                                                    WebRequest webRequest) {
         ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(),
                 webRequest.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
@@ -60,6 +71,46 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorDetails> handleConstraintViolationException(ConstraintViolationException exception,
                                                                           WebRequest webRequest) {
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(),
+                webRequest.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorDetails> handleIllegalArgumentException(IllegalArgumentException exception,
+                                                                      WebRequest webRequest) {
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(),
+                webRequest.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MappingException.class)
+    public ResponseEntity<ErrorDetails> handleMappingException(MappingException exception,
+                                                               WebRequest webRequest) {
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(),
+                webRequest.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ClassCastException.class)
+    public ResponseEntity<ErrorDetails> handleClassCastException(ClassCastException exception,
+                                                                 WebRequest webRequest) {
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(),
+                webRequest.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorDetails> handleHttpMessageNotReadableException(HttpMessageNotReadableException exception,
+                                                                              WebRequest webRequest) {
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(),
+                webRequest.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorDetails> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException exception,
+                                                                                 WebRequest webRequest) {
         ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(),
                 webRequest.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);

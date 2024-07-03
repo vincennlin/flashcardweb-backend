@@ -1,7 +1,7 @@
 package com.vincennlin.flashcardwebbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vincennlin.flashcardwebbackend.payload.NoteDto;
+import com.vincennlin.flashcardwebbackend.payload.note.NoteDto;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class NoteControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     public void getAllNotes() throws Exception{
@@ -38,7 +38,8 @@ public class NoteControllerTest {
                 .andExpect(jsonPath("$.content[0].content", equalTo("Test note 1")))
                 .andExpect(jsonPath("$.content[0].id", notNullValue()))
                 .andExpect(jsonPath("$.content[0].date_created", notNullValue()))
-                .andExpect(jsonPath("$.content[0].last_updated", notNullValue()));
+                .andExpect(jsonPath("$.content[0].last_updated", notNullValue()))
+                .andExpect(jsonPath("$.content[0].flashcards", notNullValue()));
     }
 
     @Test

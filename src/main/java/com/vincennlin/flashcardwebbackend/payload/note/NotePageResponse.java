@@ -1,4 +1,4 @@
-package com.vincennlin.flashcardwebbackend.payload;
+package com.vincennlin.flashcardwebbackend.payload.note;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
