@@ -4,10 +4,12 @@ import com.vincennlin.flashcardwebbackend.payload.flashcard.FlashcardDto;
 import com.vincennlin.flashcardwebbackend.operation.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Schema(
         name = "ShortAnswerFlashcardDto",

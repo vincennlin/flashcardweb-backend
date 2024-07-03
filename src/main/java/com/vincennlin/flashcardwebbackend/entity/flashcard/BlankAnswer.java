@@ -20,6 +20,7 @@ public class BlankAnswer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "blank_answer")
     private String answer;
 
     @ManyToOne(fetch = FetchType.LAZY)

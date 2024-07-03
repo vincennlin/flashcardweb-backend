@@ -17,14 +17,14 @@ import java.util.List;
 @AllArgsConstructor
 
 @Entity
-@Table(name = "multiple_choice_flashcards")
+@Table(name = "multiple_choice")
 public class MultipleChoiceFlashcard extends Flashcard {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "flashcard")
     private List<Option> options;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "answer_id")
+    @JoinColumn(name = "answer_option_id")
     private Option answer;
 }
 

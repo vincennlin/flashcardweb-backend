@@ -14,12 +14,16 @@ import com.vincennlin.flashcardwebbackend.payload.flashcard.FlashcardDto;
 import com.vincennlin.flashcardwebbackend.payload.flashcard.concrete.*;
 import com.vincennlin.flashcardwebbackend.repository.FlashcardRepository;
 import com.vincennlin.flashcardwebbackend.repository.NoteRepository;
+import com.vincennlin.flashcardwebbackend.repository.OptionRepository;
 import com.vincennlin.flashcardwebbackend.service.FlashcardService;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@AllArgsConstructor
 @Service
 public class FlashcardServiceImpl implements FlashcardService {
 
@@ -29,13 +33,7 @@ public class FlashcardServiceImpl implements FlashcardService {
 
     private NoteRepository noteRepository;
 
-    public FlashcardServiceImpl(FlashcardRepository flashcardRepository,
-                                ModelMapper modelMapper,
-                                NoteRepository noteRepository) {
-        this.flashcardRepository = flashcardRepository;
-        this.modelMapper = modelMapper;
-        this.noteRepository = noteRepository;
-    }
+    private OptionRepository optionRepository;
 
     @Override
     public List<FlashcardDto> getFlashcardsByNoteId(Long noteId) {
@@ -45,8 +43,7 @@ public class FlashcardServiceImpl implements FlashcardService {
 
         List<Flashcard> flashcards = note.getFlashcards();
 
-        return flashcards.stream()
-                .map(flashcard -> modelMapper.map(flashcard, FlashcardDto.class)).toList();
+        return flashcards.stream().map(this::mapToDto).toList();
     }
 
     @Override
@@ -55,26 +52,84 @@ public class FlashcardServiceImpl implements FlashcardService {
         Flashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
                 new ResourceNotFoundException("Flashcard", "id", flashcardId));
 
-        return modelMapper.map(flashcard, FlashcardDto.class);
+        return mapToDto(flashcard);
     }
 
     @Override
-    public FlashcardDto createFlashcard(Long noteId, FlashcardDto flashcardDto) {
+    public FlashcardDto createFlashcard(Long noteId, ShortAnswerFlashcardDto shortAnswerFlashcardDto) {
 
         Note note = noteRepository.findById(noteId).orElseThrow(() ->
                 new ResourceNotFoundException("Note", "id", noteId));
 
-        Flashcard flashcard = mapToEntity(flashcardDto);
-        addRelation(flashcard);
+        ShortAnswerFlashcard shortAnswerFlashcard = modelMapper.map(shortAnswerFlashcardDto, ShortAnswerFlashcard.class);
+        shortAnswerFlashcard.setType(FlashcardType.SHORT_ANSWER);
 
-        flashcard.setNote(note);
+        shortAnswerFlashcard.setNote(note);
 
-        Flashcard newFlashcard = flashcardRepository.save(flashcard);
+        Flashcard newFlashcard = flashcardRepository.save(shortAnswerFlashcard);
 
-        return mapToDto(newFlashcard);
+        return modelMapper.map(newFlashcard, ShortAnswerFlashcardDto.class);
     }
 
+    @Override
+    public FlashcardDto createFlashcard(Long noteId, FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto) {
 
+        Note note = noteRepository.findById(noteId).orElseThrow(() ->
+                new ResourceNotFoundException("Note", "id", noteId));
+
+        FillInTheBlankFlashcard fillInTheBlankFlashcard = modelMapper.map(fillInTheBlankFlashcardDto, FillInTheBlankFlashcard.class);
+        fillInTheBlankFlashcard.setType(FlashcardType.FILL_IN_THE_BLANK);
+
+        fillInTheBlankFlashcard.setNote(note);
+
+        fillInTheBlankFlashcard.getBlankAnswers().forEach(
+                blankAnswer -> blankAnswer.setFlashcard(fillInTheBlankFlashcard));
+
+        Flashcard newFlashcard = flashcardRepository.save(fillInTheBlankFlashcard);
+
+        return modelMapper.map(newFlashcard, FillInTheBlankFlashcardDto.class);
+    }
+
+    @Transactional
+    @Override
+    public FlashcardDto createFlashcard(Long noteId, MultipleChoiceFlashcardDto multipleChoiceFlashcardDto) {
+
+        Note note = noteRepository.findById(noteId).orElseThrow(() ->
+                new ResourceNotFoundException("Note", "id", noteId));
+
+        MultipleChoiceFlashcard multipleChoiceFlashcard = modelMapper.map(multipleChoiceFlashcardDto, MultipleChoiceFlashcard.class);
+        multipleChoiceFlashcard.setType(FlashcardType.MULTIPLE_CHOICE);
+        multipleChoiceFlashcard.setNote(note);
+
+        List<Option> options = multipleChoiceFlashcard.getOptions();
+        options.forEach(option -> option.setFlashcard(multipleChoiceFlashcard));
+        List<Option> savedOptions = optionRepository.saveAll(options);
+
+        if (multipleChoiceFlashcardDto.getAnswerIndex() > savedOptions.size()) {
+            throw new IllegalArgumentException("Answer index is out of range of options");
+        }
+        multipleChoiceFlashcard.setAnswer(savedOptions.get(multipleChoiceFlashcardDto.getAnswerIndex() - 1));
+
+        Flashcard newFlashcard = flashcardRepository.save(multipleChoiceFlashcard);
+
+        return modelMapper.map(newFlashcard, MultipleChoiceFlashcardDto.class);
+    }
+
+    @Override
+    public FlashcardDto createFlashcard(Long noteId, TrueFalseFlashcardDto trueFalseFlashcardDto) {
+
+        Note note = noteRepository.findById(noteId).orElseThrow(() ->
+                new ResourceNotFoundException("Note", "id", noteId));
+
+        TrueFalseFlashcard trueFalseFlashcard = modelMapper.map(trueFalseFlashcardDto, TrueFalseFlashcard.class);
+        trueFalseFlashcard.setType(FlashcardType.TRUE_FALSE);
+
+        trueFalseFlashcard.setNote(note);
+
+        Flashcard newFlashcard = flashcardRepository.save(trueFalseFlashcard);
+
+        return modelMapper.map(newFlashcard, TrueFalseFlashcardDto.class);
+    }
 
     @Override
     public FlashcardDto updateFlashcard(Long flashcardId, FlashcardDto flashcardDto) {
@@ -100,52 +155,19 @@ public class FlashcardServiceImpl implements FlashcardService {
         flashcardRepository.delete(flashcard);
     }
 
-    private Flashcard mapToEntity(FlashcardDto flashcardDto) {
-        Flashcard flashcard = null;
-        if (flashcardDto instanceof FillInTheBlankFlashcardDto) {
-            flashcard = modelMapper.map(flashcardDto, FillInTheBlankFlashcard.class);
-            flashcard.setType(FlashcardType.FILL_IN_THE_BLANK);
-        } else if (flashcardDto instanceof MultipleChoiceFlashcardDto multipleChoiceFlashcardDto) {
-            MultipleChoiceFlashcard multipleChoiceFlashcard = modelMapper.map(multipleChoiceFlashcardDto, MultipleChoiceFlashcard.class);
-            if (multipleChoiceFlashcardDto.getAnswerIndex() > multipleChoiceFlashcardDto.getOptions().size()) {
-                throw new IllegalArgumentException("Answer index is out of range of options");
-            }
-            OptionDto answer = multipleChoiceFlashcardDto.getOptions().get(multipleChoiceFlashcardDto.getAnswerIndex());
-            multipleChoiceFlashcard.setAnswer(modelMapper.map(answer, Option.class));
-            multipleChoiceFlashcard.setType(FlashcardType.MULTIPLE_CHOICE);
-            return multipleChoiceFlashcard;
-        } else if (flashcardDto instanceof ShortAnswerFlashcardDto) {
-            flashcard = modelMapper.map(flashcardDto, ShortAnswerFlashcard.class);
-            flashcard.setType(FlashcardType.SHORT_ANSWER);
-        } else if (flashcardDto instanceof TrueFalseFlashcardDto) {
-            flashcard = modelMapper.map(flashcardDto, TrueFalseFlashcard.class);
-            flashcard.setType(FlashcardType.TRUE_FALSE);
-        }
-        return flashcard;
-    }
-
     private FlashcardDto mapToDto(Flashcard flashcard) {
-        if (flashcard instanceof FillInTheBlankFlashcard) {
-            return modelMapper.map(flashcard, FillInTheBlankFlashcardDto.class);
-        } else if (flashcard instanceof MultipleChoiceFlashcard) {
-            return modelMapper.map(flashcard, MultipleChoiceFlashcardDto.class);
-        } else if (flashcard instanceof ShortAnswerFlashcard) {
-            return modelMapper.map(flashcard, ShortAnswerFlashcardDto.class);
-        } else if (flashcard instanceof TrueFalseFlashcard) {
-            return modelMapper.map(flashcard, TrueFalseFlashcardDto.class);
-        } else {
-            throw new IllegalArgumentException("Invalid flashcard type");
+        FlashcardDto flashcardDto = null;
+        if (flashcard.getType() == FlashcardType.SHORT_ANSWER){
+            flashcardDto = modelMapper.map(flashcard, ShortAnswerFlashcardDto.class);
+        } else if (flashcard.getType() == FlashcardType.FILL_IN_THE_BLANK){
+            flashcardDto = modelMapper.map(flashcard, FillInTheBlankFlashcardDto.class);
+        } else if (flashcard.getType() == FlashcardType.MULTIPLE_CHOICE){
+            flashcardDto = modelMapper.map(flashcard, MultipleChoiceFlashcardDto.class);
+        } else if (flashcard.getType() == FlashcardType.TRUE_FALSE){
+            flashcardDto = modelMapper.map(flashcard, TrueFalseFlashcardDto.class);
+        } else  {
+            throw new IllegalArgumentException("Flashcard type is not supported");
         }
-    }
-
-    private void addRelation(Flashcard flashcard) {
-        if (flashcard instanceof FillInTheBlankFlashcard fillInTheBlankFlashcard) {
-            fillInTheBlankFlashcard.getBlankAnswers().forEach(
-                    blankAnswer -> blankAnswer.setFlashcard(fillInTheBlankFlashcard));
-        } else if (flashcard instanceof MultipleChoiceFlashcard multipleChoiceFlashcard) {
-            multipleChoiceFlashcard.getOptions().forEach(
-                    option -> option.setFlashcard(multipleChoiceFlashcard));
-            multipleChoiceFlashcard.getAnswer().setFlashcard(multipleChoiceFlashcard);
-        }
+        return flashcardDto;
     }
 }

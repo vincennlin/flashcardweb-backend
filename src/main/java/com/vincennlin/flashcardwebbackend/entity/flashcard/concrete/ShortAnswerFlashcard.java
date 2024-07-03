@@ -14,8 +14,9 @@ import lombok.Setter;
 @AllArgsConstructor
 
 @Entity
-@Table(name = "short_answer_flashcards")
+@Table(name = "short_answers")
 public class ShortAnswerFlashcard extends Flashcard {
 
+    @Column(name = "short_answer")
     private String answer;
 }

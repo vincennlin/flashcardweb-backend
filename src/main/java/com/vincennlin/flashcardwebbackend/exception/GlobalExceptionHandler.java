@@ -2,6 +2,7 @@ package com.vincennlin.flashcardwebbackend.exception;
 
 import com.vincennlin.flashcardwebbackend.payload.ErrorDetails;
 import jakarta.validation.ConstraintViolationException;
+import org.modelmapper.MappingException;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,6 +72,14 @@ public class GlobalExceptionHandler {
         ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(),
                 webRequest.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MappingException.class)
+    public ResponseEntity<ErrorDetails> handleMappingException(MappingException exception,
+                                                               WebRequest webRequest) {
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(),
+                webRequest.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     // Global exceptions

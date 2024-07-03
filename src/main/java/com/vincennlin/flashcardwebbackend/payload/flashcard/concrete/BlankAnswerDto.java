@@ -1,9 +1,12 @@
 package com.vincennlin.flashcardwebbackend.payload.flashcard.concrete;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class BlankAnswerDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

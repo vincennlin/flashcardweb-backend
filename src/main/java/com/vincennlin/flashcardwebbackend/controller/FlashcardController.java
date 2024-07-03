@@ -1,7 +1,10 @@
 package com.vincennlin.flashcardwebbackend.controller;
 
 import com.vincennlin.flashcardwebbackend.payload.flashcard.FlashcardDto;
+import com.vincennlin.flashcardwebbackend.payload.flashcard.concrete.FillInTheBlankFlashcardDto;
+import com.vincennlin.flashcardwebbackend.payload.flashcard.concrete.MultipleChoiceFlashcardDto;
 import com.vincennlin.flashcardwebbackend.payload.flashcard.concrete.ShortAnswerFlashcardDto;
+import com.vincennlin.flashcardwebbackend.payload.flashcard.concrete.TrueFalseFlashcardDto;
 import com.vincennlin.flashcardwebbackend.service.FlashcardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -61,19 +64,55 @@ public class FlashcardController {
         return new ResponseEntity<>(flashcardResponse, HttpStatus.OK);
     }
 
-    @Operation(
-            summary = "新增字卡",
-            description = "根據 noteId 新增字卡到特定筆記"
-    )
-    @ApiResponse(
-            responseCode = "201",
-            description = "成功新增字卡"
-    )
-    @PostMapping("/notes/{noteId}/flashcards")
-    public ResponseEntity<FlashcardDto> createFlashcard(@PathVariable Long noteId,
-                                                        @Valid @RequestBody FlashcardDto flashcardDto) {
+//    @Operation(
+//            summary = "新增字卡",
+//            description = "根據 noteId 新增字卡到特定筆記"
+//    )
+//    @ApiResponse(
+//            responseCode = "201",
+//            description = "成功新增字卡"
+//    )
+//    @PostMapping("/notes/{noteId}/flashcards")
+//    public ResponseEntity<FlashcardDto> createTrueFalseFlashcard(@PathVariable Long noteId,
+//                                                        @Valid @RequestBody FlashcardDto flashcardDto) {
+//
+//        FlashcardDto flashcardResponse = flashcardService.createTrueFalseFlashcard(noteId, flashcardDto);
+//
+//        return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
+//    }
 
-        FlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, flashcardDto);
+    @PostMapping("/notes/{noteId}/flashcards/short-answer")
+    public ResponseEntity<FlashcardDto> createShortAnswerFlashcard(@PathVariable Long noteId,
+                                                        @Valid @RequestBody ShortAnswerFlashcardDto shortAnswerFlashcardDto){
+
+        FlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, shortAnswerFlashcardDto);
+
+        return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/notes/{noteId}/flashcards/fill-in-the-blank")
+    public ResponseEntity<FlashcardDto> createFillInTheBlankFlashcard(@PathVariable Long noteId,
+                                                        @Valid @RequestBody FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto){
+
+        FlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, fillInTheBlankFlashcardDto);
+
+        return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/notes/{noteId}/flashcards/multiple-choice")
+    public ResponseEntity<FlashcardDto> createMultipleChoiceFlashcard(@PathVariable Long noteId,
+                                                        @Valid @RequestBody MultipleChoiceFlashcardDto multipleChoiceFlashcardDto){
+
+        FlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, multipleChoiceFlashcardDto);
+
+        return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/notes/{noteId}/flashcards/true-false")
+    public ResponseEntity<FlashcardDto> createTrueFalseFlashcard(@PathVariable Long noteId,
+                                                                 @Valid @RequestBody TrueFalseFlashcardDto trueFalseFlashcardDto){
+
+        FlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, trueFalseFlashcardDto);
 
         return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
     }
