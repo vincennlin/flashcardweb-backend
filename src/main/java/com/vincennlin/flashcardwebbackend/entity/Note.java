@@ -1,7 +1,7 @@
 package com.vincennlin.flashcardwebbackend.entity;
 
+import com.vincennlin.flashcardwebbackend.entity.flashcard.Flashcard;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

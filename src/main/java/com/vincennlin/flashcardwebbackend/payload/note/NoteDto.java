@@ -1,14 +1,19 @@
-package com.vincennlin.flashcardwebbackend.payload;
+package com.vincennlin.flashcardwebbackend.payload.note;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vincennlin.flashcardwebbackend.payload.flashcard.FlashcardDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Schema(
         name = "NoteDto",
         description = "筆記的 Data Transfer Object"
@@ -26,7 +31,7 @@ public class NoteDto {
     @Schema(
             name = "content",
             description = "筆記內容",
-            example = "This is a note."
+            example = "{\"content\": \"This is a note about Java\"}"
     )
     @NotEmpty(message = "content cannot be empty")
     private String content;
@@ -51,9 +56,12 @@ public class NoteDto {
 
     @Schema(
             name = "flashcards",
-            description = "筆記的所有字卡"
+            description = "筆記裡的字卡列表",
+            example = "null"
     )
-    @JsonProperty(value = "flashcards",
-            access = JsonProperty.Access.READ_ONLY)
-    private List<FlashcardDto> flashcards;
+    @JsonProperty(
+            value = "flashcards",
+            access = JsonProperty.Access.READ_ONLY
+    )
+    private List<? extends FlashcardDto> flashcards;
 }
