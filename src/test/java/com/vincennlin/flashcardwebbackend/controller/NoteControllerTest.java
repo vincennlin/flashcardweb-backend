@@ -38,7 +38,8 @@ public class NoteControllerTest {
                 .andExpect(jsonPath("$.content[0].content", equalTo("Test note 1")))
                 .andExpect(jsonPath("$.content[0].id", notNullValue()))
                 .andExpect(jsonPath("$.content[0].date_created", notNullValue()))
-                .andExpect(jsonPath("$.content[0].last_updated", notNullValue()));
+                .andExpect(jsonPath("$.content[0].last_updated", notNullValue()))
+                .andExpect(jsonPath("$.content[0].flashcards", notNullValue()));
     }
 
     @Test

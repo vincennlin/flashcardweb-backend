@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -41,7 +42,7 @@ public class FlashcardController {
             description = "成功取得特定筆記的所有字卡"
     )
     @GetMapping("/notes/{noteId}/flashcards")
-    public ResponseEntity<List<FlashcardDto>> getFlashcardsByNoteId(@PathVariable Long noteId) {
+    public ResponseEntity<List<FlashcardDto>> getFlashcardsByNoteId(@PathVariable @Min(1) Long noteId) {
 
         List<FlashcardDto> flashcardsResponse = flashcardService.getFlashcardsByNoteId(noteId);
 
@@ -57,7 +58,7 @@ public class FlashcardController {
             description = "成功取得特定字卡"
     )
     @GetMapping("/flashcards/{flashcardId}")
-    public ResponseEntity<FlashcardDto> getFlashcardById(@PathVariable Long flashcardId) {
+    public ResponseEntity<FlashcardDto> getFlashcardById(@PathVariable @Min(1) Long flashcardId) {
 
         FlashcardDto flashcardResponse = flashcardService.getFlashcardById(flashcardId);
 
@@ -65,7 +66,7 @@ public class FlashcardController {
     }
 
     @PostMapping("/notes/{noteId}/flashcards/short-answer")
-    public ResponseEntity<FlashcardDto> createShortAnswerFlashcard(@PathVariable Long noteId,
+    public ResponseEntity<FlashcardDto> createShortAnswerFlashcard(@PathVariable @Min(1) Long noteId,
                                                         @Valid @RequestBody ShortAnswerFlashcardDto shortAnswerFlashcardDto){
 
         FlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, shortAnswerFlashcardDto);
@@ -74,7 +75,7 @@ public class FlashcardController {
     }
 
     @PostMapping("/notes/{noteId}/flashcards/fill-in-the-blank")
-    public ResponseEntity<FlashcardDto> createFillInTheBlankFlashcard(@PathVariable Long noteId,
+    public ResponseEntity<FlashcardDto> createFillInTheBlankFlashcard(@PathVariable @Min(1) Long noteId,
                                                         @Valid @RequestBody FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto){
 
         FlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, fillInTheBlankFlashcardDto);
@@ -83,7 +84,7 @@ public class FlashcardController {
     }
 
     @PostMapping("/notes/{noteId}/flashcards/multiple-choice")
-    public ResponseEntity<FlashcardDto> createMultipleChoiceFlashcard(@PathVariable Long noteId,
+    public ResponseEntity<FlashcardDto> createMultipleChoiceFlashcard(@PathVariable @Min(1) Long noteId,
                                                         @Valid @RequestBody MultipleChoiceFlashcardDto multipleChoiceFlashcardDto){
 
         FlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, multipleChoiceFlashcardDto);
@@ -92,7 +93,7 @@ public class FlashcardController {
     }
 
     @PostMapping("/notes/{noteId}/flashcards/true-false")
-    public ResponseEntity<FlashcardDto> createTrueFalseFlashcard(@PathVariable Long noteId,
+    public ResponseEntity<FlashcardDto> createTrueFalseFlashcard(@PathVariable @Min(1) Long noteId,
                                                                  @Valid @RequestBody TrueFalseFlashcardDto trueFalseFlashcardDto){
 
         FlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, trueFalseFlashcardDto);
@@ -101,7 +102,7 @@ public class FlashcardController {
     }
 
     @PutMapping("/flashcards/{flashcardId}/short-answer")
-    public ResponseEntity<FlashcardDto> updateShortAnswerFlashcard(@PathVariable Long flashcardId,
+    public ResponseEntity<FlashcardDto> updateShortAnswerFlashcard(@PathVariable @Min(1) Long flashcardId,
                                                         @Valid @RequestBody ShortAnswerFlashcardDto shortAnswerFlashcardDto) {
 
         FlashcardDto flashcardResponse = flashcardService.updateFlashcard(flashcardId, shortAnswerFlashcardDto);
@@ -110,7 +111,7 @@ public class FlashcardController {
     }
 
     @PutMapping("/flashcards/{flashcardId}/fill-in-the-blank")
-    public ResponseEntity<FlashcardDto> updateFillInTheBlankFlashcard(@PathVariable Long flashcardId,
+    public ResponseEntity<FlashcardDto> updateFillInTheBlankFlashcard(@PathVariable @Min(1) Long flashcardId,
                                                         @Valid @RequestBody FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto) {
 
         FlashcardDto flashcardResponse = flashcardService.updateFlashcard(flashcardId, fillInTheBlankFlashcardDto);
@@ -119,7 +120,7 @@ public class FlashcardController {
     }
 
     @PutMapping("/flashcards/{flashcardId}/multiple-choice")
-    public ResponseEntity<FlashcardDto> updateMultipleChoiceFlashcard(@PathVariable Long flashcardId,
+    public ResponseEntity<FlashcardDto> updateMultipleChoiceFlashcard(@PathVariable @Min(1) Long flashcardId,
                                                         @Valid @RequestBody MultipleChoiceFlashcardDto multipleChoiceFlashcardDto) {
 
         FlashcardDto flashcardResponse = flashcardService.updateFlashcard(flashcardId, multipleChoiceFlashcardDto);
@@ -128,7 +129,7 @@ public class FlashcardController {
     }
 
     @PutMapping("/flashcards/{flashcardId}/true-false")
-    public ResponseEntity<FlashcardDto> updateTrueFalseFlashcard(@PathVariable Long flashcardId,
+    public ResponseEntity<FlashcardDto> updateTrueFalseFlashcard(@PathVariable @Min(1) Long flashcardId,
                                                         @Valid @RequestBody TrueFalseFlashcardDto trueFalseFlashcardDto) {
 
         FlashcardDto flashcardResponse = flashcardService.updateFlashcard(flashcardId, trueFalseFlashcardDto);
@@ -145,7 +146,7 @@ public class FlashcardController {
             description = "成功刪除字卡"
     )
     @DeleteMapping("/flashcards/{flashcardId}")
-    public ResponseEntity<Void> deleteFlashcardById(@PathVariable Long flashcardId) {
+    public ResponseEntity<Void> deleteFlashcardById(@PathVariable @Min(1) Long flashcardId) {
 
         flashcardService.deleteFlashcardById(flashcardId);
 

@@ -214,6 +214,8 @@ public class FlashcardServiceImpl implements FlashcardService {
 
         if (newMultipleChoiceFlashcard.getOptions().size() != optionSize) {
             throw new IllegalArgumentException("Number of options cannot be changed");
+        } else if (multipleChoiceFlashcardDto.getAnswerIndex() > optionSize) {
+            throw new IllegalArgumentException("Answer index is out of range of options");
         }
 
         for (int i = 0; i < optionSize; i++) {
