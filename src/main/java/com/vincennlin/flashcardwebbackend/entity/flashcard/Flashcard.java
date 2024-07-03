@@ -1,5 +1,7 @@
-package com.vincennlin.flashcardwebbackend.entity;
+package com.vincennlin.flashcardwebbackend.entity.flashcard;
 
+import com.vincennlin.flashcardwebbackend.constant.FlashcardType;
+import com.vincennlin.flashcardwebbackend.entity.Note;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,17 +17,21 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "flashcards")
-public class Flashcard {
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class Flashcard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String question;
-    private String answer;
 
     @Column(name = "extra_info")
     private String extraInfo;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    private FlashcardType type;
 
     @CreationTimestamp
     @Column(name = "date_created")

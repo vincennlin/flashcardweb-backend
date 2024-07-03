@@ -1,6 +1,7 @@
-package com.vincennlin.flashcardwebbackend.payload;
+package com.vincennlin.flashcardwebbackend.payload.note;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vincennlin.flashcardwebbackend.payload.flashcard.FlashcardDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;

@@ -3,7 +3,7 @@ package com.vincennlin.flashcardwebbackend.constant;
 import lombok.Getter;
 
 @Getter
-public enum CardType {
+public enum FlashcardType {
     MULTIPLE_CHOICE,
     TRUE_FALSE,
     FILL_IN_THE_BLANK,

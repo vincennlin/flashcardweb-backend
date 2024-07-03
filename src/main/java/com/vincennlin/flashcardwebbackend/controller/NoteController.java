@@ -1,7 +1,7 @@
 package com.vincennlin.flashcardwebbackend.controller;
 
-import com.vincennlin.flashcardwebbackend.payload.NoteDto;
-import com.vincennlin.flashcardwebbackend.payload.NotePageResponse;
+import com.vincennlin.flashcardwebbackend.payload.note.NoteDto;
+import com.vincennlin.flashcardwebbackend.payload.note.NotePageResponse;
 import com.vincennlin.flashcardwebbackend.service.NoteService;
 import com.vincennlin.flashcardwebbackend.utils.AppConstants;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,8 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Tag(
         name = "筆記 API",

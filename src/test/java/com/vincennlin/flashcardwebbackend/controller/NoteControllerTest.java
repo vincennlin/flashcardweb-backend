@@ -1,7 +1,7 @@
 package com.vincennlin.flashcardwebbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vincennlin.flashcardwebbackend.payload.NoteDto;
+import com.vincennlin.flashcardwebbackend.payload.note.NoteDto;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,7 @@
 package com.vincennlin.flashcardwebbackend.controller;
 
-import com.vincennlin.flashcardwebbackend.payload.FlashcardDto;
+import com.vincennlin.flashcardwebbackend.payload.flashcard.FlashcardDto;
+import com.vincennlin.flashcardwebbackend.payload.flashcard.concrete.ShortAnswerFlashcardDto;
 import com.vincennlin.flashcardwebbackend.service.FlashcardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
