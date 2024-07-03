@@ -22,7 +22,13 @@ public interface FlashcardService {
 
     FlashcardDto createFlashcard(Long noteId, TrueFalseFlashcardDto trueFalseFlashcardDto);
 
-    FlashcardDto updateFlashcard(Long flashcardId, FlashcardDto flashcardDto);
+    FlashcardDto updateFlashcard(Long flashcardId, ShortAnswerFlashcardDto shortAnswerFlashcardDto);
+
+    FlashcardDto updateFlashcard(Long flashcardId, FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto);
+
+    FlashcardDto updateFlashcard(Long flashcardId, MultipleChoiceFlashcardDto multipleChoiceFlashcardDto);
+
+    FlashcardDto updateFlashcard(Long flashcardId, TrueFalseFlashcardDto trueFalseFlashcardDto);
 
     void deleteFlashcardById(Long flashcardId);
 }
