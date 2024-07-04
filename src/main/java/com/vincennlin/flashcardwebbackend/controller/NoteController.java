@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -253,6 +254,7 @@ public class NoteController {
                             """)
             )
     )
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<NoteDto> createNote(@Valid @RequestBody
                                                   @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -355,6 +357,7 @@ public class NoteController {
                             """)
             )
     )
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{note_id}")
     public ResponseEntity<NoteDto> updateNote(@PathVariable(name = "note_id") @Min(1) Long id,
                                               @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -381,6 +384,7 @@ public class NoteController {
             responseCode = "204",
             description = "成功刪除筆記"
     )
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{note_id}")
     public ResponseEntity<Void> deleteNoteById(@PathVariable(name = "note_id") @Min(1) Long id) {
 
