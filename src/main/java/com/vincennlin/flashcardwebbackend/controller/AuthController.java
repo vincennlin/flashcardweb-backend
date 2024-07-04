@@ -1,5 +1,6 @@
 package com.vincennlin.flashcardwebbackend.controller;
 
+import com.vincennlin.flashcardwebbackend.payload.JWTAuthResponse;
 import com.vincennlin.flashcardwebbackend.payload.LoginDto;
 import com.vincennlin.flashcardwebbackend.payload.RegisterDto;
 import com.vincennlin.flashcardwebbackend.service.AuthService;
@@ -27,9 +28,13 @@ public class AuthController {
     }
 
     @PostMapping(value = {"/login"})
-    public ResponseEntity<String> login(@Valid @RequestBody LoginDto loginDto) {
+    public ResponseEntity<JWTAuthResponse> login(@Valid @RequestBody LoginDto loginDto) {
 
-        String response = authService.login(loginDto);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        String jwt = authService.login(loginDto);
+
+        JWTAuthResponse jwtAuthResponse = new JWTAuthResponse();
+        jwtAuthResponse.setAccessToken(jwt);
+
+        return new ResponseEntity<>(jwtAuthResponse, HttpStatus.OK);
     }
 }
