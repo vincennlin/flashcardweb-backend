@@ -7,6 +7,7 @@ import com.vincennlin.flashcardwebbackend.payload.LoginDto;
 import com.vincennlin.flashcardwebbackend.payload.RegisterDto;
 import com.vincennlin.flashcardwebbackend.repository.RoleRepository;
 import com.vincennlin.flashcardwebbackend.repository.UserRepository;
+import com.vincennlin.flashcardwebbackend.security.JwtTokenProvider;
 import com.vincennlin.flashcardwebbackend.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ public class AuthServiceImpl implements AuthService {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
+    private JwtTokenProvider jwtTokenProvider;
 
     @Override
     public String register(RegisterDto registerDto) {
@@ -72,6 +74,6 @@ public class AuthServiceImpl implements AuthService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return "User logged in successfully!";
+        return jwtTokenProvider.generateToken(authentication);
     }
 }
