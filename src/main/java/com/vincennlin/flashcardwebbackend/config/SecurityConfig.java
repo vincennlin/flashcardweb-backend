@@ -30,19 +30,19 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
-            @Override
-            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-                // Allow all origins
-                CorsConfiguration config = new CorsConfiguration();
-                config.setAllowedOrigins(Collections.singletonList("*"));
-                config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-                config.setAllowedHeaders(Collections.singletonList("*"));
-                return config;
-            }
-        }))
+                    @Override
+                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+                        // Allow all origins
+                        CorsConfiguration config = new CorsConfiguration();
+                        config.setAllowedOrigins(Collections.singletonList("*"));
+                        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+                        config.setAllowedHeaders(Collections.singletonList("*"));
+                        return config;
+                    }
+                }))
                 .csrf((csrf) -> csrf.disable())
                 .authorizeHttpRequests((authorize) ->
                         authorize.requestMatchers(HttpMethod.GET, "/api/**").permitAll()
@@ -54,22 +54,6 @@ public class SecurityConfig {
         ;
 
         return http.build();
-    }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails vincennlin = User.builder()
-                .username("vincennlin")
-                .password(passwordEncoder().encode("Passw0rd"))
-                .roles("USER")
-                .build();
-
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password(passwordEncoder().encode("admin"))
-                .roles("ADMIN")
-                .build();
-
-        return new InMemoryUserDetailsManager(vincennlin, admin);
     }
 }
