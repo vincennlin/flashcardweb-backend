@@ -2,12 +2,16 @@ package com.vincennlin.flashcardwebbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vincennlin.flashcardwebbackend.payload.flashcard.concrete.*;
+import com.vincennlin.flashcardwebbackend.payload.security.JWTAuthResponse;
+import com.vincennlin.flashcardwebbackend.payload.security.LoginDto;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -30,7 +34,8 @@ public class FlashcardControllerTest {
     public void getFlashcardsByNoteId_success() throws Exception{
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/v1/notes/{noteId}/flashcards", 1);
+                .get("/api/v1/notes/{noteId}/flashcards", 1)
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -38,14 +43,15 @@ public class FlashcardControllerTest {
                 .andExpect(jsonPath("$[0].question").value("Test question 1"))
                 .andExpect(jsonPath("$[0].short_answer").value("Test short answer 1"))
                 .andExpect(jsonPath("$[0].id").isNumber())
-        ;
+                .andExpect(jsonPath("$[0].user_id").value(2));
     }
 
     @Test
     public void getFlashcardsByNoteId_noteNotExists() throws Exception{
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/v1/notes/{noteId}/flashcards", 100);
+                .get("/api/v1/notes/{noteId}/flashcards", 100)
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(404))
@@ -53,43 +59,63 @@ public class FlashcardControllerTest {
     }
 
     @Test
+    public void getFlashcardsByNoteId_tryToAccessOtherUsersNote() throws Exception{
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/v1/notes/{noteId}/flashcards", 4)
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(403))
+        ;
+    }
+
+    @Test
     public void getFlashcardById_shortAnswer() throws Exception{
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/v1/flashcards/{flashcardId}", 1);
+                .get("/api/v1/flashcards/{flashcardId}", 1)
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
+                .andExpect(jsonPath("$.type").value("SHORT_ANSWER"))
                 .andExpect(jsonPath("$.question").value("Test question 1"))
                 .andExpect(jsonPath("$.short_answer").value("Test short answer 1"))
                 .andExpect(jsonPath("$.type").value("SHORT_ANSWER"))
-                .andExpect(jsonPath("$.id").isNumber());
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.user_id").value(2));
     }
 
     @Test
     public void getFlashcardById_fillInTheBlank() throws Exception{
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/v1/flashcards/{flashcardId}", 2);
+                .get("/api/v1/flashcards/{flashcardId}", 2)
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.question").value("Test question 2"))
+                .andExpect(jsonPath("$.type").value("FILL_IN_THE_BLANK"))
                 .andExpect(jsonPath("$.in_blank_answers", hasSize(3)))
                 .andExpect(jsonPath("$.in_blank_answers[0].text").value("Blank answer 1"))
                 .andExpect(jsonPath("$.full_answer").value("Test fill in the blank answer 1"))
                 .andExpect(jsonPath("$.type").value("FILL_IN_THE_BLANK"))
-                .andExpect(jsonPath("$.id").isNumber());
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.user_id").value(2));
     }
 
     @Test
     public void getFlashcardById_multipleChoice() throws Exception{
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/v1/flashcards/{flashcardId}", 3);
+                .get("/api/v1/flashcards/{flashcardId}", 3)
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
+                .andExpect(jsonPath("$.type").value("MULTIPLE_CHOICE"))
                 .andExpect(jsonPath("$.question").value("Test question 3"))
                 .andExpect(jsonPath("$.options", hasSize(3)))
                 .andExpect(jsonPath("$.options[0].text").value("Test option A"))
@@ -97,28 +123,33 @@ public class FlashcardControllerTest {
                 .andExpect(jsonPath("$.options[2].text").value("Test option C"))
                 .andExpect(jsonPath("$.answer_option.text").value("Test option A"))
                 .andExpect(jsonPath("$.type").value("MULTIPLE_CHOICE"))
-                .andExpect(jsonPath("$.id").isNumber());
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.user_id").value(2));
     }
 
     @Test
     public void getFlashcardById_trueFalse() throws Exception{
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/v1/flashcards/{flashcardId}", 4);
+                .get("/api/v1/flashcards/{flashcardId}", 4)
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
+                .andExpect(jsonPath("$.type").value("TRUE_FALSE"))
                 .andExpect(jsonPath("$.question").value("Test question 4"))
                 .andExpect(jsonPath("$.true_false_answer").value("true"))
                 .andExpect(jsonPath("$.type").value("TRUE_FALSE"))
-                .andExpect(jsonPath("$.id").isNumber());
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.user_id").value(2));
     }
 
     @Test
     public void getFlashcardById_flashcardNotExists() throws Exception{
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/v1/flashcards/{flashcardId}", 100);
+                .get("/api/v1/flashcards/{flashcardId}", 100)
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(404))
@@ -129,7 +160,8 @@ public class FlashcardControllerTest {
     public void getFlashcardById_invalidFlashcardId() throws Exception{
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/v1/flashcards/{flashcardId}", "invalid");
+                .get("/api/v1/flashcards/{flashcardId}", "invalid")
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400))
@@ -140,10 +172,23 @@ public class FlashcardControllerTest {
     public void getFlashcardById_flashcardIdNegative() throws Exception{
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/v1/flashcards/{flashcardId}", -1);
+                .get("/api/v1/flashcards/{flashcardId}", -1)
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400))
+        ;
+    }
+
+    @Test
+    public void getFlashcardById_tryToAccessOtherUsersFlashcard() throws Exception{
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/v1/flashcards/{flashcardId}", 5)
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(403))
         ;
     }
 
@@ -156,7 +201,8 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/api/v1/notes/{noteId}/flashcards/short-answer", 1)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(shortAnswerFlashcardDto));
+                .content(objectMapper.writeValueAsString(shortAnswerFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(201))
@@ -178,7 +224,8 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/api/v1/notes/{noteId}/flashcards/short-answer", 100)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(shortAnswerFlashcardDto));
+                .content(objectMapper.writeValueAsString(shortAnswerFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(404));
@@ -194,7 +241,8 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/api/v1/notes/{noteId}/flashcards/short-answer", 1)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(shortAnswerFlashcardDto));
+                .content(objectMapper.writeValueAsString(shortAnswerFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
@@ -205,10 +253,27 @@ public class FlashcardControllerTest {
         requestBuilder = MockMvcRequestBuilders
                 .post("/api/v1/notes/{noteId}/flashcards/short-answer", 1)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(shortAnswerFlashcardDto));
+                .content(objectMapper.writeValueAsString(shortAnswerFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
+    }
+
+    @Transactional
+    @Test
+    public void createShortAnswerFlashcard_tryToAccessOtherUsersNote() throws Exception{
+
+        ShortAnswerFlashcardDto shortAnswerFlashcardDto = getShortAnswerFlashcardDtoTemplate();
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/api/v1/notes/{noteId}/flashcards/short-answer", 4)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(shortAnswerFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(403));
     }
 
     @Transactional
@@ -220,7 +285,8 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/api/v1/notes/{noteId}/flashcards/fill-in-the-blank", 1)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(fillInTheBlankFlashcardDto));
+                .content(objectMapper.writeValueAsString(fillInTheBlankFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(201))
@@ -244,7 +310,8 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/api/v1/notes/{noteId}/flashcards/fill-in-the-blank", 1)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(fillInTheBlankFlashcardDto));
+                .content(objectMapper.writeValueAsString(fillInTheBlankFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
@@ -255,7 +322,8 @@ public class FlashcardControllerTest {
         requestBuilder = MockMvcRequestBuilders
                 .post("/api/v1/notes/{noteId}/flashcards/fill-in-the-blank", 1)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(fillInTheBlankFlashcardDto));
+                .content(objectMapper.writeValueAsString(fillInTheBlankFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
@@ -266,7 +334,8 @@ public class FlashcardControllerTest {
         requestBuilder = MockMvcRequestBuilders
                 .post("/api/v1/notes/{noteId}/flashcards/fill-in-the-blank", 1)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(fillInTheBlankFlashcardDto));
+                .content(objectMapper.writeValueAsString(fillInTheBlankFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
@@ -282,7 +351,8 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/api/v1/notes/{noteId}/flashcards/multiple-choice", 1)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(multipleChoiceFlashcardDto));
+                .content(objectMapper.writeValueAsString(multipleChoiceFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(201))
@@ -309,7 +379,8 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/api/v1/notes/{noteId}/flashcards/multiple-choice", 1)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(multipleChoiceFlashcardDto));
+                .content(objectMapper.writeValueAsString(multipleChoiceFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
@@ -320,10 +391,43 @@ public class FlashcardControllerTest {
         requestBuilder = MockMvcRequestBuilders
                 .post("/api/v1/notes/{noteId}/flashcards/multiple-choice", 1)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(multipleChoiceFlashcardDto));
+                .content(objectMapper.writeValueAsString(multipleChoiceFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
+    }
+
+    @Transactional
+    @Test
+    public void createMultipleChoiceFlashcard_noteNotExists() throws Exception{
+
+        MultipleChoiceFlashcardDto multipleChoiceFlashcardDto = getMultipleChoiceFlashcardDtoTemplate();
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/api/v1/notes/{noteId}/flashcards/multiple-choice", 100)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(multipleChoiceFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(404));
+    }
+
+    @Transactional
+    @Test
+    public void createMultipleChoiceFlashcard_tryToAccessOtherUsersNote() throws Exception{
+
+        MultipleChoiceFlashcardDto multipleChoiceFlashcardDto = getMultipleChoiceFlashcardDtoTemplate();
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/api/v1/notes/{noteId}/flashcards/multiple-choice", 4)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(multipleChoiceFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(403));
     }
 
     @Transactional
@@ -336,7 +440,8 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/api/v1/notes/{noteId}/flashcards/multiple-choice", 1)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(multipleChoiceFlashcardDto));
+                .content(objectMapper.writeValueAsString(multipleChoiceFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
@@ -351,7 +456,8 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/api/v1/notes/{noteId}/flashcards/true-false", 1)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(trueFalseFlashcardDto));
+                .content(objectMapper.writeValueAsString(trueFalseFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(201))
@@ -361,8 +467,6 @@ public class FlashcardControllerTest {
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.note_id").value(1));
     }
-
-
 
     @Transactional
     @Test
@@ -374,7 +478,8 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/api/v1/notes/{noteId}/flashcards/true-false", 1)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(trueFalseFlashcardDto));
+                .content(objectMapper.writeValueAsString(trueFalseFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
@@ -385,10 +490,43 @@ public class FlashcardControllerTest {
         requestBuilder = MockMvcRequestBuilders
                 .post("/api/v1/notes/{noteId}/flashcards/true-false", 1)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(trueFalseFlashcardDto));
+                .content(objectMapper.writeValueAsString(trueFalseFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
+    }
+
+    @Transactional
+    @Test
+    public void createTrueFalseFlashcard_noteNotExists() throws Exception{
+
+        TrueFalseFlashcardDto trueFalseFlashcardDto = getTrueFalseFlashcardDtoTemplate();
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/api/v1/notes/{noteId}/flashcards/true-false", 100)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(trueFalseFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(404));
+    }
+
+    @Transactional
+    @Test
+    public void createTrueFalseFlashcard_tryToAccessOtherUsersNote() throws Exception{
+
+        TrueFalseFlashcardDto trueFalseFlashcardDto = getTrueFalseFlashcardDtoTemplate();
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/api/v1/notes/{noteId}/flashcards/true-false", 4)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(trueFalseFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(403));
     }
 
     @Transactional
@@ -402,7 +540,8 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/short-answer", 1)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(shortAnswerFlashcardDto));
+                .content(objectMapper.writeValueAsString(shortAnswerFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -424,7 +563,8 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/short-answer", 1)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(shortAnswerFlashcardDto));
+                .content(objectMapper.writeValueAsString(shortAnswerFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
@@ -435,7 +575,8 @@ public class FlashcardControllerTest {
         requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/short-answer", 1)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(shortAnswerFlashcardDto));
+                .content(objectMapper.writeValueAsString(shortAnswerFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
@@ -452,7 +593,8 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/short-answer", 100)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(shortAnswerFlashcardDto));
+                .content(objectMapper.writeValueAsString(shortAnswerFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(404));
@@ -469,10 +611,29 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/short-answer", 2)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(shortAnswerFlashcardDto));
+                .content(objectMapper.writeValueAsString(shortAnswerFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
+    }
+
+    @Transactional
+    @Test
+    public void updateShortAnswerFlashcard_tryToAccessOtherUsersFlashcard() throws Exception{
+
+        ShortAnswerFlashcardDto shortAnswerFlashcardDto = getShortAnswerFlashcardDtoTemplate();
+        shortAnswerFlashcardDto.setQuestion("Updated short-answer question");
+        shortAnswerFlashcardDto.setShortAnswer("Updated short-answer answer");
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put("/api/v1/flashcards/{flashcardId}/short-answer", 5)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(shortAnswerFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(403));
     }
 
     @Transactional
@@ -497,7 +658,8 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/fill-in-the-blank", 2)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(fillInTheBlankFlashcardDto));
+                .content(objectMapper.writeValueAsString(fillInTheBlankFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -526,7 +688,8 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/fill-in-the-blank", 2)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(fillInTheBlankFlashcardDto));
+                .content(objectMapper.writeValueAsString(fillInTheBlankFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
@@ -542,7 +705,8 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/fill-in-the-blank", 2)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(fillInTheBlankFlashcardDto));
+                .content(objectMapper.writeValueAsString(fillInTheBlankFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
@@ -553,7 +717,8 @@ public class FlashcardControllerTest {
         requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/fill-in-the-blank", 2)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(fillInTheBlankFlashcardDto));
+                .content(objectMapper.writeValueAsString(fillInTheBlankFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
@@ -564,7 +729,8 @@ public class FlashcardControllerTest {
         requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/fill-in-the-blank", 2)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(fillInTheBlankFlashcardDto));
+                .content(objectMapper.writeValueAsString(fillInTheBlankFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
@@ -580,7 +746,8 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/fill-in-the-blank", 100)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(fillInTheBlankFlashcardDto));
+                .content(objectMapper.writeValueAsString(fillInTheBlankFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(404));
@@ -596,10 +763,40 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/fill-in-the-blank", 1)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(fillInTheBlankFlashcardDto));
+                .content(objectMapper.writeValueAsString(fillInTheBlankFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
+    }
+
+    @Transactional
+    @Test
+    public void updateFillInTheBlankFlashcard_tryToAccessOtherUsersFlashcard() throws Exception{
+
+        FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto = getFillInTheBlankFlashcardDtoTemplate();
+        fillInTheBlankFlashcardDto.setQuestion("Updated fill-in-the-blank question");
+        fillInTheBlankFlashcardDto.setFullAnswer("Updated fill-in-the-blank full answer");
+
+        InBlankAnswerDto inBlankAnswerDto1 = new InBlankAnswerDto();
+        inBlankAnswerDto1.setText("Updated blank answer 1");
+
+        InBlankAnswerDto inBlankAnswerDto2 = new InBlankAnswerDto();
+        inBlankAnswerDto2.setText("Updated blank answer 2");
+
+        InBlankAnswerDto inBlankAnswerDto3 = new InBlankAnswerDto();
+        inBlankAnswerDto3.setText("Updated blank answer 3");
+
+        fillInTheBlankFlashcardDto.setInBlankAnswers(List.of(inBlankAnswerDto1, inBlankAnswerDto2, inBlankAnswerDto3));
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put("/api/v1/flashcards/{flashcardId}/fill-in-the-blank", 5)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(fillInTheBlankFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(403));
     }
 
     @Transactional
@@ -624,7 +821,8 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/multiple-choice", 3)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(multipleChoiceFlashcardDto));
+                .content(objectMapper.writeValueAsString(multipleChoiceFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -649,7 +847,8 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/multiple-choice", 3)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(multipleChoiceFlashcardDto));
+                .content(objectMapper.writeValueAsString(multipleChoiceFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
@@ -660,7 +859,8 @@ public class FlashcardControllerTest {
         requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/multiple-choice", 3)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(multipleChoiceFlashcardDto));
+                .content(objectMapper.writeValueAsString(multipleChoiceFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
@@ -676,7 +876,8 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/multiple-choice", 3)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(multipleChoiceFlashcardDto));
+                .content(objectMapper.writeValueAsString(multipleChoiceFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
@@ -692,7 +893,8 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/multiple-choice", 100)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(multipleChoiceFlashcardDto));
+                .content(objectMapper.writeValueAsString(multipleChoiceFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(404));
@@ -708,10 +910,40 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/multiple-choice", 1)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(multipleChoiceFlashcardDto));
+                .content(objectMapper.writeValueAsString(multipleChoiceFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
+    }
+
+    @Transactional
+    @Test
+    public void updateMultipleChoiceFlashcard_tryToAccessOtherUsersFlashcard() throws Exception{
+
+        MultipleChoiceFlashcardDto multipleChoiceFlashcardDto = getMultipleChoiceFlashcardDtoTemplate();
+        multipleChoiceFlashcardDto.setQuestion("Updated multiple-choice question");
+        multipleChoiceFlashcardDto.setAnswerIndex(1);
+
+        OptionDto optionDto1 = new OptionDto();
+        optionDto1.setText("Updated Option A");
+
+        OptionDto optionDto2 = new OptionDto();
+        optionDto2.setText("Updated Option B");
+
+        OptionDto optionDto3 = new OptionDto();
+        optionDto3.setText("Updated Option C");
+
+        multipleChoiceFlashcardDto.setOptions(List.of(optionDto1, optionDto2, optionDto3));
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put("/api/v1/flashcards/{flashcardId}/multiple-choice", 5)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(multipleChoiceFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(403));
     }
 
     @Transactional
@@ -725,7 +957,8 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/true-false", 4)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(trueFalseFlashcardDto));
+                .content(objectMapper.writeValueAsString(trueFalseFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -746,7 +979,8 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/true-false", 4)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(trueFalseFlashcardDto));
+                .content(objectMapper.writeValueAsString(trueFalseFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
@@ -757,7 +991,8 @@ public class FlashcardControllerTest {
         requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/true-false", 4)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(trueFalseFlashcardDto));
+                .content(objectMapper.writeValueAsString(trueFalseFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
@@ -773,7 +1008,8 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/true-false", 100)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(trueFalseFlashcardDto));
+                .content(objectMapper.writeValueAsString(trueFalseFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(404));
@@ -789,7 +1025,8 @@ public class FlashcardControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/flashcards/{flashcardId}/true-false", 1)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(trueFalseFlashcardDto));
+                .content(objectMapper.writeValueAsString(trueFalseFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
@@ -797,10 +1034,29 @@ public class FlashcardControllerTest {
 
     @Transactional
     @Test
+    public void updateTrueFalseFlashcard_tryToAccessOtherUsersFlashcard() throws Exception{
+
+        TrueFalseFlashcardDto trueFalseFlashcardDto = getTrueFalseFlashcardDtoTemplate();
+        trueFalseFlashcardDto.setQuestion("Updated true-false question");
+        trueFalseFlashcardDto.setTrueFalseAnswer(false);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put("/api/v1/flashcards/{flashcardId}/true-false", 5)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(trueFalseFlashcardDto))
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(403));
+    }
+
+    @Transactional
+    @Test
     public void deleteFlashcard_success() throws Exception{
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/v1/flashcards/{flashcardId}", 1);
+                .delete("/api/v1/flashcards/{flashcardId}", 1)
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(204));
@@ -809,7 +1065,8 @@ public class FlashcardControllerTest {
                 .andExpect(status().is(404));
 
         requestBuilder = MockMvcRequestBuilders
-                .get("/api/v1/flashcards/{flashcardId}", 1);
+                .get("/api/v1/flashcards/{flashcardId}", 1)
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(404));
@@ -820,7 +1077,8 @@ public class FlashcardControllerTest {
     public void deleteFlashcard_flashcardNotExists() throws Exception{
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/v1/flashcards/{flashcardId}", 100);
+                .delete("/api/v1/flashcards/{flashcardId}", 100)
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(404));
@@ -871,5 +1129,72 @@ public class FlashcardControllerTest {
         trueFalseFlashcardDto.setQuestion("New true-false question");
         trueFalseFlashcardDto.setTrueFalseAnswer(true);
         return trueFalseFlashcardDto;
+    }
+
+    private String getAdminJwtToken() throws Exception {
+
+        String loginUrl = "/api/v1/auth/login";
+
+        LoginDto loginDto = new LoginDto();
+        loginDto.setUsernameOrEmail("admin");
+        loginDto.setPassword("admin");
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post(loginUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginDto));
+
+        MvcResult result = mockMvc.perform(requestBuilder)
+                .andReturn();
+
+        JWTAuthResponse jwtAuthResponse = objectMapper.readValue(mockMvc.perform(requestBuilder)
+                .andReturn()
+                .getResponse()
+                .getContentAsString(), JWTAuthResponse.class);
+
+        return jwtAuthResponse.getAccessToken();
+    }
+
+    private String getTest1UserJwtToken() throws Exception {
+
+        String loginUrl = "/api/v1/auth/login";
+
+        LoginDto loginDto = new LoginDto();
+        loginDto.setUsernameOrEmail("test1");
+        loginDto.setPassword("test1");
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post(loginUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginDto));
+
+
+        JWTAuthResponse jwtAuthResponse = objectMapper.readValue(mockMvc.perform(requestBuilder)
+                .andReturn()
+                .getResponse()
+                .getContentAsString(), JWTAuthResponse.class);
+
+        return jwtAuthResponse.getAccessToken();
+    }
+
+    private String getTest2UserJwtToken() throws Exception {
+
+        String loginUrl = "/api/v1/auth/login";
+
+        LoginDto loginDto = new LoginDto();
+        loginDto.setUsernameOrEmail("test2");
+        loginDto.setPassword("test2");
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post(loginUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginDto));
+
+        JWTAuthResponse jwtAuthResponse = objectMapper.readValue(mockMvc.perform(requestBuilder)
+                .andReturn()
+                .getResponse()
+                .getContentAsString(), JWTAuthResponse.class);
+
+        return jwtAuthResponse.getAccessToken();
     }
 }

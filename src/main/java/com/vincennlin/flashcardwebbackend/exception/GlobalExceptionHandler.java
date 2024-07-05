@@ -124,7 +124,7 @@ public class GlobalExceptionHandler {
                                                                           WebRequest webRequest) {
         ErrorDetails errorDetails = new ErrorDetails(new Date(), "Access Denied Due to Authorization",
                 webRequest.getDescription(false));
-        return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
