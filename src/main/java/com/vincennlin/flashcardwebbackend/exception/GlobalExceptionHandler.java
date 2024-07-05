@@ -1,6 +1,6 @@
 package com.vincennlin.flashcardwebbackend.exception;
 
-import com.vincennlin.flashcardwebbackend.payload.ErrorDetails;
+import com.vincennlin.flashcardwebbackend.payload.exception.ErrorDetails;
 import jakarta.validation.ConstraintViolationException;
 import org.modelmapper.MappingException;
 import org.springframework.data.mapping.PropertyReferenceException;

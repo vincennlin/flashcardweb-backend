@@ -31,7 +31,7 @@ public class FlashcardwebUserDetailsService implements UserDetailsService {
                 .stream()
                 .map((role) -> (GrantedAuthority) role::getName).collect(Collectors.toSet());
 
-        return new org.springframework.security.core.userdetails.User(user.getEmail(),
-                user.getPassword(), authorities);
+        return new FlashcardwebUserDetails(user.getUsername(), user.getEmail(),
+                user.getPassword(), authorities, user.getId());
     }
 }

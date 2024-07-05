@@ -1,8 +1,11 @@
 package com.vincennlin.flashcardwebbackend.service;
 
 
-import com.vincennlin.flashcardwebbackend.payload.LoginDto;
-import com.vincennlin.flashcardwebbackend.payload.RegisterDto;
+import com.vincennlin.flashcardwebbackend.payload.security.LoginDto;
+import com.vincennlin.flashcardwebbackend.payload.security.RegisterDto;
+import com.vincennlin.flashcardwebbackend.payload.security.UserDto;
+
+import java.util.List;
 
 public interface AuthService {
 
@@ -10,5 +13,5 @@ public interface AuthService {
 
     String login(LoginDto loginDto);
 
-    Long getCurrentUserId();
+    List<UserDto> getAllUsers();
 }
