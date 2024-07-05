@@ -122,7 +122,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AuthorizationDeniedException.class)
     public ResponseEntity<ErrorDetails> handleAuthorizationDeniedException(AuthorizationDeniedException exception,
                                                                           WebRequest webRequest) {
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(),
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), "Access Denied Due to Authorization",
                 webRequest.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
     }
@@ -141,6 +141,14 @@ public class GlobalExceptionHandler {
         ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(),
                 webRequest.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(ResourceOwnershipException.class)
+    public ResponseEntity<ErrorDetails> handleResourceOwnershipException(ResourceOwnershipException exception,
+                                                                        WebRequest webRequest) {
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(),
+                webRequest.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
     }
 
     // Global exceptions

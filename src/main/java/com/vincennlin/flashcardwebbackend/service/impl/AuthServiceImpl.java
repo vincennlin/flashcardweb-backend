@@ -76,4 +76,15 @@ public class AuthServiceImpl implements AuthService {
 
         return jwtTokenProvider.generateToken(authentication);
     }
+
+    @Override
+    public Long getCurrentUserId() {
+        return getCurrentUser().getId();
+    }
+
+    private User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return userRepository.findByUsernameOrEmail(authentication.getName(), authentication.getName())
+                .orElseThrow(() -> new WebAPIException(HttpStatus.INTERNAL_SERVER_ERROR, "User not found"));
+    }
 }
