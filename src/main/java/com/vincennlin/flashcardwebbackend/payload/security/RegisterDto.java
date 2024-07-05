@@ -1,8 +1,7 @@
-package com.vincennlin.flashcardwebbackend.payload;
+package com.vincennlin.flashcardwebbackend.payload.security;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -2,6 +2,7 @@ package com.vincennlin.flashcardwebbackend.entity.flashcard;
 
 import com.vincennlin.flashcardwebbackend.constant.FlashcardType;
 import com.vincennlin.flashcardwebbackend.entity.Note;
+import com.vincennlin.flashcardwebbackend.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,6 +33,10 @@ public abstract class Flashcard {
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
     private FlashcardType type;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @CreationTimestamp
     @Column(name = "date_created")

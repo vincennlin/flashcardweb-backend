@@ -3,13 +3,15 @@ package com.vincennlin.flashcardwebbackend.service.impl;
 import com.vincennlin.flashcardwebbackend.entity.Role;
 import com.vincennlin.flashcardwebbackend.entity.User;
 import com.vincennlin.flashcardwebbackend.exception.WebAPIException;
-import com.vincennlin.flashcardwebbackend.payload.LoginDto;
-import com.vincennlin.flashcardwebbackend.payload.RegisterDto;
+import com.vincennlin.flashcardwebbackend.payload.security.LoginDto;
+import com.vincennlin.flashcardwebbackend.payload.security.RegisterDto;
+import com.vincennlin.flashcardwebbackend.payload.security.UserDto;
 import com.vincennlin.flashcardwebbackend.repository.RoleRepository;
 import com.vincennlin.flashcardwebbackend.repository.UserRepository;
 import com.vincennlin.flashcardwebbackend.security.JwtTokenProvider;
 import com.vincennlin.flashcardwebbackend.service.AuthService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -30,6 +33,8 @@ public class AuthServiceImpl implements AuthService {
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
     private JwtTokenProvider jwtTokenProvider;
+
+    private ModelMapper modelMapper;
 
     @Override
     public String register(RegisterDto registerDto) {
@@ -68,9 +73,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String login(LoginDto loginDto) {
 
+        String usernameOrEmail = loginDto.getUsernameOrEmail();
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginDto.getUsernameOrEmail(), loginDto.getPassword()));
+                        usernameOrEmail, loginDto.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -78,13 +85,9 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Long getCurrentUserId() {
-        return getCurrentUser().getId();
-    }
+    public List<UserDto> getAllUsers() {
 
-    private User getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return userRepository.findByUsernameOrEmail(authentication.getName(), authentication.getName())
-                .orElseThrow(() -> new WebAPIException(HttpStatus.INTERNAL_SERVER_ERROR, "User not found"));
+        return userRepository.findAll().stream().map(user ->
+                modelMapper.map(user, UserDto.class)).toList();
     }
 }

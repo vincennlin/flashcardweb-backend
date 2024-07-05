@@ -1,17 +1,18 @@
 package com.vincennlin.flashcardwebbackend.controller;
 
-import com.vincennlin.flashcardwebbackend.payload.JWTAuthResponse;
-import com.vincennlin.flashcardwebbackend.payload.LoginDto;
-import com.vincennlin.flashcardwebbackend.payload.RegisterDto;
+import com.vincennlin.flashcardwebbackend.payload.security.JWTAuthResponse;
+import com.vincennlin.flashcardwebbackend.payload.security.LoginDto;
+import com.vincennlin.flashcardwebbackend.payload.security.RegisterDto;
+import com.vincennlin.flashcardwebbackend.payload.security.UserDto;
 import com.vincennlin.flashcardwebbackend.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -36,5 +37,14 @@ public class AuthController {
         jwtAuthResponse.setAccessToken(jwt);
 
         return new ResponseEntity<>(jwtAuthResponse, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/manage/users")
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+
+        List<UserDto> users = authService.getAllUsers();
+
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }

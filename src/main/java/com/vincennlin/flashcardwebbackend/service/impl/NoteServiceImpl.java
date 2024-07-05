@@ -7,6 +7,7 @@ import com.vincennlin.flashcardwebbackend.payload.flashcard.FlashcardDto;
 import com.vincennlin.flashcardwebbackend.payload.note.NoteDto;
 import com.vincennlin.flashcardwebbackend.payload.note.NotePageResponse;
 import com.vincennlin.flashcardwebbackend.repository.NoteRepository;
+import com.vincennlin.flashcardwebbackend.security.FlashcardwebUserDetails;
 import com.vincennlin.flashcardwebbackend.service.AuthService;
 import com.vincennlin.flashcardwebbackend.service.FlashcardService;
 import com.vincennlin.flashcardwebbackend.service.NoteService;
@@ -14,6 +15,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,15 +36,14 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public NotePageResponse getAllNotes(Pageable pageable) {
 
-        Page<Note> pageOfNotes = noteRepository.findAll(pageable);
-
-        return getNotePageResponse(pageOfNotes);
+        if (currentRoleContainsAdmin()) {
+            return getNotePageResponse(noteRepository.findAll(pageable));
+        }
+        return getNotePageResponse(noteRepository.findByUserId(getCurrentUserId(), pageable));
     }
 
     @Override
     public NotePageResponse getNotesByUserId(Long userId, Pageable pageable) {
-
-        checkOwnership(userId, authService.getCurrentUserId());
 
         Page<Note> pageOfNotes = noteRepository.findByUserId(userId, pageable);
 
@@ -55,7 +56,7 @@ public class NoteServiceImpl implements NoteService {
         Note note = noteRepository.findById(noteId).orElseThrow(() ->
                 new ResourceNotFoundException("Note", "id", noteId));
 
-        checkNoteOwnership(note, authService.getCurrentUserId());
+        authorizeOwnership(note.getUser().getId());
 
         List<FlashcardDto> flashcardDtoList = flashcardService.getFlashcardsByNoteId(noteId);
 
@@ -69,7 +70,7 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public NoteDto createNote(NoteDto noteDto) {
 
-        noteDto.setUserId(authService.getCurrentUserId());
+        noteDto.setUserId(getCurrentUserId());
 
         Note note = modelMapper.map(noteDto, Note.class);
 
@@ -85,7 +86,7 @@ public class NoteServiceImpl implements NoteService {
         Note note = noteRepository.findById(noteId).orElseThrow(() ->
                 new ResourceNotFoundException("Note", "id", noteId));
 
-        checkNoteOwnership(note, authService.getCurrentUserId());
+        authorizeOwnership(note.getUser().getId());
 
         note.setContent(noteDto.getContent());
 
@@ -105,19 +106,33 @@ public class NoteServiceImpl implements NoteService {
         Note note = noteRepository.findById(noteId).orElseThrow(() ->
                 new ResourceNotFoundException("Note", "id", noteId));
 
-        checkNoteOwnership(note, authService.getCurrentUserId());
+        authorizeOwnership(note.getUser().getId());
 
         noteRepository.delete(note);
     }
 
-    private void checkOwnership(Long userId, Long currentUserId) {
-        if (!currentUserId.equals(userId)) {
+    private FlashcardwebUserDetails getUserDetails() {
+        return (FlashcardwebUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
+    private void authorizeOwnership(Long userId) {
+        Long currentUserId = getCurrentUserId();
+        if (!currentUserId.equals(userId) && !containsRole("ROLE_ADMIN")) {
             throw new ResourceOwnershipException(currentUserId, userId);
         }
     }
 
-    private void checkNoteOwnership(Note note, Long currentUserId) {
-        checkOwnership(note.getUser().getId(), currentUserId);
+    private Long getCurrentUserId() {
+        return getUserDetails().getUserId();
+    }
+
+    private Boolean currentRoleContainsAdmin() {
+        return containsRole("ROLE_ADMIN");
+    }
+
+    private Boolean containsRole(String roleName) {
+        return getUserDetails().getAuthorities().stream().anyMatch(
+                authority -> authority.getAuthority().equals(roleName));
     }
 
     private NotePageResponse getNotePageResponse(Page<Note> pageOfNotes) {
