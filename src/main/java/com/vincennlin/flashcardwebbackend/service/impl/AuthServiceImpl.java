@@ -89,11 +89,4 @@ public class AuthServiceImpl implements AuthService {
 
         return loginResponse;
     }
-
-    @Override
-    public List<UserDto> getAllUsers() {
-
-        return userRepository.findAll().stream().map(user ->
-                modelMapper.map(user, UserDto.class)).toList();
-    }
 }

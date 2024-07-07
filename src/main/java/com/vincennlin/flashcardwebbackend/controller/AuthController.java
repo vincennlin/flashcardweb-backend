@@ -11,10 +11,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Tag(
         name = "帳號驗證 API",
@@ -108,22 +105,5 @@ public class AuthController {
 
         LoginResponse loginResponse = authService.login(loginDto);
         return new ResponseEntity<>(loginResponse, HttpStatus.OK);
-    }
-
-    @Operation(
-            summary = "取得所有用戶",
-            description = "取得所有用戶，只有 ADMIN 可以存取"
-    )
-    @ApiResponse(
-            responseCode = "200",
-            description = "取得所有用戶"
-    )
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/manage/users")
-    public ResponseEntity<List<UserDto>> getAllUsers() {
-
-        List<UserDto> users = authService.getAllUsers();
-
-        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }
