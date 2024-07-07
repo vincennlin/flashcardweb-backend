@@ -1,21 +1,22 @@
 package com.vincennlin.flashcardwebbackend.controller;
 
 import com.vincennlin.flashcardwebbackend.payload.account.AccountInfoDto;
+import com.vincennlin.flashcardwebbackend.payload.account.UpdateAccountInfoResponse;
 import com.vincennlin.flashcardwebbackend.payload.user.UserDto;
 import com.vincennlin.flashcardwebbackend.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,12 +32,12 @@ public class AccountController {
     private AccountService accountService;
 
     @Operation(
-            summary = "取得目前用戶資訊",
+            summary = "取得目前帳號資訊",
             description = "根據 JWT Token 取得目前登入的用戶資訊"
     )
     @ApiResponse(
             responseCode = "200",
-            description = "取得目前用戶資訊",
+            description = "取得目前帳號資訊",
             content = @Content(
                     mediaType = "application/json",
                     examples = @ExampleObject(value = """
@@ -61,8 +62,8 @@ public class AccountController {
     @GetMapping("/info")
     public ResponseEntity<AccountInfoDto> getCurrentAccountInfo() {
 
-        AccountInfoDto accountInfoDto = accountService.getCurrentAccountInfo();
-        return new ResponseEntity<>(accountInfoDto, HttpStatus.OK);
+        AccountInfoDto accountInfo = accountService.getCurrentAccountInfo();
+        return new ResponseEntity<>(accountInfo, HttpStatus.OK);
     }
 
     @Operation(
@@ -127,5 +128,56 @@ public class AccountController {
         List<AccountInfoDto> accountInfos = accountService.getAllUsers();
 
         return new ResponseEntity<>(accountInfos, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "更新目前帳號資訊",
+            description = "更新目前帳號資訊"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "只要有更新 username, email 或 password 就需要重新登入",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                                            {
+                                                "message": "User updated successfully! Please login again.",
+                                                "account_info": {
+                                                    "id": 1,
+                                                    "name": "user_updated",
+                                                    "username": "user_updated",
+                                                    "email": "user_updated@gmail.com",
+                                                    "roles": [
+                                                        {
+                                                            "name": "ROLE_USER"
+                                                        }
+                                                    ],
+                                                    "date_created": "2024-07-07T13:33:15.659823",
+                                                    "last_updated": "2024-07-07T13:37:35.066182"
+                                                }
+                                            }
+                                            """)
+            )
+    )
+    @SecurityRequirement(name = "Bear Authentication")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @PutMapping("/info")
+    public ResponseEntity<UpdateAccountInfoResponse> updateAccountInfo(@Valid @RequestBody
+                                                                           @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                                                   content = @Content(
+                                                                                           mediaType = "application/json",
+                                                                                           examples = @ExampleObject(value = """
+                                                                                                   {
+                                                                                                       "name": "user_updated",
+                                                                                                       "username": "user_updated",
+                                                                                                       "email": "user_updated@gmail.com",
+                                                                                                       "password": "user_updated"
+                                                                                                   }
+                                                                                                   """)
+                                                                                   )
+                                                                           ) AccountInfoDto accountInfoDto) {
+
+        UpdateAccountInfoResponse updateAccountInfoResponse = accountService.updateAccountInfo(accountInfoDto);
+        return new ResponseEntity<>(updateAccountInfoResponse, HttpStatus.OK);
     }
 }

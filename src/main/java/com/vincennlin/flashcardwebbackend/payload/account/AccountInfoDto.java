@@ -3,6 +3,7 @@ package com.vincennlin.flashcardwebbackend.payload.account;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vincennlin.flashcardwebbackend.payload.user.RoleDto;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -46,6 +47,7 @@ public class AccountInfoDto {
             description = "用戶電子郵件",
             example = "user@gmail.com"
     )
+    @Email(message = "Invalid email format")
     private String email;
 
     @Schema(
