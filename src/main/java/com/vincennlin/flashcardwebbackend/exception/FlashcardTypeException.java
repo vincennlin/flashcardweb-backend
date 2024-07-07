@@ -15,7 +15,7 @@ public class FlashcardTypeException extends RuntimeException{
 
     public FlashcardTypeException(Long flashcardId, FlashcardType requiredType, FlashcardType givenType) {
 
-        super(String.format("Flashcard type mismatch: Flashcard with id: '%s' is of type '%s' but '%s' is given",
+        super(String.format("Flashcard with id: '%s' is of type '%s' but '%s' is given",
                 flashcardId, requiredType, givenType));
         this.flashcardId = flashcardId;
         this.requiredType = requiredType;

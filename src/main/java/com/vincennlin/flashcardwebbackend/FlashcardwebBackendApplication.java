@@ -1,9 +1,13 @@
 package com.vincennlin.flashcardwebbackend;
 
+import com.vincennlin.flashcardwebbackend.entity.Role;
+import com.vincennlin.flashcardwebbackend.repository.RoleRepository;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +33,7 @@ import org.springframework.context.annotation.Bean;
                 url = "https://github.com/vincennlin/flashcardweb-backend"
         )
 )
-public class FlashcardwebBackendApplication {
+public class FlashcardwebBackendApplication implements CommandLineRunner {
 
     @Bean
     public ModelMapper modelMapper() {
@@ -40,4 +44,21 @@ public class FlashcardwebBackendApplication {
         SpringApplication.run(FlashcardwebBackendApplication.class, args);
     }
 
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Override
+    public void run(String... args) throws Exception {
+
+        if (roleRepository.findByName("ROLE_ADMIN").isEmpty()) {
+            Role adminRole = new Role();
+            adminRole.setName("ROLE_ADMIN");
+            roleRepository.save(adminRole);
+        }
+        if (roleRepository.findByName("ROLE_USER").isEmpty()) {
+            Role userRole = new Role();
+            userRole.setName("ROLE_USER");
+            roleRepository.save(userRole);
+        }
+    }
 }
