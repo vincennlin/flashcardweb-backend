@@ -3,10 +3,10 @@ INSERT INTO roles (name)
 VALUES ('ROLE_ADMIN'), ('ROLE_USER');
 
 ---- Users
-INSERT INTO users (name, username, email, password)
-VALUES ('admin', 'admin', 'admin@gmail.com', '$2a$10$vbL5/7oUFCyoC2/L6hNVleyhqFwPawIfZpI4mTVR8qNZl5k1bnw.C'),
-       ('test1', 'test1', 'test1@gmail.com', '$2a$10$qo4VnhQC4MoNTReGQqAHROv16dqOvCLUo/OkGOsLMKZXP4yVsHdWS'),
-       ('test2', 'test2', 'test2@gmail.com', '$2a$10$gBydQeoll8lYl504ayyvc.fDixMMJ9NFcASPfBdXhMl5YqQGdscQS');
+INSERT INTO users (name, username, email, password, date_created, last_updated)
+VALUES ('admin', 'admin', 'admin@gmail.com', '$2a$10$vbL5/7oUFCyoC2/L6hNVleyhqFwPawIfZpI4mTVR8qNZl5k1bnw.C', current_timestamp(), current_timestamp()),
+       ('test1', 'test1', 'test1@gmail.com', '$2a$10$qo4VnhQC4MoNTReGQqAHROv16dqOvCLUo/OkGOsLMKZXP4yVsHdWS', current_timestamp(), current_timestamp()),
+       ('test2', 'test2', 'test2@gmail.com', '$2a$10$gBydQeoll8lYl504ayyvc.fDixMMJ9NFcASPfBdXhMl5YqQGdscQS', current_timestamp(), current_timestamp());
 
 ---- User Roles
 INSERT INTO user_roles (user_id, role_id)
