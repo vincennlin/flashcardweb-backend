@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,8 @@ public class AccountServiceImpl implements AccountService {
     private UserRepository userRepository;
 
     private ModelMapper modelMapper;
+
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public AccountInfoDto getCurrentAccountInfo() {
@@ -67,7 +70,7 @@ public class AccountServiceImpl implements AccountService {
         if (accountInfoDto.getEmail() != null)
             user.setEmail(accountInfoDto.getEmail());
         if (accountInfoDto.getPassword() != null)
-            user.setPassword(accountInfoDto.getPassword());
+            user.setPassword(passwordEncoder.encode(accountInfoDto.getPassword()));
 
         User updatedUser = userRepository.save(user);
 
