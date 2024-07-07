@@ -4,6 +4,8 @@ package com.vincennlin.flashcardwebbackend.config;
 import com.vincennlin.flashcardwebbackend.filter.FilterChainExceptionHandler;
 import com.vincennlin.flashcardwebbackend.security.JwtAuthenticationEntryPoint;
 import com.vincennlin.flashcardwebbackend.filter.JwtAuthenticationFilter;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +34,12 @@ import java.util.Collections;
 @EnableWebSecurity
 @EnableMethodSecurity
 @EnableTransactionManagement(order = 0)
+@SecurityScheme(
+        name = "Bear Authentication",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
+)
 public class SecurityConfig {
 
     private FilterChainExceptionHandler filterChainExceptionHandler;
@@ -68,6 +76,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) ->
                         authorize.requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll()
+                                .requestMatchers("/swagger-ui/**").permitAll()
+                                .requestMatchers("/v3/api-docs/**").permitAll()
                                 .anyRequest().authenticated()
                 ).exceptionHandling(exception -> exception
                     .authenticationEntryPoint(jwtAuthenticationEntryPoint))

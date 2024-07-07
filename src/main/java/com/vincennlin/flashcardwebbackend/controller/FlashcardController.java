@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -112,6 +113,7 @@ public class FlashcardController {
                             """)
             )
     )
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/notes/{note_id}/flashcards")
     public ResponseEntity<List<FlashcardDto>> getFlashcardsByNoteId(@PathVariable(name = "note_id") @Min(1) Long noteId) {
@@ -141,6 +143,7 @@ public class FlashcardController {
                             """)
             )
     )
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/flashcards/{flashcard_id}")
     public ResponseEntity<FlashcardDto> getFlashcardById(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId) {
@@ -170,6 +173,7 @@ public class FlashcardController {
                             """)
             )
     )
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping("/notes/{note_id}/flashcards/short-answer")
     public ResponseEntity<FlashcardDto> createShortAnswerFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
@@ -224,6 +228,7 @@ public class FlashcardController {
                             """)
             )
     )
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping("/notes/{note_id}/flashcards/fill-in-the-blank")
     public ResponseEntity<FlashcardDto> createFillInTheBlankFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
@@ -297,6 +302,7 @@ public class FlashcardController {
                             """)
             )
     )
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping("/notes/{note_id}/flashcards/multiple-choice")
     public ResponseEntity<FlashcardDto> createMultipleChoiceFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
@@ -351,6 +357,7 @@ public class FlashcardController {
                             """)
             )
     )
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping("/notes/{note_id}/flashcards/true-false")
     public ResponseEntity<FlashcardDto> createTrueFalseFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
@@ -391,6 +398,7 @@ public class FlashcardController {
                             """)
             )
     )
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PutMapping("/flashcards/{flashcard_id}/short-answer")
     public ResponseEntity<FlashcardDto> updateShortAnswerFlashcard(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
@@ -445,6 +453,7 @@ public class FlashcardController {
                             """)
             )
     )
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PutMapping("/flashcards/{flashcard_id}/fill-in-the-blank")
     public ResponseEntity<FlashcardDto> updateFillInTheBlankFlashcard(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
@@ -517,6 +526,7 @@ public class FlashcardController {
                             """)
             )
     )
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PutMapping("/flashcards/{flashcard_id}/multiple-choice")
     public ResponseEntity<FlashcardDto> updateMultipleChoiceFlashcard(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
@@ -571,6 +581,7 @@ public class FlashcardController {
                             """)
             )
     )
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PutMapping("/flashcards/{flashcard_id}/true-false")
     public ResponseEntity<FlashcardDto> updateTrueFalseFlashcard(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
@@ -599,6 +610,7 @@ public class FlashcardController {
             responseCode = "204",
             description = "成功刪除字卡"
     )
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @DeleteMapping("/flashcards/{flashcard_id}")
     public ResponseEntity<Void> deleteFlashcardById(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId) {

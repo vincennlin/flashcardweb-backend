@@ -3,9 +3,7 @@ package com.vincennlin.flashcardwebbackend.service.impl;
 import com.vincennlin.flashcardwebbackend.entity.Role;
 import com.vincennlin.flashcardwebbackend.entity.User;
 import com.vincennlin.flashcardwebbackend.exception.WebAPIException;
-import com.vincennlin.flashcardwebbackend.payload.security.LoginDto;
-import com.vincennlin.flashcardwebbackend.payload.security.RegisterDto;
-import com.vincennlin.flashcardwebbackend.payload.security.UserDto;
+import com.vincennlin.flashcardwebbackend.payload.auth.*;
 import com.vincennlin.flashcardwebbackend.repository.RoleRepository;
 import com.vincennlin.flashcardwebbackend.repository.UserRepository;
 import com.vincennlin.flashcardwebbackend.security.JwtTokenProvider;
@@ -37,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
     private ModelMapper modelMapper;
 
     @Override
-    public String register(RegisterDto registerDto) {
+    public RegisterResponse register(RegisterDto registerDto) {
 
         if (userRepository.existsByUsername(registerDto.getUsername())) {
             throw new WebAPIException(HttpStatus.BAD_REQUEST, "Username is already taken!");
@@ -65,13 +63,17 @@ public class AuthServiceImpl implements AuthService {
         }
         user.setRoles(roles);
 
-        userRepository.save(user);
+        User newUser = userRepository.save(user);
 
-        return "User registered successfully!";
+        RegisterResponse registerResponse = new RegisterResponse();
+        registerResponse.setMessage("User registered successfully!");
+        registerResponse.setUser(modelMapper.map(newUser, UserDto.class));
+
+        return registerResponse;
     }
 
     @Override
-    public String login(LoginDto loginDto) {
+    public LoginResponse login(LoginDto loginDto) {
 
         String usernameOrEmail = loginDto.getUsernameOrEmail();
 
@@ -81,7 +83,11 @@ public class AuthServiceImpl implements AuthService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return jwtTokenProvider.generateToken(authentication);
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setMessage("User logged in successfully!");
+        loginResponse.setAccessToken(jwtTokenProvider.generateToken(authentication));
+
+        return loginResponse;
     }
 
     @Override

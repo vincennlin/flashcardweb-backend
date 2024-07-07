@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -127,6 +128,7 @@ public class NoteController {
                             """)
             )
     )
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping
     public ResponseEntity<NotePageResponse> getAllNotes(
@@ -236,6 +238,7 @@ public class NoteController {
                             """)
             )
     )
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/user/{user_id}")
     public ResponseEntity<NotePageResponse> getNotesByUserId(
@@ -337,6 +340,7 @@ public class NoteController {
                             """)
             )
     )
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{note_id}")
     public ResponseEntity<NoteDto> getNoteById(@PathVariable(name = "note_id") @Min(1) Long id) {
@@ -366,6 +370,7 @@ public class NoteController {
                             """)
             )
     )
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping
     public ResponseEntity<NoteDto> createNote(@Valid @RequestBody
@@ -469,6 +474,7 @@ public class NoteController {
                             """)
             )
     )
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PutMapping("/{note_id}")
     public ResponseEntity<NoteDto> updateNote(@PathVariable(name = "note_id") @Min(1) Long id,
@@ -496,6 +502,7 @@ public class NoteController {
             responseCode = "204",
             description = "成功刪除筆記"
     )
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @DeleteMapping("/{note_id}")
     public ResponseEntity<Void> deleteNoteById(@PathVariable(name = "note_id") @Min(1) Long id) {
