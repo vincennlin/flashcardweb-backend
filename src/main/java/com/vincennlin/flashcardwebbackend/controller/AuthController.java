@@ -36,7 +36,7 @@ public class AuthController {
                     examples = @ExampleObject(value = """
                             {
                                 "message": "User registered successfully!",
-                                "user": {
+                                "account_info": {
                                     "id": 1,
                                     "name": "user",
                                     "username": "user",
@@ -45,7 +45,9 @@ public class AuthController {
                                         {
                                             "name": "ROLE_USER"
                                         }
-                                    ]
+                                    ],
+                                    "date_created": "2024-07-07T12:20:13.712345",
+                                    "last_updated": "2024-07-07T12:20:13.712412"
                                 }
                             }
                             """)
@@ -83,8 +85,8 @@ public class AuthController {
                     examples = @ExampleObject(value = """
                             {
                                 "message": "User logged in successfully!",
-                                "accessToken": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzIwMzIxNTY5LCJleHAiOjE3MjA5MjYzNjl9.0urLX8bsnPe55Df1KXu4ZP4tn53WUWQZTwcO3Z36S2xVl5cwg8R8HXYfd5-8nzEP",
-                                "tokenType": "Bearer"
+                                "access_token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzIwMzI2MDcwLCJleHAiOjE3MjA5MzA4NzB9.hw2pFQvt5gzYoJMPNOR3lj_S0uStnpXbX-rXmib7ldzt5elULb_jguHHsOIaNhva",
+                                "token_type": "Bearer"
                             }
                             """)
             )

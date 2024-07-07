@@ -3,7 +3,9 @@ package com.vincennlin.flashcardwebbackend.service.impl;
 import com.vincennlin.flashcardwebbackend.entity.Role;
 import com.vincennlin.flashcardwebbackend.entity.User;
 import com.vincennlin.flashcardwebbackend.exception.WebAPIException;
+import com.vincennlin.flashcardwebbackend.payload.account.AccountInfoDto;
 import com.vincennlin.flashcardwebbackend.payload.auth.*;
+import com.vincennlin.flashcardwebbackend.payload.user.UserDto;
 import com.vincennlin.flashcardwebbackend.repository.RoleRepository;
 import com.vincennlin.flashcardwebbackend.repository.UserRepository;
 import com.vincennlin.flashcardwebbackend.security.JwtTokenProvider;
@@ -19,7 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -67,7 +68,7 @@ public class AuthServiceImpl implements AuthService {
 
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setMessage("User registered successfully!");
-        registerResponse.setUser(modelMapper.map(newUser, UserDto.class));
+        registerResponse.setAccountInfo(modelMapper.map(newUser, AccountInfoDto.class));
 
         return registerResponse;
     }
