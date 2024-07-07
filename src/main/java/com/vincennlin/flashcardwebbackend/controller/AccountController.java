@@ -2,13 +2,11 @@ package com.vincennlin.flashcardwebbackend.controller;
 
 import com.vincennlin.flashcardwebbackend.payload.account.AccountInfoDto;
 import com.vincennlin.flashcardwebbackend.payload.account.UpdateAccountInfoResponse;
-import com.vincennlin.flashcardwebbackend.payload.user.UserDto;
 import com.vincennlin.flashcardwebbackend.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -26,7 +24,7 @@ import java.util.List;
 )
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/v1/accounts")
+@RequestMapping("/api/v1/account")
 public class AccountController {
 
     private AccountService accountService;
