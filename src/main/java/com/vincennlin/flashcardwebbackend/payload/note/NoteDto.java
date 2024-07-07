@@ -37,12 +37,25 @@ public class NoteDto {
     private String content;
 
     @Schema(
+            name = "user_id",
+            description = "筆記所屬的使用者 id",
+            example = "1"
+    )
+    @JsonProperty(
+            value = "user_id",
+            access = JsonProperty.Access.READ_ONLY
+    )
+    private Long userId;
+
+    @Schema(
             name = "date_created",
             description = "筆記建立日期",
             example = "2024-06-21T18:50:00"
     )
-    @JsonProperty(value = "date_created",
-            access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(
+            value = "date_created",
+            access = JsonProperty.Access.READ_ONLY
+    )
     private LocalDateTime dateCreated;
 
     @Schema(
@@ -50,8 +63,10 @@ public class NoteDto {
             description = "筆記最後更新日期",
             example = "2024-06-21T18:50:00"
     )
-    @JsonProperty(value = "last_updated",
-            access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(
+            value = "last_updated",
+            access = JsonProperty.Access.READ_ONLY
+    )
     private LocalDateTime lastUpdated;
 
     @Schema(

@@ -63,5 +63,16 @@ public abstract class FlashcardDto {
     )
     private Long noteId;
 
+    @Schema(
+            name = "user_id",
+            description = "字卡所屬的使用者 id",
+            example = "1"
+    )
+    @JsonProperty(
+            value = "user_id",
+            access = JsonProperty.Access.READ_ONLY
+    )
+    private Long userId;
+
     public abstract void execute(Operation operation);
 }

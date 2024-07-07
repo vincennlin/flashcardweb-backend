@@ -8,6 +8,8 @@ public interface NoteService {
 
     NotePageResponse getAllNotes(Pageable pageable);
 
+    NotePageResponse getNotesByUserId(Long userId, Pageable pageable);
+
     NoteDto getNoteById(Long noteId);
 
     NoteDto createNote(NoteDto noteDto);
