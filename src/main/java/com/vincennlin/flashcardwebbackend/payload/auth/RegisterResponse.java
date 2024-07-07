@@ -1,5 +1,8 @@
 package com.vincennlin.flashcardwebbackend.payload.auth;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vincennlin.flashcardwebbackend.payload.account.AccountInfoDto;
+import com.vincennlin.flashcardwebbackend.payload.user.UserDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,9 +27,12 @@ public class RegisterResponse {
     private String message;
 
     @Schema(
-            name = "user",
+            name = "account_info",
             description = "註冊成功的使用者資訊",
             example = "{\"id\": 1, \"name\": \"user\", \"username\": \"user\", \"email\": \"user@gmail.com\", \"roles\": [{\"name\": \"ROLE_USER\"}]}"
     )
-    private UserDto user;
+    @JsonProperty(
+            value = "account_info"
+    )
+    private AccountInfoDto accountInfo;
 }

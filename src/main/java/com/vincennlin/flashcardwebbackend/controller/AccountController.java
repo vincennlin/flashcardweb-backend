@@ -1,6 +1,7 @@
 package com.vincennlin.flashcardwebbackend.controller;
 
-import com.vincennlin.flashcardwebbackend.payload.auth.UserDto;
+import com.vincennlin.flashcardwebbackend.payload.account.AccountInfoDto;
+import com.vincennlin.flashcardwebbackend.payload.user.UserDto;
 import com.vincennlin.flashcardwebbackend.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -48,7 +49,9 @@ public class AccountController {
                                     {
                                         "name": "ROLE_USER"
                                     }
-                                ]
+                                ],
+                                "date_created": "2024-07-07T12:20:13.712345",
+                                "last_updated": "2024-07-07T12:20:13.712412"
                             }
                             """)
             )
@@ -56,14 +59,14 @@ public class AccountController {
     @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/info")
-    public ResponseEntity<UserDto> getCurrentAccountInfo() {
+    public ResponseEntity<AccountInfoDto> getCurrentAccountInfo() {
 
-        UserDto userDto = accountService.getCurrentAccountInfo();
-        return new ResponseEntity<>(userDto, HttpStatus.OK);
+        AccountInfoDto accountInfoDto = accountService.getCurrentAccountInfo();
+        return new ResponseEntity<>(accountInfoDto, HttpStatus.OK);
     }
 
     @Operation(
-            summary = "取得所有用戶",
+            summary = "以 ADMIN 身份取得所有用戶",
             description = "取得所有用戶，只有 ADMIN 可以存取"
     )
     @ApiResponse(
@@ -82,7 +85,9 @@ public class AccountController {
                                         {
                                             "name": "ROLE_USER"
                                         }
-                                    ]
+                                    ],
+                                    "date_created": "2024-07-07T12:20:13.712345",
+                                    "last_updated": "2024-07-07T12:20:13.712412"
                                 },
                                 {
                                     "id": 2,
@@ -93,7 +98,9 @@ public class AccountController {
                                         {
                                             "name": "ROLE_ADMIN"
                                         }
-                                    ]
+                                    ],
+                                    "date_created": "2024-07-07T12:21:01.971015",
+                                    "last_updated": "2024-07-07T12:21:01.971034"
                                 },
                                 {
                                     "id": 3,
@@ -104,7 +111,9 @@ public class AccountController {
                                         {
                                             "name": "ROLE_USER"
                                         }
-                                    ]
+                                    ],
+                                    "date_created": "2024-07-07T12:21:06.531122",
+                                    "last_updated": "2024-07-07T12:21:06.531217"
                                 }
                             ]
                             """)
@@ -112,11 +121,11 @@ public class AccountController {
     )
     @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/all")
-    public ResponseEntity<List<UserDto>> getAllUsers() {
+    @GetMapping("/admin/all")
+    public ResponseEntity<List<AccountInfoDto>> getAllUsers() {
 
-        List<UserDto> users = accountService.getAllUsers();
+        List<AccountInfoDto> accountInfos = accountService.getAllUsers();
 
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        return new ResponseEntity<>(accountInfos, HttpStatus.OK);
     }
 }

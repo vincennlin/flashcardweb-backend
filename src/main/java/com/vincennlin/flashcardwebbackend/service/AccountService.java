@@ -1,12 +1,12 @@
 package com.vincennlin.flashcardwebbackend.service;
 
-import com.vincennlin.flashcardwebbackend.payload.auth.UserDto;
+import com.vincennlin.flashcardwebbackend.payload.account.AccountInfoDto;
 
 import java.util.List;
 
 public interface AccountService {
 
-    UserDto getCurrentAccountInfo();
+    AccountInfoDto getCurrentAccountInfo();
 
-    List<UserDto> getAllUsers();
+    List<AccountInfoDto> getAllUsers();
 }
