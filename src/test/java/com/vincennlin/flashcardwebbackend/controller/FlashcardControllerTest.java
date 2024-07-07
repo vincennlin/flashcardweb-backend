@@ -2,8 +2,8 @@ package com.vincennlin.flashcardwebbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vincennlin.flashcardwebbackend.payload.flashcard.concrete.*;
-import com.vincennlin.flashcardwebbackend.payload.security.JWTAuthResponse;
-import com.vincennlin.flashcardwebbackend.payload.security.LoginDto;
+import com.vincennlin.flashcardwebbackend.payload.auth.LoginResponse;
+import com.vincennlin.flashcardwebbackend.payload.auth.LoginDto;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1147,12 +1147,12 @@ public class FlashcardControllerTest {
         MvcResult result = mockMvc.perform(requestBuilder)
                 .andReturn();
 
-        JWTAuthResponse jwtAuthResponse = objectMapper.readValue(mockMvc.perform(requestBuilder)
+        LoginResponse loginResponse = objectMapper.readValue(mockMvc.perform(requestBuilder)
                 .andReturn()
                 .getResponse()
-                .getContentAsString(), JWTAuthResponse.class);
+                .getContentAsString(), LoginResponse.class);
 
-        return jwtAuthResponse.getAccessToken();
+        return loginResponse.getAccessToken();
     }
 
     private String getTest1UserJwtToken() throws Exception {
@@ -1169,12 +1169,12 @@ public class FlashcardControllerTest {
                 .content(objectMapper.writeValueAsString(loginDto));
 
 
-        JWTAuthResponse jwtAuthResponse = objectMapper.readValue(mockMvc.perform(requestBuilder)
+        LoginResponse loginResponse = objectMapper.readValue(mockMvc.perform(requestBuilder)
                 .andReturn()
                 .getResponse()
-                .getContentAsString(), JWTAuthResponse.class);
+                .getContentAsString(), LoginResponse.class);
 
-        return jwtAuthResponse.getAccessToken();
+        return loginResponse.getAccessToken();
     }
 
     private String getTest2UserJwtToken() throws Exception {
@@ -1190,11 +1190,11 @@ public class FlashcardControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginDto));
 
-        JWTAuthResponse jwtAuthResponse = objectMapper.readValue(mockMvc.perform(requestBuilder)
+        LoginResponse loginResponse = objectMapper.readValue(mockMvc.perform(requestBuilder)
                 .andReturn()
                 .getResponse()
-                .getContentAsString(), JWTAuthResponse.class);
+                .getContentAsString(), LoginResponse.class);
 
-        return jwtAuthResponse.getAccessToken();
+        return loginResponse.getAccessToken();
     }
 }
