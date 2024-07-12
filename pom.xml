@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.vincennlin</groupId>
     <artifactId>flashcardweb-backend</artifactId>
-    <version>0.2.2-SNAPSHOT</version>
+    <version>0.3.1-SNAPSHOT</version>
     <name>flashcardweb-backend</name>
     <description>flashcardweb-backend</description>
     <url/>
