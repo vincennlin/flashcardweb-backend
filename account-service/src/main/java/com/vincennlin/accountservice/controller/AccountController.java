@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +24,17 @@ import java.util.List;
 )
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/v1/account")
+@RequestMapping("/api/v1")
 public class AccountController {
 
+    private Environment env;
+
 //    private AccountService accountService;
+
+    @GetMapping("/status/check")
+    public ResponseEntity<String> status() {
+        return new ResponseEntity<>("Account Service is up and running on port: " + env.getProperty("local.server.port"), HttpStatus.OK);
+    }
 //
 //    @Operation(
 //            summary = "取得目前帳號資訊",
@@ -56,7 +64,7 @@ public class AccountController {
 //    )
 //    @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-//    @GetMapping("/info")
+//    @GetMapping("/account/info")
 //    public ResponseEntity<AccountInfoDto> getCurrentAccountInfo() {
 //
 //        AccountInfoDto accountInfo = accountService.getCurrentAccountInfo();
@@ -119,7 +127,7 @@ public class AccountController {
 //    )
 //    @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasRole('ROLE_ADMIN')")
-//    @GetMapping("/admin/all")
+//    @GetMapping("/account/admin/all")
 //    public ResponseEntity<List<AccountInfoDto>> getAllUsers() {
 //
 //        List<AccountInfoDto> accountInfos = accountService.getAllUsers();
@@ -158,7 +166,7 @@ public class AccountController {
 //    )
 //    @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-//    @PutMapping("/info")
+//    @PutMapping("/account/info")
 //    public ResponseEntity<UpdateAccountInfoResponse> updateAccountInfo(@Valid @RequestBody
 //                                                                           @io.swagger.v3.oas.annotations.parameters.RequestBody(
 //                                                                                   content = @Content(

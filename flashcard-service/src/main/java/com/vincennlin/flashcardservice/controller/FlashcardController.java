@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -31,8 +32,15 @@ import java.util.List;
 @RequestMapping("/api/v1")
 public class FlashcardController {
 
+    private Environment env;
+
 //    private FlashcardService flashcardService;
-//
+
+    @GetMapping("/status/check")
+    public ResponseEntity<String> status() {
+        return new ResponseEntity<>("Flashcard Service is up and running on port " + env.getProperty("local.server.port"), HttpStatus.OK);
+    }
+
     @Operation(
             summary = "取得特定筆記的所有字卡",
             description = "根據 note_id 取得特定筆記的所有字卡"
