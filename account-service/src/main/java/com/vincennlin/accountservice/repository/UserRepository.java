@@ -1,4 +1,4 @@
-package com.vincennlin.authservice.repository;
+package com.vincennlin.accountservice.repository;
 
 import com.vincennlin.accountservice.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
