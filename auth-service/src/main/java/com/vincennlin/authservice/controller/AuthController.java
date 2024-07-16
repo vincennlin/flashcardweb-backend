@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +21,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
+    private Environment env;
+
     @GetMapping("/status/check")
     public ResponseEntity<String> status() {
-        return new ResponseEntity<>("Auth service is up and running", HttpStatus.OK);
+        return new ResponseEntity<>("Auth service is up and running on port: " + env.getProperty("local.server.port"), HttpStatus.OK);
     }
 
 //    private AuthService authService;
