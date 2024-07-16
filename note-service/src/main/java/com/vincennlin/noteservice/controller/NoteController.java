@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -29,10 +30,17 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 @RestController
 @Validated
-@RequestMapping("/api/v1/notes")
+@RequestMapping("/api/v1")
 public class NoteController {
 
+    private Environment env;
+
     private NoteService noteService;
+
+    @GetMapping("/status/check")
+    public ResponseEntity<String> status() {
+        return new ResponseEntity<>("Note Service is up and running on port " + env.getProperty("local.server.port"), HttpStatus.OK);
+    }
 
     @Operation(
             summary = "取得所有筆記",
@@ -129,7 +137,7 @@ public class NoteController {
     )
     @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    @GetMapping
+    @GetMapping("/notes")
     public ResponseEntity<NotePageResponse> getAllNotes(
             @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) @Min(0) Integer pageNo,
             @RequestParam(name = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) @Max(100) @Min(1) Integer pageSize,
@@ -239,7 +247,7 @@ public class NoteController {
     )
     @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/user/{user_id}")
+    @GetMapping("/notes/user/{user_id}")
     public ResponseEntity<NotePageResponse> getNotesByUserId(
             @PathVariable(name = "user_id") @Min(1) Long userId,
             @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) @Min(0) Integer pageNo,
@@ -341,7 +349,7 @@ public class NoteController {
     )
     @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    @GetMapping("/{note_id}")
+    @GetMapping("/notes/{note_id}")
     public ResponseEntity<NoteDto> getNoteById(@PathVariable(name = "note_id") @Min(1) Long id) {
 
         NoteDto noteResponse = noteService.getNoteById(id);
@@ -371,7 +379,7 @@ public class NoteController {
     )
     @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    @PostMapping
+    @PostMapping("/notes")
     public ResponseEntity<NoteDto> createNote(@Valid @RequestBody
                                                   @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                           content = @Content(
@@ -475,7 +483,7 @@ public class NoteController {
     )
     @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    @PutMapping("/{note_id}")
+    @PutMapping("/notes/{note_id}")
     public ResponseEntity<NoteDto> updateNote(@PathVariable(name = "note_id") @Min(1) Long id,
                                               @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                       content = @Content(
@@ -503,7 +511,7 @@ public class NoteController {
     )
     @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    @DeleteMapping("/{note_id}")
+    @DeleteMapping("/notes/{note_id}")
     public ResponseEntity<Void> deleteNoteById(@PathVariable(name = "note_id") @Min(1) Long id) {
 
         noteService.deleteNoteById(id);

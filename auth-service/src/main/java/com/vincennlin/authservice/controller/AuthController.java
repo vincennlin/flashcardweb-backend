@@ -21,14 +21,14 @@ import org.springframework.web.bind.annotation.*;
 )
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/v1")
 public class AuthController {
 
     private Environment env;
 
     @GetMapping("/status/check")
     public ResponseEntity<String> status() {
-        return new ResponseEntity<>("Auth service is up and running on port: " + env.getProperty("local.server.port"), HttpStatus.OK);
+        return new ResponseEntity<>("Auth Service is up and running on port: " + env.getProperty("local.server.port"), HttpStatus.OK);
     }
 
     private AuthService authService;
@@ -62,7 +62,7 @@ public class AuthController {
                             """)
             )
     )
-    @PostMapping(value = {"/register"})
+    @PostMapping(value = {"/auth/register"})
     public ResponseEntity<RegisterResponse> register(@Valid @RequestBody
                                                      @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                              content = @Content(
@@ -100,7 +100,7 @@ public class AuthController {
 //                            """)
 //            )
 //    )
-//    @PostMapping(value = {"/login"})
+//    @PostMapping(value = {"/auth/login"})
 //    public ResponseEntity<LoginResponse> login(@Valid @RequestBody
 //                                               @io.swagger.v3.oas.annotations.parameters.RequestBody(
 //                                                       content = @Content(
