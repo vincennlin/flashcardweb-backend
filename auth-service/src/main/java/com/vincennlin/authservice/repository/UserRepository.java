@@ -1,6 +1,6 @@
 package com.vincennlin.authservice.repository;
 
-import com.vincennlin.accountservice.entity.User;
+import com.vincennlin.authservice.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
