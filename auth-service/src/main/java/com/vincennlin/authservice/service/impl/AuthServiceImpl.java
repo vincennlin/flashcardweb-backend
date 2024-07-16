@@ -1,6 +1,7 @@
 package com.vincennlin.authservice.service.impl;
 
-import com.vincennlin.authservice.entity.User;
+
+import com.vincennlin.accountservice.entity.User;
 import com.vincennlin.authservice.exception.WebAPIException;
 import com.vincennlin.authservice.payload.LoginDto;
 import com.vincennlin.authservice.payload.LoginResponse;
