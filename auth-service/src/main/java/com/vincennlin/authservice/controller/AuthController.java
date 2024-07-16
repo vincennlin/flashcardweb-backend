@@ -1,5 +1,8 @@
 package com.vincennlin.authservice.controller;
 
+import com.vincennlin.authservice.payload.RegisterDto;
+import com.vincennlin.authservice.payload.RegisterResponse;
+import com.vincennlin.authservice.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -28,56 +31,56 @@ public class AuthController {
         return new ResponseEntity<>("Auth service is up and running on port: " + env.getProperty("local.server.port"), HttpStatus.OK);
     }
 
-//    private AuthService authService;
+    private AuthService authService;
 
-//    @Operation(
-//            summary = "註冊用戶",
-//            description = "註冊一個新用戶注意 username 和 email 都不可和其他用戶重複，password 至少 4 個字元"
-//    )
-//    @ApiResponse(
-//            responseCode = "201",
-//            description = "註冊成功",
-//            content = @Content(
-//                    mediaType = "application/json",
-//                    examples = @ExampleObject(value = """
-//                            {
-//                                "message": "User registered successfully!",
-//                                "account_info": {
-//                                    "id": 1,
-//                                    "name": "user",
-//                                    "username": "user",
-//                                    "email": "user@gmail.com",
-//                                    "roles": [
-//                                        {
-//                                            "name": "ROLE_USER"
-//                                        }
-//                                    ],
-//                                    "date_created": "2024-07-07T12:20:13.712345",
-//                                    "last_updated": "2024-07-07T12:20:13.712412"
-//                                }
-//                            }
-//                            """)
-//            )
-//    )
-//    @PostMapping(value = {"/register"})
-//    public ResponseEntity<RegisterResponse> register(@Valid @RequestBody
-//                                                     @io.swagger.v3.oas.annotations.parameters.RequestBody(
-//                                                             content = @Content(
-//                                                                     mediaType = "application/json",
-//                                                                     examples = @ExampleObject(value = """
-//                                                                                 {
-//                                                                                     "name": "user",
-//                                                                                     "username": "user",
-//                                                                                     "email": "user@gmail.com",
-//                                                                                     "password": "user"
-//                                                                                 }
-//                                                                                 """)
-//                                                             )
-//                                                     ) RegisterDto registerDto) {
-//
-//        RegisterResponse registerResponse = authService.register(registerDto);
-//        return new ResponseEntity<>(registerResponse, HttpStatus.CREATED);
-//    }
+    @Operation(
+            summary = "註冊用戶",
+            description = "註冊一個新用戶注意 username 和 email 都不可和其他用戶重複，password 至少 4 個字元"
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "註冊成功",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                "message": "User registered successfully!",
+                                "account_info": {
+                                    "id": 1,
+                                    "name": "user",
+                                    "username": "user",
+                                    "email": "user@gmail.com",
+                                    "roles": [
+                                        {
+                                            "name": "ROLE_USER"
+                                        }
+                                    ],
+                                    "date_created": "2024-07-07T12:20:13.712345",
+                                    "last_updated": "2024-07-07T12:20:13.712412"
+                                }
+                            }
+                            """)
+            )
+    )
+    @PostMapping(value = {"/register"})
+    public ResponseEntity<RegisterResponse> register(@Valid @RequestBody
+                                                     @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                             content = @Content(
+                                                                     mediaType = "application/json",
+                                                                     examples = @ExampleObject(value = """
+                                                                                 {
+                                                                                     "name": "user",
+                                                                                     "username": "user",
+                                                                                     "email": "user@gmail.com",
+                                                                                     "password": "user"
+                                                                                 }
+                                                                                 """)
+                                                             )
+                                                     ) RegisterDto registerDto) {
+
+        RegisterResponse registerResponse = authService.register(registerDto);
+        return new ResponseEntity<>(registerResponse, HttpStatus.CREATED);
+    }
 //
 //    @Operation(
 //            summary = "登入",
