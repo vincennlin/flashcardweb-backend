@@ -17,15 +17,15 @@ import org.springframework.security.web.access.expression.WebExpressionAuthoriza
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @AllArgsConstructor
-@Configuration("noteServiceWebSecurity")
+@Configuration
 @EnableWebSecurity
 public class WebSecurity {
 
     private final Environment environment;
 
-    @Bean("noteServiceSecurityFilterChain")
+    @Bean
     protected SecurityFilterChain configure(HttpSecurity http,
-                                            @Qualifier("noteServiceAuthenticationManager") AuthenticationManager authenticationManager) throws Exception{
+                                            AuthenticationManager authenticationManager) throws Exception{
 
         http.csrf(AbstractHttpConfigurer::disable);
 
@@ -54,7 +54,7 @@ public class WebSecurity {
         return http.build();
     }
 
-    @Bean("noteServiceAuthenticationManager")
+    @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }

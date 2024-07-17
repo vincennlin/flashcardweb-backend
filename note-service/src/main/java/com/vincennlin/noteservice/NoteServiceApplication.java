@@ -11,12 +11,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @EnableDiscoveryClient
 @EntityScan(basePackages = {"com.vincennlin.noteservice.entity", "com.vincennlin.userservice.entity"})
-@ComponentScan(basePackages = {"com.vincennlin.noteservice", "com.vincennlin.userservice"})
 @EnableJpaRepositories(basePackages = {"com.vincennlin.noteservice.repository", "com.vincennlin.userservice.repository"})
 @SpringBootApplication
 public class NoteServiceApplication {
 
-	@Bean(name = "noteServiceModelMapper")
+	@Bean
 	public ModelMapper modelMapper() {
 		return new ModelMapper();
 	}

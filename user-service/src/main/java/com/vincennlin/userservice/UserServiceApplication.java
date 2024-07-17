@@ -12,7 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @SpringBootApplication
 public class UserServiceApplication {
 
-	@Bean(name = "userServiceModelMapper")
+	@Bean
 	public ModelMapper modelMapper() {
 		return new ModelMapper();
 	}

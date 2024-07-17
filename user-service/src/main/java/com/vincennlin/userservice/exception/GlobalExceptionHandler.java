@@ -16,7 +16,6 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.Date;
 
-@Component("userServiceGlobalExceptionHandler")
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
