@@ -1,6 +1,7 @@
 package com.vincennlin.authservice.service.impl;
 
 
+import com.vincennlin.accountservice.payload.AccountInfoDto;
 import com.vincennlin.authservice.entity.User;
 import com.vincennlin.authservice.exception.WebAPIException;
 import com.vincennlin.authservice.payload.LoginDto;
@@ -8,15 +9,21 @@ import com.vincennlin.authservice.payload.LoginResponse;
 import com.vincennlin.authservice.payload.RegisterDto;
 import com.vincennlin.authservice.payload.RegisterResponse;
 import com.vincennlin.authservice.repository.UserRepository;
+import com.vincennlin.authservice.security.FlashcardwebUserDetails;
 import com.vincennlin.authservice.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -32,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
 
 //    private JwtTokenProvider jwtTokenProvider;
 //
-//    private ModelMapper modelMapper;
+    private ModelMapper modelMapper;
 
     @Override
     public RegisterResponse register(RegisterDto registerDto) {
@@ -55,7 +62,7 @@ public class AuthServiceImpl implements AuthService {
 //
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setMessage("User registered successfully!");
-//        registerResponse.setAccountInfo(modelMapper.map(newUser, AccountInfoDto.class));
+        registerResponse.setAccountInfo(modelMapper.map(newUser, AccountInfoDto.class));
 
         return registerResponse;
     }
@@ -64,7 +71,23 @@ public class AuthServiceImpl implements AuthService {
     public LoginResponse login(LoginDto loginDto) {
         return null;
     }
-//
+
+    @Override
+    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+
+        User user = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email: " + usernameOrEmail));
+
+//        Set<GrantedAuthority> authorities = user
+//                .getRoles()
+//                .stream()
+//                .map((role) -> (GrantedAuthority) role::getName).collect(Collectors.toSet());
+
+        return new FlashcardwebUserDetails(user.getUsername(), user.getEmail(),
+                user.getPassword(), new ArrayList<>(), user.getId());
+    }
+
+    //
 //    @Override
 //    public RegisterResponse register(RegisterDto registerDto) {
 //
