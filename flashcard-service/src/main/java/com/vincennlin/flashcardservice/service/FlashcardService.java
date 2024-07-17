@@ -14,7 +14,7 @@ public interface FlashcardService {
 //
 //    FlashcardDto getFlashcardById(Long flashcardId);
 //
-//    FlashcardDto createFlashcard(Long noteId, ShortAnswerFlashcardDto shortAnswerFlashcardDto);
+    FlashcardDto createFlashcard(Long noteId, ShortAnswerFlashcardDto shortAnswerFlashcardDto);
 //
 //    FlashcardDto createFlashcard(Long noteId, FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto);
 //

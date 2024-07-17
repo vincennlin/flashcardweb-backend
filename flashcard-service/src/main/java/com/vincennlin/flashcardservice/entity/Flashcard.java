@@ -1,6 +1,8 @@
 package com.vincennlin.flashcardservice.entity;
 
 import com.vincennlin.flashcardservice.constant.FlashcardType;
+import com.vincennlin.noteservice.entity.Note;
+import com.vincennlin.userservice.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,9 +34,9 @@ public abstract class Flashcard {
     @Column(name = "type")
     private FlashcardType type;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id", nullable = false)
-//    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @CreationTimestamp
     @Column(name = "date_created")
@@ -44,7 +46,7 @@ public abstract class Flashcard {
     @Column(name = "last_updated")
     private String lastUpdated;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "note_id")
-//    private Note note;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "note_id")
+    private Note note;
 }
