@@ -1,5 +1,7 @@
 package com.vincennlin.authservice.controller;
 
+import com.vincennlin.authservice.payload.LoginDto;
+import com.vincennlin.authservice.payload.LoginResponse;
 import com.vincennlin.authservice.payload.RegisterDto;
 import com.vincennlin.authservice.payload.RegisterResponse;
 import com.vincennlin.authservice.service.AuthService;
@@ -81,40 +83,40 @@ public class AuthController {
         RegisterResponse registerResponse = authService.register(registerDto);
         return new ResponseEntity<>(registerResponse, HttpStatus.CREATED);
     }
-//
-//    @Operation(
-//            summary = "登入",
-//            description = "登入用戶"
-//    )
-//    @ApiResponse(
-//            responseCode = "200",
-//            description = "登入成功，Response Body 會包含 JWT Token",
-//            content = @Content(
-//                    mediaType = "application/json",
-//                    examples = @ExampleObject(value = """
-//                            {
-//                                "message": "User logged in successfully!",
-//                                "access_token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzIwMzI2MDcwLCJleHAiOjE3MjA5MzA4NzB9.hw2pFQvt5gzYoJMPNOR3lj_S0uStnpXbX-rXmib7ldzt5elULb_jguHHsOIaNhva",
-//                                "token_type": "Bearer"
-//                            }
-//                            """)
-//            )
-//    )
-//    @PostMapping(value = {"/auth/login"})
-//    public ResponseEntity<LoginResponse> login(@Valid @RequestBody
-//                                               @io.swagger.v3.oas.annotations.parameters.RequestBody(
-//                                                       content = @Content(
-//                                                               mediaType = "application/json",
-//                                                               examples = @ExampleObject(value = """
-//                                                                           {
-//                                                                               "username_or_email": "user",
-//                                                                               "password": "user"
-//                                                                           }
-//                                                                           """)
-//                                                       )
-//                                               ) LoginDto loginDto) {
-//
-//        LoginResponse loginResponse = authService.login(loginDto);
-//        return new ResponseEntity<>(loginResponse, HttpStatus.OK);
-//    }
+
+    @Operation(
+            summary = "登入",
+            description = "登入用戶"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "登入成功，Response Body 會包含 JWT Token",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                "message": "User logged in successfully!",
+                                "access_token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzIwMzI2MDcwLCJleHAiOjE3MjA5MzA4NzB9.hw2pFQvt5gzYoJMPNOR3lj_S0uStnpXbX-rXmib7ldzt5elULb_jguHHsOIaNhva",
+                                "token_type": "Bearer"
+                            }
+                            """)
+            )
+    )
+    @PostMapping(value = {"/auth/login"})
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody
+                                               @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                       content = @Content(
+                                                               mediaType = "application/json",
+                                                               examples = @ExampleObject(value = """
+                                                                           {
+                                                                               "username_or_email": "user",
+                                                                               "password": "user"
+                                                                           }
+                                                                           """)
+                                                       )
+                                               ) LoginDto loginDto) {
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setMessage("User logged in successfully!");
+        return new ResponseEntity<>(loginResponse, HttpStatus.OK);
+    }
 }

@@ -1,29 +1,21 @@
 package com.vincennlin.authservice.service.impl;
 
 
-import com.vincennlin.accountservice.payload.AccountInfoDto;
 import com.vincennlin.authservice.entity.User;
 import com.vincennlin.authservice.exception.WebAPIException;
-import com.vincennlin.authservice.payload.LoginDto;
-import com.vincennlin.authservice.payload.LoginResponse;
-import com.vincennlin.authservice.payload.RegisterDto;
-import com.vincennlin.authservice.payload.RegisterResponse;
+import com.vincennlin.authservice.payload.*;
 import com.vincennlin.authservice.repository.UserRepository;
 import com.vincennlin.authservice.security.FlashcardwebUserDetails;
 import com.vincennlin.authservice.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -31,14 +23,10 @@ public class AuthServiceImpl implements AuthService {
 
     private UserRepository userRepository;
 
-//    private AuthenticationManager authenticationManager;
-
 //    private RoleRepository roleRepository;
 
     private PasswordEncoder passwordEncoder;
 
-//    private JwtTokenProvider jwtTokenProvider;
-//
     private ModelMapper modelMapper;
 
     @Override
@@ -62,14 +50,18 @@ public class AuthServiceImpl implements AuthService {
 //
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setMessage("User registered successfully!");
-        registerResponse.setAccountInfo(modelMapper.map(newUser, AccountInfoDto.class));
+        registerResponse.setUserDto(modelMapper.map(newUser, UserDto.class));
 
         return registerResponse;
     }
 
     @Override
-    public LoginResponse login(LoginDto loginDto) {
-        return null;
+    public UserDto getUserDetailsByUsername(String username) {
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new WebAPIException(HttpStatus.NOT_FOUND, "User not found with username: " + username));
+
+        return modelMapper.map(user, UserDto.class);
     }
 
     @Override
