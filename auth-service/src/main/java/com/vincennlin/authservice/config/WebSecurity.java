@@ -48,13 +48,19 @@ public class WebSecurity {
 
         http.csrf(AbstractHttpConfigurer::disable);
 
-        String gatewayIp = environment.getProperty("gateway.ip");
+        String webExpressionString =
+                "hasIpAddress('" + environment.getProperty("gateway.ip1") + "') " +
+                "or hasIpAddress('" + environment.getProperty("gateway.ip2") + "')";
 
         http.authorizeHttpRequests(auth ->
                 auth
-                        .requestMatchers(new AntPathRequestMatcher("/api/v1/**")).permitAll()
-//                        .requestMatchers(new AntPathRequestMatcher("/api/v1/**")).access(
-//                                new WebExpressionAuthorizationManager("hasIpAddress('"+gatewayIp+"')"))
+//                        .requestMatchers(new AntPathRequestMatcher("/api/v1/**")).permitAll()
+//                        .requestMatchers(new AntPathRequestMatcher("/actuator/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/actuator/**")).access(
+                                new WebExpressionAuthorizationManager(webExpressionString)
+                        )
+                        .requestMatchers(new AntPathRequestMatcher("/api/v1/**")).access(
+                                new WebExpressionAuthorizationManager(webExpressionString))
 //                        .anyRequest().authenticated()
         );
 
