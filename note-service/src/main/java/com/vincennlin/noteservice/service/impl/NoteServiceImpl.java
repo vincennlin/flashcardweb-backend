@@ -33,18 +33,15 @@ public class NoteServiceImpl implements NoteService {
 //        if (currentRoleContainsAdmin()) {
 //            return getNotePageResponse(noteRepository.findAll(pageable));
 //        }
-//        return getNotePageResponse(noteRepository.findByUserId(getCurrentUserId(), pageable));
-
-        return null;
+        return getNotePageResponse(noteRepository.findByUserId(getCurrentUserId(), pageable));
     }
 
     @Override
     public NotePageResponse getNotesByUserId(Long userId, Pageable pageable) {
 
-//        Page<Note> pageOfNotes = noteRepository.findByUserId(userId, pageable);
-//
-//        return getNotePageResponse(pageOfNotes);
-        return null;
+        Page<Note> pageOfNotes = noteRepository.findByUserId(userId, pageable);
+
+        return getNotePageResponse(pageOfNotes);
     }
 
     @Override
@@ -53,7 +50,6 @@ public class NoteServiceImpl implements NoteService {
         Note note = noteRepository.findById(noteId).orElseThrow(() ->
                 new ResourceNotFoundException("Note", "id", noteId));
 
-//        authorizeOwnership(note.getUser().getId());
 //
 //        List<FlashcardDto> flashcardDtoList = flashcardService.getFlashcardsByNoteId(noteId);
 
@@ -83,8 +79,6 @@ public class NoteServiceImpl implements NoteService {
         Note note = noteRepository.findById(noteId).orElseThrow(() ->
                 new ResourceNotFoundException("Note", "id", noteId));
 
-//        authorizeOwnership(note.getUser().getId());
-
         note.setContent(noteDto.getContent());
 
         Note updatedNote = noteRepository.save(note);
@@ -102,8 +96,6 @@ public class NoteServiceImpl implements NoteService {
 
         Note note = noteRepository.findById(noteId).orElseThrow(() ->
                 new ResourceNotFoundException("Note", "id", noteId));
-
-//        authorizeOwnership(note.getUser().getId());
 
         noteRepository.delete(note);
     }
