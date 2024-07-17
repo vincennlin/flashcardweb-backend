@@ -25,7 +25,7 @@ public class UserController {
 
     private Environment env;
 
-    @GetMapping("/status/check")
+    @GetMapping("/users/status/check")
     public ResponseEntity<String> status() {
         return new ResponseEntity<>("User Service is up and running on port: " + env.getProperty("local.server.port")
                 + " with token " + env.getProperty("token.secret"), HttpStatus.OK);

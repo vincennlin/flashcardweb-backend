@@ -8,6 +8,8 @@ import com.vincennlin.userservice.security.FlashcardwebUserDetails;
 import com.vincennlin.userservice.service.UserService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,16 +18,19 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
-@AllArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
 
+    @Autowired
     private UserRepository userRepository;
 
 //    private RoleRepository roleRepository;
 
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Qualifier("userServiceModelMapper")
+    @Autowired
     private ModelMapper modelMapper;
 
     @Override
