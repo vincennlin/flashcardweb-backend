@@ -1,6 +1,7 @@
 package com.vincennlin.authservice.payload;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vincennlin.accountservice.payload.AccountInfoDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,13 +25,13 @@ public class RegisterResponse {
     )
     private String message;
 
-//    @Schema(
-//            name = "account_info",
-//            description = "註冊成功的使用者資訊",
-//            example = "{\"id\": 1, \"name\": \"user\", \"username\": \"user\", \"email\": \"user@gmail.com\", \"roles\": [{\"name\": \"ROLE_USER\"}]}"
-//    )
-//    @JsonProperty(
-//            value = "account_info"
-//    )
-//    private AccountInfoDto accountInfo;
+    @Schema(
+            name = "account_info",
+            description = "註冊成功的使用者資訊",
+            example = "{\"id\": 1, \"name\": \"user\", \"username\": \"user\", \"email\": \"user@gmail.com\", \"roles\": [{\"name\": \"ROLE_USER\"}]}"
+    )
+    @JsonProperty(
+            value = "account_info"
+    )
+    private AccountInfoDto accountInfo;
 }
