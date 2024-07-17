@@ -30,7 +30,8 @@ public class AuthController {
 
     @GetMapping("/status/check")
     public ResponseEntity<String> status() {
-        return new ResponseEntity<>("Auth Service is up and running on port: " + env.getProperty("local.server.port"), HttpStatus.OK);
+        return new ResponseEntity<>("Auth Service is up and running on port: " + env.getProperty("local.server.port")
+                + " with token " + env.getProperty("token.secret"), HttpStatus.OK);
     }
 
     private AuthService authService;

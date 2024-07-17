@@ -52,9 +52,9 @@ public class WebSecurity {
 
         http.authorizeHttpRequests(auth ->
                 auth
-//                        .requestMatchers(new AntPathRequestMatcher("/api/v1/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/api/v1/**")).access(
-                                new WebExpressionAuthorizationManager("hasIpAddress('"+gatewayIp+"')"))
+                        .requestMatchers(new AntPathRequestMatcher("/api/v1/**")).permitAll()
+//                        .requestMatchers(new AntPathRequestMatcher("/api/v1/**")).access(
+//                                new WebExpressionAuthorizationManager("hasIpAddress('"+gatewayIp+"')"))
 //                        .anyRequest().authenticated()
         );
 
