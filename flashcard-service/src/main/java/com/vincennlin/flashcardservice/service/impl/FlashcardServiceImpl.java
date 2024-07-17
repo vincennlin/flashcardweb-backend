@@ -1,5 +1,6 @@
 package com.vincennlin.flashcardservice.service.impl;
 
+import com.vincennlin.flashcardservice.client.NoteServiceClient;
 import com.vincennlin.flashcardservice.constant.FlashcardType;
 import com.vincennlin.flashcardservice.entity.Flashcard;
 import com.vincennlin.flashcardservice.entity.concrete.*;
@@ -7,11 +8,17 @@ import com.vincennlin.flashcardservice.exception.FlashcardTypeException;
 import com.vincennlin.flashcardservice.exception.ResourceNotFoundException;
 import com.vincennlin.flashcardservice.exception.ResourceOwnershipException;
 import com.vincennlin.flashcardservice.payload.FlashcardDto;
+import com.vincennlin.flashcardservice.payload.NoteClientResponse;
+import com.vincennlin.flashcardservice.payload.concrete.ShortAnswerFlashcardDto;
 import com.vincennlin.flashcardservice.repository.FlashcardRepository;
 import com.vincennlin.flashcardservice.repository.OptionRepository;
 import com.vincennlin.flashcardservice.service.FlashcardService;
+import com.vincennlin.noteservice.entity.Note;
+import com.vincennlin.noteservice.payload.NoteDto;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,11 +28,13 @@ import java.util.List;
 @Service
 public class FlashcardServiceImpl implements FlashcardService {
 
-//    private FlashcardRepository flashcardRepository;
-//
-//    private ModelMapper modelMapper;
-//
-//    private OptionRepository optionRepository;
+    private NoteServiceClient noteServiceClient;
+
+    private ModelMapper modelMapper;
+
+    private FlashcardRepository flashcardRepository;
+
+    private OptionRepository optionRepository;
 //
 //    @Override
 //    public List<FlashcardDto> getFlashcardsByNoteId(Long noteId) {
@@ -51,24 +60,24 @@ public class FlashcardServiceImpl implements FlashcardService {
 //        return mapToDto(flashcard);
 //    }
 //
-//    @Override
-//    public FlashcardDto createFlashcard(Long noteId, ShortAnswerFlashcardDto shortAnswerFlashcardDto) {
-//
-//        Note note = noteRepository.findById(noteId).orElseThrow(() ->
-//                new ResourceNotFoundException("Note", "id", noteId));
-//
-//        authorizeOwnership(note.getUser().getId());
-//        shortAnswerFlashcardDto.setUserId(getCurrentUserId());
-//
-//        ShortAnswerFlashcard shortAnswerFlashcard = modelMapper.map(shortAnswerFlashcardDto, ShortAnswerFlashcard.class);
-//        shortAnswerFlashcard.setType(FlashcardType.SHORT_ANSWER);
-//
-//        shortAnswerFlashcard.setNote(note);
-//
-//        Flashcard newFlashcard = flashcardRepository.save(shortAnswerFlashcard);
-//
-//        return modelMapper.map(newFlashcard, ShortAnswerFlashcardDto.class);
-//    }
+    @Override
+    public FlashcardDto createFlashcard(Long noteId, ShortAnswerFlashcardDto shortAnswerFlashcardDto) {
+
+        NoteDto noteDto = noteServiceClient.getNoteById(noteId).getBody();
+
+        Note note = modelMapper.map(noteDto, Note.class);
+
+        shortAnswerFlashcardDto.setUserId(getCurrentUserId());
+
+        ShortAnswerFlashcard shortAnswerFlashcard = modelMapper.map(shortAnswerFlashcardDto, ShortAnswerFlashcard.class);
+        shortAnswerFlashcard.setType(FlashcardType.SHORT_ANSWER);
+
+        shortAnswerFlashcard.setNote(note);
+
+        Flashcard newFlashcard = flashcardRepository.save(shortAnswerFlashcard);
+
+        return modelMapper.map(newFlashcard, ShortAnswerFlashcardDto.class);
+    }
 //
 //    @Override
 //    public FlashcardDto createFlashcard(Long noteId, FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto) {
@@ -280,22 +289,11 @@ public class FlashcardServiceImpl implements FlashcardService {
 //
 //        flashcardRepository.delete(flashcard);
 //    }
-//
-//    private FlashcardwebUserDetails getUserDetails() {
-//        return (FlashcardwebUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//    }
-//
-//    private void authorizeOwnership(Long userId) {
-//        Long currentUserId = getCurrentUserId();
-//        if (!currentUserId.equals(userId) && !containsRole("ROLE_ADMIN")) {
-//            throw new ResourceOwnershipException(currentUserId, userId);
-//        }
-//    }
-//
-//    private Long getCurrentUserId() {
-//        return getUserDetails().getUserId();
-//    }
-//
+
+    private Long getCurrentUserId() {
+        return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+    }
+
 //    private Boolean containsRole(String roleName) {
 //        return getUserDetails().getAuthorities().stream().anyMatch(
 //                authority -> authority.getAuthority().equals(roleName));

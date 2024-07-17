@@ -34,7 +34,7 @@ public class FlashcardController {
 
     private Environment env;
 
-//    private FlashcardService flashcardService;
+    private FlashcardService flashcardService;
 
     @GetMapping("/status/check")
     public ResponseEntity<String> status() {
@@ -175,46 +175,46 @@ public class FlashcardController {
 //        return new ResponseEntity<>(flashcardResponse, HttpStatus.OK);
 //    }
 //
-//    @Operation(
-//            summary = "新增問答題字卡",
-//            description = "根據 note_id 新增問答題字卡"
-//    )
-//    @ApiResponse(
-//            responseCode = "201",
-//            description = "成功新增問答題字卡",
-//            content = @Content(
-//                    mediaType = "application/json",
-//                    examples = @ExampleObject(value = """
-//                            {
-//                                "id": 1,
-//                                "question": "What is Java?",
-//                                "type": "SHORT_ANSWER",
-//                                "note_id": 1,
-//                                "short_answer": "Java is a programming language."
-//                            }
-//                            """)
-//            )
-//    )
-//    @SecurityRequirement(name = "Bear Authentication")
+    @Operation(
+            summary = "新增問答題字卡",
+            description = "根據 note_id 新增問答題字卡"
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "成功新增問答題字卡",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                "id": 1,
+                                "question": "What is Java?",
+                                "type": "SHORT_ANSWER",
+                                "note_id": 1,
+                                "short_answer": "Java is a programming language."
+                            }
+                            """)
+            )
+    )
+    @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-//    @PostMapping("/notes/{note_id}/flashcards/short-answer")
-//    public ResponseEntity<FlashcardDto> createShortAnswerFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
-//                                                        @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
-//                                                                content = @Content(
-//                                                                        mediaType = "application/json",
-//                                                                        examples = @ExampleObject(value = """
-//                                                                                {
-//                                                                                    "question": "What is Java?",
-//                                                                                    "short_answer": "Java is a programming language."
-//                                                                                }
-//                                                                                """)
-//                                                                )
-//                                                        ) ShortAnswerFlashcardDto shortAnswerFlashcardDto){
-//
-//        FlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, shortAnswerFlashcardDto);
-//
-//        return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
-//    }
+    @PostMapping("/notes/{note_id}/flashcards/short-answer")
+    public ResponseEntity<FlashcardDto> createShortAnswerFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
+                                                        @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                                content = @Content(
+                                                                        mediaType = "application/json",
+                                                                        examples = @ExampleObject(value = """
+                                                                                {
+                                                                                    "question": "What is Java?",
+                                                                                    "short_answer": "Java is a programming language."
+                                                                                }
+                                                                                """)
+                                                                )
+                                                        ) ShortAnswerFlashcardDto shortAnswerFlashcardDto){
+
+        FlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, shortAnswerFlashcardDto);
+
+        return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
+    }
 //
 //    @Operation(
 //            summary = "新增填空題字卡",

@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,14 +21,13 @@ import java.util.List;
         name = "NoteDto",
         description = "筆記的 Data Transfer Object"
 )
-public class NoteDto {
+public class NoteDto implements Serializable {
 
     @Schema(
             name = "id",
             description = "筆記 id",
             example = "1"
     )
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @Schema(
@@ -43,10 +43,7 @@ public class NoteDto {
             description = "筆記所屬的使用者 id",
             example = "1"
     )
-    @JsonProperty(
-            value = "user_id",
-            access = JsonProperty.Access.READ_ONLY
-    )
+    @JsonProperty(value = "user_id")
     private Long userId;
 
     @Schema(
@@ -54,22 +51,16 @@ public class NoteDto {
             description = "筆記建立日期",
             example = "2024-06-21T18:50:00"
     )
-    @JsonProperty(
-            value = "date_created",
-            access = JsonProperty.Access.READ_ONLY
-    )
-    private LocalDateTime dateCreated;
+    @JsonProperty(value = "date_created")
+    private String dateCreated;
 
     @Schema(
             name = "last_updated",
             description = "筆記最後更新日期",
             example = "2024-06-21T18:50:00"
     )
-    @JsonProperty(
-            value = "last_updated",
-            access = JsonProperty.Access.READ_ONLY
-    )
-    private LocalDateTime lastUpdated;
+    @JsonProperty(value = "last_updated")
+    private String lastUpdated;
 
 //    @Schema(
 //            name = "flashcards",
