@@ -38,16 +38,16 @@ public class NoteDto {
     @NotEmpty(message = "content cannot be empty")
     private String content;
 
-//    @Schema(
-//            name = "user_id",
-//            description = "筆記所屬的使用者 id",
-//            example = "1"
-//    )
-//    @JsonProperty(
-//            value = "user_id",
-//            access = JsonProperty.Access.READ_ONLY
-//    )
-//    private Long userId;
+    @Schema(
+            name = "user_id",
+            description = "筆記所屬的使用者 id",
+            example = "1"
+    )
+    @JsonProperty(
+            value = "user_id",
+            access = JsonProperty.Access.READ_ONLY
+    )
+    private Long userId;
 
     @Schema(
             name = "date_created",

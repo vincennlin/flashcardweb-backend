@@ -37,7 +37,7 @@ public class NoteController {
 
     private NoteService noteService;
 
-    @GetMapping("/status/check")
+    @GetMapping("/notes/status/check")
     public ResponseEntity<String> status() {
         return new ResponseEntity<>("Note Service is up and running on port " + env.getProperty("local.server.port"), HttpStatus.OK);
     }

@@ -18,12 +18,12 @@ public class JwtClaimsParser {
 
     Jwt<?,?> jwtObject;
 
-    public JwtClaimsParser(String jwtString, String secretToken) {
-        this.jwtObject = parseJwt(jwtString, secretToken);
+    public JwtClaimsParser(String jwtString, String tokenSecret) {
+        this.jwtObject = parseJwt(jwtString, tokenSecret);
     }
 
-    private Jwt<?,?> parseJwt(String jwtString, String secretToken) {
-        byte[] tokenSecretBytes = Base64.getEncoder().encode(secretToken.getBytes());
+    private Jwt<?,?> parseJwt(String jwtString, String tokenSecret) {
+        byte[] tokenSecretBytes = Base64.getEncoder().encode(tokenSecret.getBytes());
         SecretKey secretKey = Keys.hmacShaKeyFor(tokenSecretBytes);
 
         JwtParser jwtParser = Jwts.parser()
@@ -34,7 +34,12 @@ public class JwtClaimsParser {
     }
 
     public Collection<? extends GrantedAuthority> getUserAuthorities() {
-        Collection<Map<String, String>> scopes  = ((Claims) jwtObject.getPayload()).get("scope", List.class);
+
+        Claims claims = (Claims) jwtObject.getPayload();
+
+        if (claims.get("scope") == null) return List.of();
+
+        Collection<Map<String, String>> scopes  = claims.get("scope", List.class);
 
         return scopes.stream().map(scopeMap ->
                 new SimpleGrantedAuthority(scopeMap.get("authority"))).toList();
@@ -42,9 +47,5 @@ public class JwtClaimsParser {
 
     public String getJwtSubject() {
         return  ((Claims) jwtObject.getPayload()).getSubject();
-    }
-
-    public Long getUserId() {
-        return Long.parseLong(((Claims) jwtObject.getPayload()).get("user_id", String.class));
     }
 }
