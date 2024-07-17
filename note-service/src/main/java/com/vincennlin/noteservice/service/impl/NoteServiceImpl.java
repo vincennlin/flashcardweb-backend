@@ -6,9 +6,8 @@ import com.vincennlin.noteservice.payload.NoteDto;
 import com.vincennlin.noteservice.payload.NotePageResponse;
 import com.vincennlin.noteservice.repository.NoteRepository;
 import com.vincennlin.noteservice.service.NoteService;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,14 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@AllArgsConstructor
 @Service
 public class NoteServiceImpl implements NoteService {
 
-    @Autowired
     private NoteRepository noteRepository;
 
-    @Qualifier("noteServiceModelMapper")
-    @Autowired
     private ModelMapper modelMapper;
 
     @Override
