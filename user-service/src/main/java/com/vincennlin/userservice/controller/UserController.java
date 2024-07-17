@@ -1,9 +1,6 @@
 package com.vincennlin.userservice.controller;
 
-import com.vincennlin.userservice.payload.LoginDto;
-import com.vincennlin.userservice.payload.LoginResponse;
-import com.vincennlin.userservice.payload.RegisterDto;
-import com.vincennlin.userservice.payload.RegisterResponse;
+import com.vincennlin.userservice.payload.*;
 import com.vincennlin.userservice.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -91,20 +88,10 @@ public class UserController {
     )
     @ApiResponse(
             responseCode = "200",
-            description = "登入成功，Response Body 會包含 JWT Token",
-            content = @Content(
-                    mediaType = "application/json",
-                    examples = @ExampleObject(value = """
-                            {
-                                "message": "User logged in successfully!",
-                                "access_token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzIwMzI2MDcwLCJleHAiOjE3MjA5MzA4NzB9.hw2pFQvt5gzYoJMPNOR3lj_S0uStnpXbX-rXmib7ldzt5elULb_jguHHsOIaNhva",
-                                "token_type": "Bearer"
-                            }
-                            """)
-            )
+            description = "登入成功，Response Header 會包含 JWT Token"
     )
     @PostMapping(value = {"/auth/login"})
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody
+    public ResponseEntity<Void> login(@Valid @RequestBody
                                                @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                        content = @Content(
                                                                mediaType = "application/json",
@@ -116,8 +103,14 @@ public class UserController {
                                                                            """)
                                                        )
                                                ) LoginDto loginDto) {
-        LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setMessage("User logged in successfully!");
-        return new ResponseEntity<>(loginResponse, HttpStatus.OK);
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @GetMapping("/users/{user_id}")
+    public ResponseEntity<UserDto> getUserByUserId(@PathVariable("user_id") Long userId) {
+
+        UserDto userDto = userService.getUserByUserId(userId);
+
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 }

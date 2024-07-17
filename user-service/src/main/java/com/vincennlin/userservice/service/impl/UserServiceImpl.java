@@ -64,6 +64,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDto getUserByUserId(Long userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new WebAPIException(HttpStatus.NOT_FOUND, "User not found with id: " + userId));
+
+        return modelMapper.map(user, UserDto.class);
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
 
         User user = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
@@ -77,61 +86,4 @@ public class UserServiceImpl implements UserService {
         return new FlashcardwebUserDetails(user.getUsername(), user.getEmail(),
                 user.getPassword(), new ArrayList<>(), user.getId());
     }
-
-    //
-//    @Override
-//    public RegisterResponse register(RegisterDto registerDto) {
-//
-//        if (userRepository.existsByUsername(registerDto.getUsername())) {
-//            throw new WebAPIException(HttpStatus.BAD_REQUEST, "Username is already taken!");
-//        }
-//
-//        if (userRepository.existsByEmail(registerDto.getEmail())) {
-//            throw new WebAPIException(HttpStatus.BAD_REQUEST, "Email is already taken!");
-//        }
-//
-//        User user = new User();
-//        user.setName(registerDto.getName());
-//        user.setUsername(registerDto.getUsername());
-//        user.setEmail(registerDto.getEmail());
-//        user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
-//
-//        Set<Role> roles = new HashSet<>();
-//        if (user.getUsername().equals("admin")) {
-//            Role adminRole = roleRepository.findByName("ROLE_ADMIN")
-//                    .orElseThrow(() -> new WebAPIException(HttpStatus.INTERNAL_SERVER_ERROR, "Admin Role not set."));
-//            roles.add(adminRole);
-//        } else {
-//            Role userRole = roleRepository.findByName("ROLE_USER")
-//                    .orElseThrow(() -> new WebAPIException(HttpStatus.INTERNAL_SERVER_ERROR, "User Role not set."));
-//            roles.add(userRole);
-//        }
-//        user.setRoles(roles);
-//
-//        User newUser = userRepository.save(user);
-//
-//        RegisterResponse registerResponse = new RegisterResponse();
-//        registerResponse.setMessage("User registered successfully!");
-//        registerResponse.setAccountInfo(modelMapper.map(newUser, AccountInfoDto.class));
-//
-//        return registerResponse;
-//    }
-
-//    @Override
-//    public LoginResponse login(LoginDto loginDto) {
-//
-//        String usernameOrEmail = loginDto.getUsernameOrEmail();
-//
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(
-//                        usernameOrEmail, loginDto.getPassword()));
-//
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//
-//        LoginResponse loginResponse = new LoginResponse();
-//        loginResponse.setMessage("User logged in successfully!");
-//        loginResponse.setAccessToken(jwtTokenProvider.generateToken(authentication));
-//
-//        return loginResponse;
-//    }
 }
