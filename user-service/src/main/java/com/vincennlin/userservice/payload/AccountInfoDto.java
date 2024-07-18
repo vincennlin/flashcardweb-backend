@@ -11,16 +11,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@Schema(
-        name = "UserDto",
-        description = "用戶的 Data Transfer Object"
-)
-public class UserDto {
+@AllArgsConstructor
+public class AccountInfoDto {
 
     @Schema(
             name = "id",
@@ -53,6 +50,14 @@ public class UserDto {
     private String email;
 
     @Schema(
+            name = "password",
+            description = "用戶密碼",
+            example = "password"
+    )
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String password;
+
+    @Schema(
             name = "date_created",
             description = "帳號建立日期",
             example = "2021-08-01T00:00:00"
@@ -75,4 +80,11 @@ public class UserDto {
     )
     @UpdateTimestamp
     private LocalDateTime lastUpdated;
+//    @Schema(
+//            name = "roles",
+//            description = "用戶身份列表",
+//            example = "[{\"name\": \"ROLE_USER\"}]"
+//    )
+//    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+//    private Set<RoleDto> roles;
 }
