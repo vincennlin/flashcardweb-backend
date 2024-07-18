@@ -2,6 +2,8 @@ package com.vincennlin.flashcardservice.controller;
 
 import com.vincennlin.flashcardservice.constant.FlashcardType;
 import com.vincennlin.flashcardservice.payload.FlashcardDto;
+import com.vincennlin.flashcardservice.payload.concrete.FillInTheBlankFlashcardDto;
+import com.vincennlin.flashcardservice.payload.concrete.MultipleChoiceFlashcardDto;
 import com.vincennlin.flashcardservice.payload.concrete.ShortAnswerFlashcardDto;
 import com.vincennlin.flashcardservice.payload.concrete.TrueFalseFlashcardDto;
 import com.vincennlin.flashcardservice.service.FlashcardService;
@@ -215,191 +217,191 @@ public class FlashcardController {
 
         return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
     }
-//
-//    @Operation(
-//            summary = "新增填空題字卡",
-//            description = "根據 note_id 新增填空題字卡"
-//    )
-//    @ApiResponse(
-//            responseCode = "201",
-//            description = "成功新增填空題字卡",
-//            content = @Content(
-//                    mediaType = "application/json",
-//                    examples = @ExampleObject(value = """
-//                            {
-//                                "id": 2,
-//                                "question": "In Java, ___ allows an object to take on many forms, enabling a single method to have ___ behaviors depending on the object's ___.",
-//                                "type": "FILL_IN_THE_BLANK",
-//                                "note_id": 1,
-//                                "in_blank_answers": [
-//                                    {
-//                                        "id": 1,
-//                                        "text": "polymorphism"
-//                                    },
-//                                    {
-//                                        "id": 2,
-//                                        "text": "different"
-//                                    },
-//                                    {
-//                                        "id": 3,
-//                                        "text": "type"
-//                                    }
-//                                ],
-//                                "full_answer": "In Java, polymorphism allows an object to take on many forms, enabling a single method to have different behaviors depending on the object's type."
-//                            }
-//                            """)
-//            )
-//    )
-//    @SecurityRequirement(name = "Bear Authentication")
+
+    @Operation(
+            summary = "新增填空題字卡",
+            description = "根據 note_id 新增填空題字卡"
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "成功新增填空題字卡",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                "id": 2,
+                                "question": "In Java, ___ allows an object to take on many forms, enabling a single method to have ___ behaviors depending on the object's ___.",
+                                "type": "FILL_IN_THE_BLANK",
+                                "note_id": 1,
+                                "in_blank_answers": [
+                                    {
+                                        "id": 1,
+                                        "text": "polymorphism"
+                                    },
+                                    {
+                                        "id": 2,
+                                        "text": "different"
+                                    },
+                                    {
+                                        "id": 3,
+                                        "text": "type"
+                                    }
+                                ],
+                                "full_answer": "In Java, polymorphism allows an object to take on many forms, enabling a single method to have different behaviors depending on the object's type."
+                            }
+                            """)
+            )
+    )
+    @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-//    @PostMapping("/notes/{note_id}/flashcards/fill-in-the-blank")
-//    public ResponseEntity<FlashcardDto> createFillInTheBlankFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
-//                                                        @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
-//                                                                content = @Content(
-//                                                                        mediaType = "application/json",
-//                                                                        examples = @ExampleObject(value = """
-//                                                                                {
-//                                                                                    "question": "In Java, ___ allows an object to take on many forms, enabling a single method to have ___ behaviors depending on the object's ___.",
-//                                                                                    "in_blank_answers": [
-//                                                                                        {
-//                                                                                            "text": "polymorphism"
-//                                                                                        },
-//                                                                                        {
-//                                                                                            "text": "different"
-//                                                                                        },
-//                                                                                        {
-//                                                                                            "text": "type"
-//                                                                                        }
-//                                                                                    ],
-//                                                                                    "full_answer": "In Java, polymorphism allows an object to take on many forms, enabling a single method to have different behaviors depending on the object's type.",
-//                                                                                    "type": "FILL_IN_THE_BLANK"
-//                                                                                }
-//                                                                                """)
-//                                                                )
-//                                                        ) FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto){
-//
-//        FlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, fillInTheBlankFlashcardDto);
-//
-//        return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
-//    }
-//
-//    @Operation(
-//            summary = "新增選擇題字卡",
-//            description = "根據 note_id 新增選擇題字卡"
-//    )
-//    @ApiResponse(
-//            responseCode = "201",
-//            description = "成功新增選擇題字卡",
-//            content = @Content(
-//                    mediaType = "application/json",
-//                    examples = @ExampleObject(value = """
-//                            {
-//                                "id": 3,
-//                                "question": "What is Java??",
-//                                "type": "MULTIPLE_CHOICE",
-//                                "options": [
-//                                    {
-//                                        "id": 1,
-//                                        "text": "Java is a programming language."
-//                                    },
-//                                    {
-//                                        "id": 2,
-//                                        "text": "Java is a type of coffee."
-//                                    },
-//                                    {
-//                                        "id": 3,
-//                                        "text": "Java is a type of tea."
-//                                    },
-//                                    {
-//                                        "id": 4,
-//                                        "text": "Java is a type of fruit."
-//                                    }
-//                                ],
-//                                "note_id": 1,
-//                                "answer_option": {
-//                                    "id": 1,
-//                                    "text": "Java is a programming language."
-//                                }
-//                            }
-//                            """)
-//            )
-//    )
-//    @SecurityRequirement(name = "Bear Authentication")
+    @PostMapping("/notes/{note_id}/flashcards/fill-in-the-blank")
+    public ResponseEntity<FlashcardDto> createFillInTheBlankFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
+                                                        @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                                content = @Content(
+                                                                        mediaType = "application/json",
+                                                                        examples = @ExampleObject(value = """
+                                                                                {
+                                                                                    "question": "In Java, ___ allows an object to take on many forms, enabling a single method to have ___ behaviors depending on the object's ___.",
+                                                                                    "in_blank_answers": [
+                                                                                        {
+                                                                                            "text": "polymorphism"
+                                                                                        },
+                                                                                        {
+                                                                                            "text": "different"
+                                                                                        },
+                                                                                        {
+                                                                                            "text": "type"
+                                                                                        }
+                                                                                    ],
+                                                                                    "full_answer": "In Java, polymorphism allows an object to take on many forms, enabling a single method to have different behaviors depending on the object's type.",
+                                                                                    "type": "FILL_IN_THE_BLANK"
+                                                                                }
+                                                                                """)
+                                                                )
+                                                        ) FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto){
+
+        FlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, fillInTheBlankFlashcardDto);
+
+        return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
+    }
+
+    @Operation(
+            summary = "新增選擇題字卡",
+            description = "根據 note_id 新增選擇題字卡"
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "成功新增選擇題字卡",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                "id": 3,
+                                "question": "What is Java??",
+                                "type": "MULTIPLE_CHOICE",
+                                "options": [
+                                    {
+                                        "id": 1,
+                                        "text": "Java is a programming language."
+                                    },
+                                    {
+                                        "id": 2,
+                                        "text": "Java is a type of coffee."
+                                    },
+                                    {
+                                        "id": 3,
+                                        "text": "Java is a type of tea."
+                                    },
+                                    {
+                                        "id": 4,
+                                        "text": "Java is a type of fruit."
+                                    }
+                                ],
+                                "note_id": 1,
+                                "answer_option": {
+                                    "id": 1,
+                                    "text": "Java is a programming language."
+                                }
+                            }
+                            """)
+            )
+    )
+    @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-//    @PostMapping("/notes/{note_id}/flashcards/multiple-choice")
-//    public ResponseEntity<FlashcardDto> createMultipleChoiceFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
-//                                                        @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
-//                                                                content = @Content(
-//                                                                        mediaType = "application/json",
-//                                                                        examples = @ExampleObject(value = """
-//                                                                                {
-//                                                                                    "question": "What is Java??",
-//                                                                                    "options": [
-//                                                                                        {
-//                                                                                            "text": "Java is a programming language."
-//                                                                                        },
-//                                                                                        {
-//                                                                                            "text": "Java is a type of coffee."
-//                                                                                        },
-//                                                                                        {
-//                                                                                            "text": "Java is a type of tea."
-//                                                                                        },
-//                                                                                        {
-//                                                                                            "text": "Java is a type of fruit."
-//                                                                                        }
-//                                                                                    ],
-//                                                                                    "answer_index": 1
-//                                                                                }
-//                                                                                """)
-//                                                                )
-//                                                        ) MultipleChoiceFlashcardDto multipleChoiceFlashcardDto){
-//
-//        FlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, multipleChoiceFlashcardDto);
-//
-//        return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
-//    }
-//
-//    @Operation(
-//            summary = "新增是非題字卡",
-//            description = "根據 note_id 新增是非題字卡"
-//    )
-//    @ApiResponse(
-//            responseCode = "201",
-//            description = "成功新增是非題字卡",
-//            content = @Content(
-//                    mediaType = "application/json",
-//                    examples = @ExampleObject(value = """
-//                            {
-//                                "id": 4,
-//                                "question": "Java is an object-oriented programming language.",
-//                                "type": "TRUE_FALSE",
-//                                "note_id": 1,
-//                                "true_false_answer": true
-//                            }
-//                            """)
-//            )
-//    )
-//    @SecurityRequirement(name = "Bear Authentication")
+    @PostMapping("/notes/{note_id}/flashcards/multiple-choice")
+    public ResponseEntity<FlashcardDto> createMultipleChoiceFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
+                                                        @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                                content = @Content(
+                                                                        mediaType = "application/json",
+                                                                        examples = @ExampleObject(value = """
+                                                                                {
+                                                                                    "question": "What is Java??",
+                                                                                    "options": [
+                                                                                        {
+                                                                                            "text": "Java is a programming language."
+                                                                                        },
+                                                                                        {
+                                                                                            "text": "Java is a type of coffee."
+                                                                                        },
+                                                                                        {
+                                                                                            "text": "Java is a type of tea."
+                                                                                        },
+                                                                                        {
+                                                                                            "text": "Java is a type of fruit."
+                                                                                        }
+                                                                                    ],
+                                                                                    "answer_index": 1
+                                                                                }
+                                                                                """)
+                                                                )
+                                                        ) MultipleChoiceFlashcardDto multipleChoiceFlashcardDto){
+
+        FlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, multipleChoiceFlashcardDto);
+
+        return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
+    }
+
+    @Operation(
+            summary = "新增是非題字卡",
+            description = "根據 note_id 新增是非題字卡"
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "成功新增是非題字卡",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                "id": 4,
+                                "question": "Java is an object-oriented programming language.",
+                                "type": "TRUE_FALSE",
+                                "note_id": 1,
+                                "true_false_answer": true
+                            }
+                            """)
+            )
+    )
+    @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-//    @PostMapping("/notes/{note_id}/flashcards/true-false")
-//    public ResponseEntity<FlashcardDto> createTrueFalseFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
-//                                                                 @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
-//                                                                         content = @Content(
-//                                                                                 mediaType = "application/json",
-//                                                                                 examples = @ExampleObject(value = """
-//                                                                                         {
-//                                                                                             "question": "Java is an object-oriented programming language.",
-//                                                                                             "true_false_answer": true
-//                                                                                         }
-//                                                                                         """)
-//                                                                         )
-//                                                                 ) TrueFalseFlashcardDto trueFalseFlashcardDto){
-//
-//        FlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, trueFalseFlashcardDto);
-//
-//        return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
-//    }
-//
+    @PostMapping("/notes/{note_id}/flashcards/true-false")
+    public ResponseEntity<FlashcardDto> createTrueFalseFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
+                                                                 @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                                         content = @Content(
+                                                                                 mediaType = "application/json",
+                                                                                 examples = @ExampleObject(value = """
+                                                                                         {
+                                                                                             "question": "Java is an object-oriented programming language.",
+                                                                                             "true_false_answer": true
+                                                                                         }
+                                                                                         """)
+                                                                         )
+                                                                 ) TrueFalseFlashcardDto trueFalseFlashcardDto){
+
+        FlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, trueFalseFlashcardDto);
+
+        return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
+    }
+
 //    @Operation(
 //            summary = "更新問答題字卡",
 //            description = "根據 flashcard_id 更新問答題字卡"
