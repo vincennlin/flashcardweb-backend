@@ -1,6 +1,6 @@
 package com.vincennlin.userservice.config;
 
-import com.vincennlin.userservice.security.AuthenticationFilter;
+import com.vincennlin.userservice.filter.AuthenticationFilter;
 import com.vincennlin.userservice.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
