@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface FlashcardService {
 
-//    List<FlashcardDto> getFlashcardsByNoteId(Long noteId);
-//
-//    FlashcardDto getFlashcardById(Long flashcardId);
+    List<FlashcardDto> getFlashcardsByNoteId(Long noteId);
+
+    FlashcardDto getFlashcardById(Long flashcardId);
 
     FlashcardDto createFlashcard(Long noteId, ShortAnswerFlashcardDto shortAnswerFlashcardDto);
 
