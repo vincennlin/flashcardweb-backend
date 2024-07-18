@@ -77,5 +77,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         response.addHeader("token_type", "Bearer");
         response.addHeader("access_token", token);
+        response.addHeader("user_id", userDto.getId().toString());
     }
 }

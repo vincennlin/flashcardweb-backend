@@ -1,6 +1,7 @@
 package com.vincennlin.userservice.config;
 
 import com.vincennlin.userservice.filter.AuthenticationFilter;
+import com.vincennlin.userservice.filter.AuthorizationFilter;
 import com.vincennlin.userservice.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -65,7 +66,8 @@ public class WebSecurity {
 //                        .anyRequest().authenticated()
         );
 
-        http.addFilter(authenticationFilter);
+        http.addFilter(authenticationFilter)
+                .addFilter(new AuthorizationFilter(authenticationManager, environment));
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
