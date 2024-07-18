@@ -1,9 +1,7 @@
-package com.vincennlin.flashcardservice.payload.concrete;
+package com.vincennlin.noteservice.payload.flashcard.concrete;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import com.vincennlin.flashcardservice.operation.Operation;
-import com.vincennlin.flashcardservice.payload.AbstractFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.FlashcardDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -20,7 +18,7 @@ import java.util.List;
         name = "FillInTheBlankFlashcardDto",
         description = "填空題的 Data Transfer Object"
 )
-public class FillInTheBlankFlashcardDto extends AbstractFlashcardDto {
+public class FillInTheBlankFlashcardDto extends FlashcardDto {
 
     @Schema(
             name = "in_blank_answers",
@@ -39,9 +37,4 @@ public class FillInTheBlankFlashcardDto extends AbstractFlashcardDto {
     @NotBlank(message = "Full answer cannot be blank")
     @JsonProperty("full_answer")
     private String fullAnswer;
-
-    @Override
-    public void execute(Operation operation) {
-        operation.apply(this);
-    }
 }

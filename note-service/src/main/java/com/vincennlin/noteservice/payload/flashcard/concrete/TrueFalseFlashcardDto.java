@@ -1,8 +1,7 @@
-package com.vincennlin.flashcardservice.payload.concrete;
+package com.vincennlin.noteservice.payload.flashcard.concrete;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vincennlin.flashcardservice.operation.Operation;
-import com.vincennlin.flashcardservice.payload.AbstractFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.FlashcardDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -16,7 +15,7 @@ import lombok.*;
         name = "TrueFalseFlashcardDto",
         description = "是非題的 Data Transfer Object"
 )
-public class TrueFalseFlashcardDto extends AbstractFlashcardDto {
+public class TrueFalseFlashcardDto extends FlashcardDto {
 
     @Schema(
             description = "答案是否為真，ture 或 false 的布林值",
@@ -25,9 +24,4 @@ public class TrueFalseFlashcardDto extends AbstractFlashcardDto {
     @JsonProperty("true_false_answer")
     @NotNull(message = "The value for 'true_false_answer' cannot be null")
     private Boolean trueFalseAnswer;
-
-    @Override
-    public void execute(Operation operation) {
-        operation.apply(this);
-    }
 }

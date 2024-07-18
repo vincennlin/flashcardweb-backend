@@ -1,6 +1,6 @@
 package com.vincennlin.flashcardservice.entity.concrete;
 
-import com.vincennlin.flashcardservice.entity.Flashcard;
+import com.vincennlin.flashcardservice.entity.AbstractFlashcard;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "fill_in_the_blank")
-public class FillInTheBlankFlashcard extends Flashcard {
+public class FillInTheBlankFlashcard extends AbstractFlashcard {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "flashcard")
     @Column(name = "in_blank_answers")

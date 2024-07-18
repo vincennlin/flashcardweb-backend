@@ -1,7 +1,5 @@
 package com.vincennlin.noteservice.entity;
 
-import com.vincennlin.flashcardservice.entity.Flashcard;
-import com.vincennlin.userservice.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,8 +9,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter

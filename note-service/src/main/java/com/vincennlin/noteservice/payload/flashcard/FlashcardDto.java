@@ -1,33 +1,44 @@
-package com.vincennlin.flashcardservice.payload;
+package com.vincennlin.noteservice.payload.flashcard;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vincennlin.flashcardservice.constant.FlashcardType;
-import com.vincennlin.flashcardservice.operation.Operation;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+import com.vincennlin.noteservice.constant.FlashcardType;
+import com.vincennlin.noteservice.payload.flashcard.concrete.FillInTheBlankFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.concrete.MultipleChoiceFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.concrete.ShortAnswerFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.concrete.TrueFalseFlashcardDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(
-        name = "FlashcardDto",
-        description = "不會用到，只是拿來給其他字卡繼承用的 Data Transfer Object"
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        property = "type"
 )
-public abstract class FlashcardDto {
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = ShortAnswerFlashcardDto.class, name = "SHORT_ANSWER"),
+        @JsonSubTypes.Type(value = FillInTheBlankFlashcardDto.class, name = "FILL_IN_THE_BLANK"),
+        @JsonSubTypes.Type(value = MultipleChoiceFlashcardDto.class, name = "MULTIPLE_CHOICE"),
+        @JsonSubTypes.Type(value = TrueFalseFlashcardDto.class, name = "TRUE_FALSE")
+})
+@Schema(
+        name = "FlashcardDto"
+)
+public class FlashcardDto {
 
     @Schema(
             name = "id",
             description = "字卡 id",
             example = "1"
     )
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @Schema(
@@ -52,7 +63,6 @@ public abstract class FlashcardDto {
             description = "字卡類型，共有四種：SHORT_ANSWER, FILL_IN_THE_BLANK, MULTIPLE_CHOICE, TRUE_FALSE",
             example = "SHORT_ANSWER"
     )
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private FlashcardType type;
 
     @Schema(
@@ -60,10 +70,7 @@ public abstract class FlashcardDto {
             description = "筆記 id",
             example = "1"
     )
-    @JsonProperty(
-            value = "note_id",
-            access = JsonProperty.Access.READ_ONLY
-    )
+    @JsonProperty(value = "note_id"    )
     private Long noteId;
 
     @Schema(
@@ -71,11 +78,6 @@ public abstract class FlashcardDto {
             description = "字卡所屬的使用者 id",
             example = "1"
     )
-    @JsonProperty(
-            value = "user_id",
-            access = JsonProperty.Access.READ_ONLY
-    )
+    @JsonProperty(value = "user_id")
     private Long userId;
-
-    public abstract void execute(Operation operation);
 }

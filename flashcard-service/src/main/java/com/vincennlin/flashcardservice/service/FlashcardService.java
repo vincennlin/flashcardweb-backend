@@ -1,6 +1,6 @@
 package com.vincennlin.flashcardservice.service;
 
-import com.vincennlin.flashcardservice.payload.FlashcardDto;
+import com.vincennlin.flashcardservice.payload.AbstractFlashcardDto;
 import com.vincennlin.flashcardservice.payload.concrete.FillInTheBlankFlashcardDto;
 import com.vincennlin.flashcardservice.payload.concrete.MultipleChoiceFlashcardDto;
 import com.vincennlin.flashcardservice.payload.concrete.ShortAnswerFlashcardDto;
@@ -10,25 +10,25 @@ import java.util.List;
 
 public interface FlashcardService {
 
-    List<FlashcardDto> getFlashcardsByNoteId(Long noteId);
+    List<AbstractFlashcardDto> getFlashcardsByNoteId(Long noteId);
 
-    FlashcardDto getFlashcardById(Long flashcardId);
+    AbstractFlashcardDto getFlashcardById(Long flashcardId);
 
-    FlashcardDto createFlashcard(Long noteId, ShortAnswerFlashcardDto shortAnswerFlashcardDto);
+    AbstractFlashcardDto createFlashcard(Long noteId, ShortAnswerFlashcardDto shortAnswerFlashcardDto);
 
-    FlashcardDto createFlashcard(Long noteId, FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto);
+    AbstractFlashcardDto createFlashcard(Long noteId, FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto);
 
-    FlashcardDto createFlashcard(Long noteId, MultipleChoiceFlashcardDto multipleChoiceFlashcardDto);
+    AbstractFlashcardDto createFlashcard(Long noteId, MultipleChoiceFlashcardDto multipleChoiceFlashcardDto);
 
-    FlashcardDto createFlashcard(Long noteId, TrueFalseFlashcardDto trueFalseFlashcardDto);
+    AbstractFlashcardDto createFlashcard(Long noteId, TrueFalseFlashcardDto trueFalseFlashcardDto);
 
-    FlashcardDto updateFlashcard(Long flashcardId, ShortAnswerFlashcardDto shortAnswerFlashcardDto);
+    AbstractFlashcardDto updateFlashcard(Long flashcardId, ShortAnswerFlashcardDto shortAnswerFlashcardDto);
 
-    FlashcardDto updateFlashcard(Long flashcardId, FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto);
+    AbstractFlashcardDto updateFlashcard(Long flashcardId, FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto);
 
-    FlashcardDto updateFlashcard(Long flashcardId, MultipleChoiceFlashcardDto multipleChoiceFlashcardDto);
+    AbstractFlashcardDto updateFlashcard(Long flashcardId, MultipleChoiceFlashcardDto multipleChoiceFlashcardDto);
 
-    FlashcardDto updateFlashcard(Long flashcardId, TrueFalseFlashcardDto trueFalseFlashcardDto);
+    AbstractFlashcardDto updateFlashcard(Long flashcardId, TrueFalseFlashcardDto trueFalseFlashcardDto);
 
     void deleteFlashcardById(Long flashcardId);
 }

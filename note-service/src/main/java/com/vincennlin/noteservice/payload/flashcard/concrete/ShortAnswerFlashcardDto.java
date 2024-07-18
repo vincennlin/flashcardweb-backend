@@ -1,8 +1,7 @@
-package com.vincennlin.flashcardservice.payload.concrete;
+package com.vincennlin.noteservice.payload.flashcard.concrete;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vincennlin.flashcardservice.operation.Operation;
-import com.vincennlin.flashcardservice.payload.AbstractFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.FlashcardDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
@@ -16,7 +15,7 @@ import lombok.*;
         name = "ShortAnswerFlashcardDto",
         description = "問答題的 Data Transfer Object"
 )
-public class ShortAnswerFlashcardDto extends AbstractFlashcardDto {
+public class ShortAnswerFlashcardDto extends FlashcardDto {
 
     @Schema(
             name = "short_answer",
@@ -26,9 +25,4 @@ public class ShortAnswerFlashcardDto extends AbstractFlashcardDto {
     @JsonProperty("short_answer")
     @NotEmpty(message = "The value for 'short_answer' cannot be empty")
     private String shortAnswer;
-
-    @Override
-    public void execute(Operation operation) {
-        operation.apply(this);
-    }
 }

@@ -1,6 +1,6 @@
 package com.vincennlin.flashcardservice.entity.concrete;
 
-import com.vincennlin.flashcardservice.entity.Flashcard;
+import com.vincennlin.flashcardservice.entity.AbstractFlashcard;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "multiple_choice")
-public class MultipleChoiceFlashcard extends Flashcard {
+public class MultipleChoiceFlashcard extends AbstractFlashcard {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "flashcard")
     private List<Option> options;
