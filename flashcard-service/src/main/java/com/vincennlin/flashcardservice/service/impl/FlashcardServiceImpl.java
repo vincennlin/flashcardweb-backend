@@ -9,7 +9,10 @@ import com.vincennlin.flashcardservice.exception.ResourceNotFoundException;
 import com.vincennlin.flashcardservice.exception.ResourceOwnershipException;
 import com.vincennlin.flashcardservice.payload.FlashcardDto;
 import com.vincennlin.flashcardservice.payload.NoteClientResponse;
+import com.vincennlin.flashcardservice.payload.concrete.FillInTheBlankFlashcardDto;
+import com.vincennlin.flashcardservice.payload.concrete.MultipleChoiceFlashcardDto;
 import com.vincennlin.flashcardservice.payload.concrete.ShortAnswerFlashcardDto;
+import com.vincennlin.flashcardservice.payload.concrete.TrueFalseFlashcardDto;
 import com.vincennlin.flashcardservice.repository.FlashcardRepository;
 import com.vincennlin.flashcardservice.repository.OptionRepository;
 import com.vincennlin.flashcardservice.service.FlashcardService;
@@ -63,9 +66,7 @@ public class FlashcardServiceImpl implements FlashcardService {
     @Override
     public FlashcardDto createFlashcard(Long noteId, ShortAnswerFlashcardDto shortAnswerFlashcardDto) {
 
-        NoteDto noteDto = noteServiceClient.getNoteById(noteId).getBody();
-
-        Note note = modelMapper.map(noteDto, Note.class);
+        Note note = getNoteById(noteId);
 
         shortAnswerFlashcardDto.setUserId(getCurrentUserId());
 
@@ -78,76 +79,70 @@ public class FlashcardServiceImpl implements FlashcardService {
 
         return modelMapper.map(newFlashcard, ShortAnswerFlashcardDto.class);
     }
-//
-//    @Override
-//    public FlashcardDto createFlashcard(Long noteId, FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto) {
-//
-//        Note note = noteRepository.findById(noteId).orElseThrow(() ->
-//                new ResourceNotFoundException("Note", "id", noteId));
-//
-//        authorizeOwnership(note.getUser().getId());
-//        fillInTheBlankFlashcardDto.setUserId(getCurrentUserId());
-//
-//        FillInTheBlankFlashcard fillInTheBlankFlashcard = modelMapper.map(fillInTheBlankFlashcardDto, FillInTheBlankFlashcard.class);
-//        fillInTheBlankFlashcard.setType(FlashcardType.FILL_IN_THE_BLANK);
-//
-//        fillInTheBlankFlashcard.setNote(note);
-//
-//        fillInTheBlankFlashcard.getInBlankAnswers().forEach(
-//                inBlankAnswers -> inBlankAnswers.setFlashcard(fillInTheBlankFlashcard));
-//
-//        Flashcard newFlashcard = flashcardRepository.save(fillInTheBlankFlashcard);
-//
-//        return modelMapper.map(newFlashcard, FillInTheBlankFlashcardDto.class);
-//    }
-//
-//    @Transactional
-//    @Override
-//    public FlashcardDto createFlashcard(Long noteId, MultipleChoiceFlashcardDto multipleChoiceFlashcardDto) {
-//
-//        Note note = noteRepository.findById(noteId).orElseThrow(() ->
-//                new ResourceNotFoundException("Note", "id", noteId));
-//
-//        authorizeOwnership(note.getUser().getId());
-//        multipleChoiceFlashcardDto.setUserId(getCurrentUserId());
-//
-//        MultipleChoiceFlashcard multipleChoiceFlashcard = modelMapper.map(multipleChoiceFlashcardDto, MultipleChoiceFlashcard.class);
-//        multipleChoiceFlashcard.setType(FlashcardType.MULTIPLE_CHOICE);
-//        multipleChoiceFlashcard.setNote(note);
-//
-//        List<Option> options = multipleChoiceFlashcard.getOptions();
-//        options.forEach(option -> option.setFlashcard(multipleChoiceFlashcard));
-//        List<Option> savedOptions = optionRepository.saveAll(options);
-//
-//        if (multipleChoiceFlashcardDto.getAnswerIndex() > savedOptions.size()) {
-//            throw new IllegalArgumentException("Answer index is out of range of options");
-//        }
-//        multipleChoiceFlashcard.setAnswerOption(savedOptions.get(multipleChoiceFlashcardDto.getAnswerIndex() - 1));
-//
-//        Flashcard newFlashcard = flashcardRepository.save(multipleChoiceFlashcard);
-//
-//        return modelMapper.map(newFlashcard, MultipleChoiceFlashcardDto.class);
-//    }
-//
-//    @Override
-//    public FlashcardDto createFlashcard(Long noteId, TrueFalseFlashcardDto trueFalseFlashcardDto) {
-//
-//        Note note = noteRepository.findById(noteId).orElseThrow(() ->
-//                new ResourceNotFoundException("Note", "id", noteId));
-//
-//        authorizeOwnership(note.getUser().getId());
-//        trueFalseFlashcardDto.setUserId(getCurrentUserId());
-//
-//        TrueFalseFlashcard trueFalseFlashcard = modelMapper.map(trueFalseFlashcardDto, TrueFalseFlashcard.class);
-//        trueFalseFlashcard.setType(FlashcardType.TRUE_FALSE);
-//
-//        trueFalseFlashcard.setNote(note);
-//
-//        Flashcard newFlashcard = flashcardRepository.save(trueFalseFlashcard);
-//
-//        return modelMapper.map(newFlashcard, TrueFalseFlashcardDto.class);
-//    }
-//
+
+    @Override
+    public FlashcardDto createFlashcard(Long noteId, FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto) {
+
+        Note note = getNoteById(noteId);
+
+        fillInTheBlankFlashcardDto.setUserId(getCurrentUserId());
+
+        FillInTheBlankFlashcard fillInTheBlankFlashcard = modelMapper.map(fillInTheBlankFlashcardDto, FillInTheBlankFlashcard.class);
+        fillInTheBlankFlashcard.setType(FlashcardType.FILL_IN_THE_BLANK);
+
+        fillInTheBlankFlashcard.setNote(note);
+
+        fillInTheBlankFlashcard.getInBlankAnswers().forEach(
+                inBlankAnswers -> inBlankAnswers.setFlashcard(fillInTheBlankFlashcard));
+
+        Flashcard newFlashcard = flashcardRepository.save(fillInTheBlankFlashcard);
+
+        return modelMapper.map(newFlashcard, FillInTheBlankFlashcardDto.class);
+    }
+
+    @Transactional
+    @Override
+    public FlashcardDto createFlashcard(Long noteId, MultipleChoiceFlashcardDto multipleChoiceFlashcardDto) {
+
+        Note note = getNoteById(noteId);
+
+        multipleChoiceFlashcardDto.setUserId(getCurrentUserId());
+
+        MultipleChoiceFlashcard multipleChoiceFlashcard = modelMapper.map(multipleChoiceFlashcardDto, MultipleChoiceFlashcard.class);
+        multipleChoiceFlashcard.setType(FlashcardType.MULTIPLE_CHOICE);
+        multipleChoiceFlashcard.setNote(note);
+
+        List<Option> options = multipleChoiceFlashcard.getOptions();
+        options.forEach(option -> option.setFlashcard(multipleChoiceFlashcard));
+        List<Option> savedOptions = optionRepository.saveAll(options);
+
+        if (multipleChoiceFlashcardDto.getAnswerIndex() > savedOptions.size()) {
+            throw new IllegalArgumentException("Answer index is out of range of options");
+        }
+        multipleChoiceFlashcard.setAnswerOption(savedOptions.get(multipleChoiceFlashcardDto.getAnswerIndex() - 1));
+
+        Flashcard newFlashcard = flashcardRepository.save(multipleChoiceFlashcard);
+
+        return modelMapper.map(newFlashcard, MultipleChoiceFlashcardDto.class);
+    }
+
+    @Override
+    public FlashcardDto createFlashcard(Long noteId, TrueFalseFlashcardDto trueFalseFlashcardDto) {
+
+        Note note = getNoteById(noteId);
+
+        trueFalseFlashcardDto.setUserId(getCurrentUserId());
+
+        TrueFalseFlashcard trueFalseFlashcard = modelMapper.map(trueFalseFlashcardDto, TrueFalseFlashcard.class);
+        trueFalseFlashcard.setType(FlashcardType.TRUE_FALSE);
+
+        trueFalseFlashcard.setNote(note);
+
+        Flashcard newFlashcard = flashcardRepository.save(trueFalseFlashcard);
+
+        return modelMapper.map(newFlashcard, TrueFalseFlashcardDto.class);
+    }
+
 //    @Transactional
 //    @Override
 //    public FlashcardDto updateFlashcard(Long flashcardId, ShortAnswerFlashcardDto shortAnswerFlashcardDto) {
@@ -292,6 +287,15 @@ public class FlashcardServiceImpl implements FlashcardService {
 
     private Long getCurrentUserId() {
         return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+    }
+
+    private Note getNoteById(Long noteId) {
+        ResponseEntity<NoteDto> responseEntity = noteServiceClient.getNoteById(noteId);
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            return modelMapper.map(responseEntity.getBody(), Note.class);
+        } else {
+            throw new ResourceNotFoundException("Note", "id", noteId);
+        }
     }
 
 //    private Boolean containsRole(String roleName) {
