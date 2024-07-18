@@ -23,6 +23,9 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +46,7 @@ public class FlashcardServiceImpl implements FlashcardService {
 
     private NoteServiceClient noteServiceClient;
 
+    @PostFilter("filterObject.userId == principal or hasAuthority('ADVANCED')")
     @Override
     public List<AbstractFlashcardDto> getFlashcardsByNoteId(Long noteId) {
 
@@ -52,6 +56,7 @@ public class FlashcardServiceImpl implements FlashcardService {
         return flashcards.stream().map(this::mapToDto).toList();
     }
 
+    @PostAuthorize("returnObject.userId == principal or hasAuthority('ADVANCED')")
     @Override
     public AbstractFlashcardDto getFlashcardById(Long flashcardId) {
 
@@ -292,7 +297,23 @@ public class FlashcardServiceImpl implements FlashcardService {
     }
 
     private Long getCurrentUserId() {
-        return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        return Long.parseLong(getAuthentication().getPrincipal().toString());
+    }
+
+    private void authorizeOwnership(Long ownerId) {
+        Long currentUserId = getCurrentUserId();
+        if (!currentUserId.equals(ownerId) && !containsAuthority("ADVANCED")) {
+            throw new ResourceOwnershipException(currentUserId, ownerId);
+        }
+    }
+
+    private Boolean containsAuthority(String authorityName) {
+        return getAuthentication().getAuthorities().stream().anyMatch(
+                authority -> authority.getAuthority().equals(authorityName));
+    }
+
+    private Authentication getAuthentication() {
+        return SecurityContextHolder.getContext().getAuthentication();
     }
 
     private NoteClientResponse getNoteClientResponseByNoteId(Long noteId) {
@@ -306,21 +327,6 @@ public class FlashcardServiceImpl implements FlashcardService {
                 throw new WebAPIException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
         }
     }
-
-    private void authorizeOwnership(Long ownerId) {
-        Long currentUserId = getCurrentUserId();
-//        if (!currentUserId.equals(userId) && !containsRole("ROLE_ADMIN")) {
-//            throw new ResourceOwnershipException(currentUserId, userId);
-//        }
-        if (!currentUserId.equals(ownerId)) {
-            throw new ResourceOwnershipException(currentUserId, ownerId);
-        }
-    }
-
-//    private Boolean containsRole(String roleName) {
-//        return getUserDetails().getAuthorities().stream().anyMatch(
-//                authority -> authority.getAuthority().equals(roleName));
-//    }
 
     private AbstractFlashcardDto mapToDto(AbstractFlashcard flashcard) {
         AbstractFlashcardDto flashcardDto;

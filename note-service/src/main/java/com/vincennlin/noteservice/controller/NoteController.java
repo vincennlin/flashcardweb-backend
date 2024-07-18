@@ -138,7 +138,7 @@ public class NoteController {
             )
     )
     @SecurityRequirement(name = "Bear Authentication")
-//    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAuthority('READ')")
     @GetMapping("/notes")
     public ResponseEntity<NotePageResponse> getAllNotes(
             @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) @Min(0) Integer pageNo,
@@ -248,8 +248,7 @@ public class NoteController {
             )
     )
     @SecurityRequirement(name = "Bear Authentication")
-    @PreAuthorize("principal == #userId")
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("principal == #userId or hasAuthority('ADVANCED')")
     @GetMapping("/notes/user/{user_id}")
     public ResponseEntity<NotePageResponse> getNotesByUserId(
             @PathVariable(name = "user_id") @Min(1) Long userId,
@@ -351,8 +350,8 @@ public class NoteController {
             )
     )
     @SecurityRequirement(name = "Bear Authentication")
-    @PostAuthorize("returnObject.body.userId == principal")
-//    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAuthority('READ')")
+    @PostAuthorize("returnObject.body.userId == principal or hasAuthority('ADVANCED')")
     @GetMapping("/notes/{note_id}")
     public ResponseEntity<NoteDto> getNoteById(@PathVariable(name = "note_id") @Min(1) Long id) {
 
@@ -382,7 +381,7 @@ public class NoteController {
             )
     )
     @SecurityRequirement(name = "Bear Authentication")
-//    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAuthority('CREATE')")
     @PostMapping("/notes")
     public ResponseEntity<NoteDto> createNote(@Valid @RequestBody
                                                   @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -486,7 +485,7 @@ public class NoteController {
             )
     )
     @SecurityRequirement(name = "Bear Authentication")
-//    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAuthority('UPDATE')")
     @PutMapping("/notes/{note_id}")
     public ResponseEntity<NoteDto> updateNote(@PathVariable(name = "note_id") @Min(1) Long id,
                                               @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -514,7 +513,7 @@ public class NoteController {
             description = "成功刪除筆記"
     )
     @SecurityRequirement(name = "Bear Authentication")
-//    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAuthority('DELETE')")
     @DeleteMapping("/notes/{note_id}")
     public ResponseEntity<Void> deleteNoteById(@PathVariable(name = "note_id") @Min(1) Long id) {
 
