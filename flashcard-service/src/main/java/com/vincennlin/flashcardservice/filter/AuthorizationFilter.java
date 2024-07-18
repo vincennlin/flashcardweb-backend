@@ -58,6 +58,6 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
 
         if (userId == null) return null;
 
-        return new UsernamePasswordAuthenticationToken(userId, null, jwtClaimsParser.getUserAuthorities());
+        return new UsernamePasswordAuthenticationToken(userId, authorizationHeader, jwtClaimsParser.getUserAuthorities());
     }
 }

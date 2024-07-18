@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,9 +40,9 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public NotePageResponse getAllNotes(Pageable pageable) {
 
-//        if (currentRoleContainsAdmin()) {
-//            return getNotePageResponse(noteRepository.findAll(pageable));
-//        }
+        if (containsAuthority("ADVANCED")) {
+            return getNotePageResponse(noteRepository.findAll(pageable));
+        }
         return getNotePageResponse(noteRepository.findByUserId(getCurrentUserId(), pageable));
     }
 
@@ -64,6 +65,15 @@ public class NoteServiceImpl implements NoteService {
         noteDto.setFlashcards(flashcardDtoList);
 
         return noteDto;
+    }
+
+    @Override
+    public Boolean isNoteOwner(Long noteId) {
+
+        Note note = noteRepository.findById(noteId).orElseThrow(() ->
+                new ResourceNotFoundException("Note", "id", noteId));
+
+        return note.getUserId().equals(getCurrentUserId());
     }
 
     @Override
@@ -111,12 +121,16 @@ public class NoteServiceImpl implements NoteService {
     }
 
     private Long getCurrentUserId() {
-        return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        return Long.parseLong(getAuthentication().getPrincipal().toString());
+    }
+
+    private String getAuthorization() {
+        return getAuthentication().getCredentials().toString();
     }
 
     private List<FlashcardDto> getFlashcardsByNoteId(Long noteId) {
         try{
-            return flashcardServiceClient.getFlashcardsByNoteId(noteId).getBody();
+            return flashcardServiceClient.getFlashcardsByNoteId(noteId, getAuthorization()).getBody();
         } catch (FeignException e) {
             logger.error(e.getLocalizedMessage());
             if (e.status() == HttpStatus.NOT_FOUND.value()){
@@ -128,28 +142,21 @@ public class NoteServiceImpl implements NoteService {
         }
     }
 
-//    private FlashcardwebUserDetails getUserDetails() {
-//        return (FlashcardwebUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//    }
-//
     private void authorizeOwnership(Long ownerId) {
         Long currentUserId = getCurrentUserId();
-//        if (!currentUserId.equals(userId) && !containsRole("ROLE_ADMIN")) {
-//            throw new ResourceOwnershipException(currentUserId, userId);
-//        }
-        if (!currentUserId.equals(ownerId)) {
+        if (!currentUserId.equals(ownerId) && !containsAuthority("ADVANCED")) {
             throw new ResourceOwnershipException(currentUserId, ownerId);
         }
     }
-//
-//    private Boolean currentRoleContainsAdmin() {
-//        return containsRole("ROLE_ADMIN");
-//    }
-//
-//    private Boolean containsRole(String roleName) {
-//        return getUserDetails().getAuthorities().stream().anyMatch(
-//                authority -> authority.getAuthority().equals(roleName));
-//    }
+
+    private Boolean containsAuthority(String authorityName) {
+        return getAuthentication().getAuthorities().stream().anyMatch(
+                authority -> authority.getAuthority().equals(authorityName));
+    }
+
+    private Authentication getAuthentication() {
+        return SecurityContextHolder.getContext().getAuthentication();
+    }
 
     private NotePageResponse getNotePageResponse(Page<Note> pageOfNotes) {
         List<Note> listOfNotes = pageOfNotes.getContent();
