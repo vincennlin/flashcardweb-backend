@@ -2,7 +2,7 @@ package com.vincennlin.flashcardservice.payload.concrete;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vincennlin.flashcardservice.operation.Operation;
-import com.vincennlin.flashcardservice.payload.FlashcardDto;
+import com.vincennlin.flashcardservice.payload.AbstractFlashcardDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
@@ -16,7 +16,7 @@ import lombok.*;
         name = "ShortAnswerFlashcardDto",
         description = "問答題的 Data Transfer Object"
 )
-public class ShortAnswerFlashcardDto extends FlashcardDto {
+public class ShortAnswerFlashcardDto extends AbstractFlashcardDto {
 
     @Schema(
             name = "short_answer",

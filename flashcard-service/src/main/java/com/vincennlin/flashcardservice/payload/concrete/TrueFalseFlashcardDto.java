@@ -2,7 +2,7 @@ package com.vincennlin.flashcardservice.payload.concrete;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vincennlin.flashcardservice.operation.Operation;
-import com.vincennlin.flashcardservice.payload.FlashcardDto;
+import com.vincennlin.flashcardservice.payload.AbstractFlashcardDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -16,7 +16,7 @@ import lombok.*;
         name = "TrueFalseFlashcardDto",
         description = "是非題的 Data Transfer Object"
 )
-public class TrueFalseFlashcardDto extends FlashcardDto {
+public class TrueFalseFlashcardDto extends AbstractFlashcardDto {
 
     @Schema(
             description = "答案是否為真，ture 或 false 的布林值",

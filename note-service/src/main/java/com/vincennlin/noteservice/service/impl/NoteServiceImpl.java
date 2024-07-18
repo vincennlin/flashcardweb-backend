@@ -1,15 +1,20 @@
 package com.vincennlin.noteservice.service.impl;
 
+import com.vincennlin.noteservice.exception.WebAPIException;
+import com.vincennlin.noteservice.client.FlashcardServiceClient;
 import com.vincennlin.noteservice.entity.Note;
 import com.vincennlin.noteservice.exception.ResourceNotFoundException;
 import com.vincennlin.noteservice.payload.NoteDto;
 import com.vincennlin.noteservice.payload.NotePageResponse;
+import com.vincennlin.noteservice.payload.flashcard.FlashcardDto;
 import com.vincennlin.noteservice.repository.NoteRepository;
 import com.vincennlin.noteservice.service.NoteService;
+import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +29,8 @@ public class NoteServiceImpl implements NoteService {
 
     private ModelMapper modelMapper;
 
+    private FlashcardServiceClient flashcardServiceClient;
+
     @Override
     public NotePageResponse getAllNotes(Pageable pageable) {
 
@@ -36,9 +43,7 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public NotePageResponse getNotesByUserId(Long userId, Pageable pageable) {
 
-        Page<Note> pageOfNotes = noteRepository.findByUserId(userId, pageable);
-
-        return getNotePageResponse(pageOfNotes);
+        return getNotePageResponse(noteRepository.findByUserId(userId, pageable));
     }
 
     @Override
@@ -47,11 +52,11 @@ public class NoteServiceImpl implements NoteService {
         Note note = noteRepository.findById(noteId).orElseThrow(() ->
                 new ResourceNotFoundException("Note", "id", noteId));
 
-//        List<FlashcardDto> flashcardDtoList = flashcardService.getFlashcardsByNoteId(noteId);
+        List<FlashcardDto> flashcardDtoList = getFlashcardsByNoteId(noteId);
 
         NoteDto noteDto = modelMapper.map(note, NoteDto.class);
 
-//        noteDto.setFlashcards(flashcardDtoList);
+        noteDto.setFlashcards(flashcardDtoList);
 
         return noteDto;
     }
@@ -81,7 +86,7 @@ public class NoteServiceImpl implements NoteService {
 
         NoteDto updatedNoteDto = modelMapper.map(updatedNote, NoteDto.class);
 
-//        updatedNoteDto.setFlashcards(flashcardService.getFlashcardsByNoteId(noteId));
+        updatedNoteDto.setFlashcards(getFlashcardsByNoteId(noteId));
 
         return updatedNoteDto;
     }
@@ -98,6 +103,17 @@ public class NoteServiceImpl implements NoteService {
 
     private Long getCurrentUserId() {
         return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+    }
+
+    private List<FlashcardDto> getFlashcardsByNoteId(Long noteId) {
+        try{
+            return flashcardServiceClient.getFlashcardsByNoteId(noteId).getBody();
+        } catch (FeignException e) {
+            if (e.status() == HttpStatus.NOT_FOUND.value())
+                throw new ResourceNotFoundException("Flashcards", "note_id", noteId);
+            else
+                throw new WebAPIException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
     }
 
 //    private FlashcardwebUserDetails getUserDetails() {
@@ -126,10 +142,10 @@ public class NoteServiceImpl implements NoteService {
         List<NoteDto> content = listOfNotes.stream().map(note ->
                 modelMapper.map(note, NoteDto.class)).toList();
 
-//        for (NoteDto noteDto : content) {
-//            List<FlashcardDto> flashcardDtoList = flashcardService.getFlashcardsByNoteId(noteDto.getId());
-//            noteDto.setFlashcards(flashcardDtoList);
-//        }
+        for (NoteDto noteDto : content) {
+            List<FlashcardDto> flashcardDtoList = getFlashcardsByNoteId(noteDto.getId());
+            noteDto.setFlashcards(flashcardDtoList);
+        }
 
         NotePageResponse notePageResponse = new NotePageResponse();
         notePageResponse.setContent(content);

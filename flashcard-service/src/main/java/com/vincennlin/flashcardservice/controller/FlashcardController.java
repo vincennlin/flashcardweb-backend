@@ -1,7 +1,6 @@
 package com.vincennlin.flashcardservice.controller;
 
-import com.vincennlin.flashcardservice.constant.FlashcardType;
-import com.vincennlin.flashcardservice.payload.FlashcardDto;
+import com.vincennlin.flashcardservice.payload.AbstractFlashcardDto;
 import com.vincennlin.flashcardservice.payload.concrete.FillInTheBlankFlashcardDto;
 import com.vincennlin.flashcardservice.payload.concrete.MultipleChoiceFlashcardDto;
 import com.vincennlin.flashcardservice.payload.concrete.ShortAnswerFlashcardDto;
@@ -124,9 +123,9 @@ public class FlashcardController {
     @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/notes/{note_id}/flashcards")
-    public ResponseEntity<List<FlashcardDto>> getFlashcardsByNoteId(@PathVariable(name = "note_id") @Min(1) Long noteId) {
+    public ResponseEntity<List<AbstractFlashcardDto>> getFlashcardsByNoteId(@PathVariable(name = "note_id") @Min(1) Long noteId) {
 
-        List<FlashcardDto> flashcardsResponse = flashcardService.getFlashcardsByNoteId(noteId);
+        List<AbstractFlashcardDto> flashcardsResponse = flashcardService.getFlashcardsByNoteId(noteId);
 
         return new ResponseEntity<>(flashcardsResponse, HttpStatus.OK);
     }
@@ -154,9 +153,9 @@ public class FlashcardController {
     @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/flashcards/{flashcard_id}")
-    public ResponseEntity<FlashcardDto> getFlashcardById(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId) {
+    public ResponseEntity<AbstractFlashcardDto> getFlashcardById(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId) {
 
-        FlashcardDto flashcardResponse = flashcardService.getFlashcardById(flashcardId);
+        AbstractFlashcardDto flashcardResponse = flashcardService.getFlashcardById(flashcardId);
 
         return new ResponseEntity<>(flashcardResponse, HttpStatus.OK);
     }
@@ -184,8 +183,8 @@ public class FlashcardController {
     @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping("/notes/{note_id}/flashcards/short-answer")
-    public ResponseEntity<FlashcardDto> createShortAnswerFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
-                                                        @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+    public ResponseEntity<AbstractFlashcardDto> createShortAnswerFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
+                                                                           @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                                 content = @Content(
                                                                         mediaType = "application/json",
                                                                         examples = @ExampleObject(value = """
@@ -197,7 +196,7 @@ public class FlashcardController {
                                                                 )
                                                         ) ShortAnswerFlashcardDto shortAnswerFlashcardDto){
 
-        FlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, shortAnswerFlashcardDto);
+        AbstractFlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, shortAnswerFlashcardDto);
 
         return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
     }
@@ -239,8 +238,8 @@ public class FlashcardController {
     @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping("/notes/{note_id}/flashcards/fill-in-the-blank")
-    public ResponseEntity<FlashcardDto> createFillInTheBlankFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
-                                                        @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+    public ResponseEntity<AbstractFlashcardDto> createFillInTheBlankFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
+                                                                              @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                                 content = @Content(
                                                                         mediaType = "application/json",
                                                                         examples = @ExampleObject(value = """
@@ -264,7 +263,7 @@ public class FlashcardController {
                                                                 )
                                                         ) FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto){
 
-        FlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, fillInTheBlankFlashcardDto);
+        AbstractFlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, fillInTheBlankFlashcardDto);
 
         return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
     }
@@ -313,8 +312,8 @@ public class FlashcardController {
     @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping("/notes/{note_id}/flashcards/multiple-choice")
-    public ResponseEntity<FlashcardDto> createMultipleChoiceFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
-                                                        @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+    public ResponseEntity<AbstractFlashcardDto> createMultipleChoiceFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
+                                                                              @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                                 content = @Content(
                                                                         mediaType = "application/json",
                                                                         examples = @ExampleObject(value = """
@@ -340,7 +339,7 @@ public class FlashcardController {
                                                                 )
                                                         ) MultipleChoiceFlashcardDto multipleChoiceFlashcardDto){
 
-        FlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, multipleChoiceFlashcardDto);
+        AbstractFlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, multipleChoiceFlashcardDto);
 
         return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
     }
@@ -368,8 +367,8 @@ public class FlashcardController {
     @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping("/notes/{note_id}/flashcards/true-false")
-    public ResponseEntity<FlashcardDto> createTrueFalseFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
-                                                                 @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+    public ResponseEntity<AbstractFlashcardDto> createTrueFalseFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
+                                                                         @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                                          content = @Content(
                                                                                  mediaType = "application/json",
                                                                                  examples = @ExampleObject(value = """
@@ -381,7 +380,7 @@ public class FlashcardController {
                                                                          )
                                                                  ) TrueFalseFlashcardDto trueFalseFlashcardDto){
 
-        FlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, trueFalseFlashcardDto);
+        AbstractFlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, trueFalseFlashcardDto);
 
         return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
     }
@@ -409,8 +408,8 @@ public class FlashcardController {
     @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PutMapping("/flashcards/{flashcard_id}/short-answer")
-    public ResponseEntity<FlashcardDto> updateShortAnswerFlashcard(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
-                                                        @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+    public ResponseEntity<AbstractFlashcardDto> updateShortAnswerFlashcard(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
+                                                                           @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                                 content = @Content(
                                                                         mediaType = "application/json",
                                                                         examples = @ExampleObject(value = """
@@ -422,7 +421,7 @@ public class FlashcardController {
                                                                 )
                                                         ) ShortAnswerFlashcardDto shortAnswerFlashcardDto) {
 
-        FlashcardDto flashcardResponse = flashcardService.updateFlashcard(flashcardId, shortAnswerFlashcardDto);
+        AbstractFlashcardDto flashcardResponse = flashcardService.updateFlashcard(flashcardId, shortAnswerFlashcardDto);
 
         return new ResponseEntity<>(flashcardResponse, HttpStatus.OK);
     }
@@ -464,8 +463,8 @@ public class FlashcardController {
     @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PutMapping("/flashcards/{flashcard_id}/fill-in-the-blank")
-    public ResponseEntity<FlashcardDto> updateFillInTheBlankFlashcard(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
-                                                        @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+    public ResponseEntity<AbstractFlashcardDto> updateFillInTheBlankFlashcard(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
+                                                                              @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                                 content = @Content(
                                                                         mediaType = "application/json",
                                                                         examples = @ExampleObject(value = """
@@ -488,7 +487,7 @@ public class FlashcardController {
                                                                 )
                                                         ) FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto) {
 
-        FlashcardDto flashcardResponse = flashcardService.updateFlashcard(flashcardId, fillInTheBlankFlashcardDto);
+        AbstractFlashcardDto flashcardResponse = flashcardService.updateFlashcard(flashcardId, fillInTheBlankFlashcardDto);
 
         return new ResponseEntity<>(flashcardResponse, HttpStatus.OK);
     }
@@ -537,8 +536,8 @@ public class FlashcardController {
     @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PutMapping("/flashcards/{flashcard_id}/multiple-choice")
-    public ResponseEntity<FlashcardDto> updateMultipleChoiceFlashcard(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
-                                                        @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+    public ResponseEntity<AbstractFlashcardDto> updateMultipleChoiceFlashcard(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
+                                                                              @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                                 content = @Content(
                                                                         mediaType = "application/json",
                                                                         examples = @ExampleObject(value = """
@@ -564,7 +563,7 @@ public class FlashcardController {
                                                                 )
                                                         ) MultipleChoiceFlashcardDto multipleChoiceFlashcardDto) {
 
-        FlashcardDto flashcardResponse = flashcardService.updateFlashcard(flashcardId, multipleChoiceFlashcardDto);
+        AbstractFlashcardDto flashcardResponse = flashcardService.updateFlashcard(flashcardId, multipleChoiceFlashcardDto);
 
         return new ResponseEntity<>(flashcardResponse, HttpStatus.OK);
     }
@@ -592,8 +591,8 @@ public class FlashcardController {
     @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PutMapping("/flashcards/{flashcard_id}/true-false")
-    public ResponseEntity<FlashcardDto> updateTrueFalseFlashcard(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
-                                                        @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+    public ResponseEntity<AbstractFlashcardDto> updateTrueFalseFlashcard(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
+                                                                         @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                                 content = @Content(
                                                                         mediaType = "application/json",
                                                                         examples = @ExampleObject(value = """
@@ -605,7 +604,7 @@ public class FlashcardController {
                                                                 )
                                                         ) TrueFalseFlashcardDto trueFalseFlashcardDto) {
 
-        FlashcardDto flashcardResponse = flashcardService.updateFlashcard(flashcardId, trueFalseFlashcardDto);
+        AbstractFlashcardDto flashcardResponse = flashcardService.updateFlashcard(flashcardId, trueFalseFlashcardDto);
 
         return new ResponseEntity<>(flashcardResponse, HttpStatus.OK);
     }

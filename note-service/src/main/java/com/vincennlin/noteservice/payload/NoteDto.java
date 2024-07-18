@@ -1,7 +1,7 @@
 package com.vincennlin.noteservice.payload;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vincennlin.flashcardservice.payload.FlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.FlashcardDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 

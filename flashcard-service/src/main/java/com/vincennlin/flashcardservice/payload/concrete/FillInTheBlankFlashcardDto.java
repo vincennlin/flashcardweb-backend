@@ -3,7 +3,7 @@ package com.vincennlin.flashcardservice.payload.concrete;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.vincennlin.flashcardservice.operation.Operation;
-import com.vincennlin.flashcardservice.payload.FlashcardDto;
+import com.vincennlin.flashcardservice.payload.AbstractFlashcardDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -20,7 +20,7 @@ import java.util.List;
         name = "FillInTheBlankFlashcardDto",
         description = "填空題的 Data Transfer Object"
 )
-public class FillInTheBlankFlashcardDto extends FlashcardDto {
+public class FillInTheBlankFlashcardDto extends AbstractFlashcardDto {
 
     @Schema(
             name = "in_blank_answers",

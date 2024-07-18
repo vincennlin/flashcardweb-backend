@@ -1,6 +1,6 @@
 package com.vincennlin.flashcardservice.entity.concrete;
 
-import com.vincennlin.flashcardservice.entity.Flashcard;
+import com.vincennlin.flashcardservice.entity.AbstractFlashcard;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -16,7 +16,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "short_answers")
-public class ShortAnswerFlashcard extends Flashcard {
+public class ShortAnswerFlashcard extends AbstractFlashcard {
 
     @Column(name = "short_answer")
     private String shortAnswer;

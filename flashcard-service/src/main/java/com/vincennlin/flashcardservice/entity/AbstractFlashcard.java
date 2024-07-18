@@ -1,7 +1,6 @@
 package com.vincennlin.flashcardservice.entity;
 
 import com.vincennlin.flashcardservice.constant.FlashcardType;
-import com.vincennlin.userservice.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +17,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Entity
 @Table(name = "flashcards")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Flashcard {
+public abstract class AbstractFlashcard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
