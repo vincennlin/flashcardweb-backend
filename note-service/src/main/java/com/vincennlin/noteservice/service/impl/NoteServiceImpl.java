@@ -47,7 +47,6 @@ public class NoteServiceImpl implements NoteService {
         Note note = noteRepository.findById(noteId).orElseThrow(() ->
                 new ResourceNotFoundException("Note", "id", noteId));
 
-//
 //        List<FlashcardDto> flashcardDtoList = flashcardService.getFlashcardsByNoteId(noteId);
 
         NoteDto noteDto = modelMapper.map(note, NoteDto.class);

@@ -1,5 +1,6 @@
 package com.vincennlin.noteservice.entity;
 
+import com.vincennlin.flashcardservice.entity.Flashcard;
 import com.vincennlin.userservice.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,9 +30,8 @@ public class Note {
     @Column(name = "content", nullable = false)
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(name = "user_id", nullable = false, updatable = false)
+    private Long userId;
 
     @CreationTimestamp
     @Column(name = "date_created")
@@ -40,8 +40,4 @@ public class Note {
     @UpdateTimestamp
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
-
-//    @OneToMany(mappedBy = "note", fetch = FetchType.EAGER,
-//            cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Flashcard> flashcards = new ArrayList<>();
 }
