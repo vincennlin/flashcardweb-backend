@@ -138,147 +138,137 @@ public class FlashcardServiceImpl implements FlashcardService {
         return modelMapper.map(newFlashcard, TrueFalseFlashcardDto.class);
     }
 
-//    @Transactional
-//    @Override
-//    public FlashcardDto updateFlashcard(Long flashcardId, ShortAnswerFlashcardDto shortAnswerFlashcardDto) {
-//
-//        Flashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
-//                new ResourceNotFoundException("Flashcard", "id", flashcardId));
-//
-//        authorizeOwnership(flashcard.getUser().getId());
-//
-//        if(flashcard.getType() != FlashcardType.SHORT_ANSWER){
-//            throw new FlashcardTypeException(flashcardId, flashcard.getType(), FlashcardType.SHORT_ANSWER);
-//        }
-//        ShortAnswerFlashcard shortAnswerFlashcard = (ShortAnswerFlashcard) flashcard;
-//
-//        ShortAnswerFlashcard newShortAnswerFlashcard = modelMapper.map(shortAnswerFlashcardDto, ShortAnswerFlashcard.class);
-//        newShortAnswerFlashcard.setType(FlashcardType.SHORT_ANSWER);
-//        newShortAnswerFlashcard.setNote(shortAnswerFlashcard.getNote());
-//        newShortAnswerFlashcard.setId(shortAnswerFlashcard.getId());
-//        newShortAnswerFlashcard.setUser(shortAnswerFlashcard.getUser());
-//
-//        Flashcard updatedFlashcard = flashcardRepository.save(newShortAnswerFlashcard);
-//
-//        return modelMapper.map(updatedFlashcard, ShortAnswerFlashcardDto.class);
-//    }
-//
-//    @Transactional
-//    @Override
-//    public FlashcardDto updateFlashcard(Long flashcardId, FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto) {
-//
-//        Flashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
-//                new ResourceNotFoundException("Flashcard", "id", flashcardId));
-//
-//        authorizeOwnership(flashcard.getUser().getId());
-//
-//        if(flashcard.getType() != FlashcardType.FILL_IN_THE_BLANK){
-//            throw new FlashcardTypeException(flashcardId, flashcard.getType(), FlashcardType.FILL_IN_THE_BLANK);
-//        }
-//        FillInTheBlankFlashcard fillInTheBlankFlashcard = (FillInTheBlankFlashcard) flashcard;
-//
-//        FillInTheBlankFlashcard newFillInTheBlankFlashcard = modelMapper.map(fillInTheBlankFlashcardDto, FillInTheBlankFlashcard.class);
-//        newFillInTheBlankFlashcard.setType(FlashcardType.FILL_IN_THE_BLANK);
-//        newFillInTheBlankFlashcard.setNote(fillInTheBlankFlashcard.getNote());
-//        newFillInTheBlankFlashcard.setId(fillInTheBlankFlashcard.getId());
-//        newFillInTheBlankFlashcard.setUser(fillInTheBlankFlashcard.getUser());
-//
-//        List<InBlankAnswer> inBlankAnswers = fillInTheBlankFlashcard.getInBlankAnswers();
-//        int blankAnswerSize = inBlankAnswers.size();
-//
-//        if (newFillInTheBlankFlashcard.getInBlankAnswers().size() != blankAnswerSize) {
-//            throw new IllegalArgumentException("Number of blank answers cannot be changed");
-//        }
-//
-//        for (int i = 0; i < blankAnswerSize; i++) {
-//            inBlankAnswers.get(i).setText(newFillInTheBlankFlashcard.getInBlankAnswers().get(i).getText());
-//            inBlankAnswers.get(i).setFlashcard(fillInTheBlankFlashcard);
-//        }
-//
-//        newFillInTheBlankFlashcard.setInBlankAnswers(inBlankAnswers);
-//
-//        Flashcard updatedFlashcard = flashcardRepository.save(newFillInTheBlankFlashcard);
-//
-//        return modelMapper.map(updatedFlashcard, FillInTheBlankFlashcardDto.class);
-//    }
-//
-//    @Transactional
-//    @Override
-//    public FlashcardDto updateFlashcard(Long flashcardId, MultipleChoiceFlashcardDto multipleChoiceFlashcardDto) {
-//
-//        Flashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
-//                new ResourceNotFoundException("Flashcard", "id", flashcardId));
-//
-//        authorizeOwnership(flashcard.getUser().getId());
-//
-//        if(flashcard.getType() != FlashcardType.MULTIPLE_CHOICE){
-//            throw new FlashcardTypeException(flashcardId, flashcard.getType(), FlashcardType.MULTIPLE_CHOICE);
-//        }
-//        MultipleChoiceFlashcard multipleChoiceFlashcard = (MultipleChoiceFlashcard) flashcard;
-//
-//        MultipleChoiceFlashcard newMultipleChoiceFlashcard = modelMapper.map(multipleChoiceFlashcardDto, MultipleChoiceFlashcard.class);
-//        newMultipleChoiceFlashcard.setType(FlashcardType.MULTIPLE_CHOICE);
-//        newMultipleChoiceFlashcard.setNote(multipleChoiceFlashcard.getNote());
-//        newMultipleChoiceFlashcard.setId(multipleChoiceFlashcard.getId());
-//        newMultipleChoiceFlashcard.setUser(multipleChoiceFlashcard.getUser());
-//
-//        List<Option> options = multipleChoiceFlashcard.getOptions();
-//        int optionSize = options.size();
-//
-//        if (newMultipleChoiceFlashcard.getOptions().size() != optionSize) {
-//            throw new IllegalArgumentException("Number of options cannot be changed");
-//        } else if (multipleChoiceFlashcardDto.getAnswerIndex() > optionSize) {
-//            throw new IllegalArgumentException("Answer index is out of range of options");
-//        }
-//
-//        for (int i = 0; i < optionSize; i++) {
-//            options.get(i).setText(newMultipleChoiceFlashcard.getOptions().get(i).getText());
-//            options.get(i).setFlashcard(multipleChoiceFlashcard);
-//        }
-//
-//        List<Option> savedOptions = optionRepository.saveAll(options);
-//        newMultipleChoiceFlashcard.setOptions(savedOptions);
-//        newMultipleChoiceFlashcard.setAnswerOption(savedOptions.get(multipleChoiceFlashcardDto.getAnswerIndex() - 1));
-//
-//        Flashcard updatedFlashcard = flashcardRepository.save(newMultipleChoiceFlashcard);
-//
-//        return modelMapper.map(updatedFlashcard, MultipleChoiceFlashcardDto.class);
-//    }
-//
-//    @Override
-//    public FlashcardDto updateFlashcard(Long flashcardId, TrueFalseFlashcardDto trueFalseFlashcardDto) {
-//
-//        Flashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
-//                new ResourceNotFoundException("Flashcard", "id", flashcardId));
-//
-//        authorizeOwnership(flashcard.getUser().getId());
-//
-//        if(flashcard.getType() != FlashcardType.TRUE_FALSE){
-//            throw new FlashcardTypeException(flashcardId, flashcard.getType(), FlashcardType.TRUE_FALSE);
-//        }
-//        TrueFalseFlashcard trueFalseFlashcard = (TrueFalseFlashcard) flashcard;
-//
-//        TrueFalseFlashcard newTrueFalseFlashcard = modelMapper.map(trueFalseFlashcardDto, TrueFalseFlashcard.class);
-//        newTrueFalseFlashcard.setType(FlashcardType.TRUE_FALSE);
-//        newTrueFalseFlashcard.setNote(trueFalseFlashcard.getNote());
-//        newTrueFalseFlashcard.setId(trueFalseFlashcard.getId());
-//        newTrueFalseFlashcard.setUser(trueFalseFlashcard.getUser());
-//
-//        Flashcard updatedFlashcard = flashcardRepository.save(newTrueFalseFlashcard);
-//
-//        return modelMapper.map(updatedFlashcard, TrueFalseFlashcardDto.class);
-//    }
-//
-//    @Override
-//    public void deleteFlashcardById(Long flashcardId) {
-//
-//        Flashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
-//                new ResourceNotFoundException("Flashcard", "id", flashcardId));
-//
-//        authorizeOwnership(flashcard.getUser().getId());
-//
-//        flashcardRepository.delete(flashcard);
-//    }
+    @Transactional
+    @Override
+    public FlashcardDto updateFlashcard(Long flashcardId, ShortAnswerFlashcardDto shortAnswerFlashcardDto) {
+
+        Flashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
+                new ResourceNotFoundException("Flashcard", "id", flashcardId));
+
+        if(flashcard.getType() != FlashcardType.SHORT_ANSWER){
+            throw new FlashcardTypeException(flashcardId, flashcard.getType(), FlashcardType.SHORT_ANSWER);
+        }
+        ShortAnswerFlashcard shortAnswerFlashcard = (ShortAnswerFlashcard) flashcard;
+
+        ShortAnswerFlashcard newShortAnswerFlashcard = modelMapper.map(shortAnswerFlashcardDto, ShortAnswerFlashcard.class);
+        newShortAnswerFlashcard.setType(FlashcardType.SHORT_ANSWER);
+        newShortAnswerFlashcard.setId(shortAnswerFlashcard.getId());
+        newShortAnswerFlashcard.setNoteId(shortAnswerFlashcard.getNoteId());
+        newShortAnswerFlashcard.setUserId(shortAnswerFlashcard.getUserId());
+
+        Flashcard updatedFlashcard = flashcardRepository.save(newShortAnswerFlashcard);
+
+        return modelMapper.map(updatedFlashcard, ShortAnswerFlashcardDto.class);
+    }
+
+    @Transactional
+    @Override
+    public FlashcardDto updateFlashcard(Long flashcardId, FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto) {
+
+        Flashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
+                new ResourceNotFoundException("Flashcard", "id", flashcardId));
+
+        if(flashcard.getType() != FlashcardType.FILL_IN_THE_BLANK){
+            throw new FlashcardTypeException(flashcardId, flashcard.getType(), FlashcardType.FILL_IN_THE_BLANK);
+        }
+        FillInTheBlankFlashcard fillInTheBlankFlashcard = (FillInTheBlankFlashcard) flashcard;
+
+        FillInTheBlankFlashcard newFillInTheBlankFlashcard = modelMapper.map(fillInTheBlankFlashcardDto, FillInTheBlankFlashcard.class);
+        newFillInTheBlankFlashcard.setType(FlashcardType.FILL_IN_THE_BLANK);
+        newFillInTheBlankFlashcard.setId(fillInTheBlankFlashcard.getId());
+        newFillInTheBlankFlashcard.setNoteId(fillInTheBlankFlashcard.getNoteId());
+        newFillInTheBlankFlashcard.setUserId(fillInTheBlankFlashcard.getUserId());
+
+        List<InBlankAnswer> inBlankAnswers = fillInTheBlankFlashcard.getInBlankAnswers();
+        int blankAnswerSize = inBlankAnswers.size();
+
+        if (newFillInTheBlankFlashcard.getInBlankAnswers().size() != blankAnswerSize) {
+            throw new IllegalArgumentException("Number of blank answers cannot be changed");
+        }
+
+        for (int i = 0; i < blankAnswerSize; i++) {
+            inBlankAnswers.get(i).setText(newFillInTheBlankFlashcard.getInBlankAnswers().get(i).getText());
+            inBlankAnswers.get(i).setFlashcard(fillInTheBlankFlashcard);
+        }
+
+        newFillInTheBlankFlashcard.setInBlankAnswers(inBlankAnswers);
+
+        Flashcard updatedFlashcard = flashcardRepository.save(newFillInTheBlankFlashcard);
+
+        return modelMapper.map(updatedFlashcard, FillInTheBlankFlashcardDto.class);
+    }
+
+    @Transactional
+    @Override
+    public FlashcardDto updateFlashcard(Long flashcardId, MultipleChoiceFlashcardDto multipleChoiceFlashcardDto) {
+
+        Flashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
+                new ResourceNotFoundException("Flashcard", "id", flashcardId));
+
+        if(flashcard.getType() != FlashcardType.MULTIPLE_CHOICE){
+            throw new FlashcardTypeException(flashcardId, flashcard.getType(), FlashcardType.MULTIPLE_CHOICE);
+        }
+        MultipleChoiceFlashcard multipleChoiceFlashcard = (MultipleChoiceFlashcard) flashcard;
+
+        MultipleChoiceFlashcard newMultipleChoiceFlashcard = modelMapper.map(multipleChoiceFlashcardDto, MultipleChoiceFlashcard.class);
+        newMultipleChoiceFlashcard.setType(FlashcardType.MULTIPLE_CHOICE);
+        newMultipleChoiceFlashcard.setId(multipleChoiceFlashcard.getId());
+        newMultipleChoiceFlashcard.setNoteId(multipleChoiceFlashcard.getNoteId());
+        newMultipleChoiceFlashcard.setUserId(multipleChoiceFlashcard.getUserId());
+
+        List<Option> options = multipleChoiceFlashcard.getOptions();
+        int optionSize = options.size();
+
+        if (newMultipleChoiceFlashcard.getOptions().size() != optionSize) {
+            throw new IllegalArgumentException("Number of options cannot be changed");
+        } else if (multipleChoiceFlashcardDto.getAnswerIndex() > optionSize) {
+            throw new IllegalArgumentException("Answer index is out of range of options");
+        }
+
+        for (int i = 0; i < optionSize; i++) {
+            options.get(i).setText(newMultipleChoiceFlashcard.getOptions().get(i).getText());
+            options.get(i).setFlashcard(multipleChoiceFlashcard);
+        }
+
+        List<Option> savedOptions = optionRepository.saveAll(options);
+        newMultipleChoiceFlashcard.setOptions(savedOptions);
+        newMultipleChoiceFlashcard.setAnswerOption(savedOptions.get(multipleChoiceFlashcardDto.getAnswerIndex() - 1));
+
+        Flashcard updatedFlashcard = flashcardRepository.save(newMultipleChoiceFlashcard);
+
+        return modelMapper.map(updatedFlashcard, MultipleChoiceFlashcardDto.class);
+    }
+
+    @Override
+    public FlashcardDto updateFlashcard(Long flashcardId, TrueFalseFlashcardDto trueFalseFlashcardDto) {
+
+        Flashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
+                new ResourceNotFoundException("Flashcard", "id", flashcardId));
+
+        if(flashcard.getType() != FlashcardType.TRUE_FALSE){
+            throw new FlashcardTypeException(flashcardId, flashcard.getType(), FlashcardType.TRUE_FALSE);
+        }
+        TrueFalseFlashcard trueFalseFlashcard = (TrueFalseFlashcard) flashcard;
+
+        TrueFalseFlashcard newTrueFalseFlashcard = modelMapper.map(trueFalseFlashcardDto, TrueFalseFlashcard.class);
+        newTrueFalseFlashcard.setType(FlashcardType.TRUE_FALSE);
+        newTrueFalseFlashcard.setId(trueFalseFlashcard.getId());
+        newTrueFalseFlashcard.setNoteId(trueFalseFlashcard.getNoteId());
+        newTrueFalseFlashcard.setUserId(trueFalseFlashcard.getUserId());
+
+        Flashcard updatedFlashcard = flashcardRepository.save(newTrueFalseFlashcard);
+
+        return modelMapper.map(updatedFlashcard, TrueFalseFlashcardDto.class);
+    }
+
+    @Override
+    public void deleteFlashcardById(Long flashcardId) {
+
+        Flashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
+                new ResourceNotFoundException("Flashcard", "id", flashcardId));
+
+        flashcardRepository.delete(flashcard);
+    }
 
     private Long getCurrentUserId() {
         return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
