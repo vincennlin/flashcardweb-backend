@@ -12,6 +12,8 @@ import com.vincennlin.noteservice.service.NoteService;
 import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,8 @@ import java.util.List;
 @AllArgsConstructor
 @Service
 public class NoteServiceImpl implements NoteService {
+
+    private final static Logger logger = LoggerFactory.getLogger(NoteServiceImpl.class);
 
     private NoteRepository noteRepository;
 
@@ -109,10 +113,13 @@ public class NoteServiceImpl implements NoteService {
         try{
             return flashcardServiceClient.getFlashcardsByNoteId(noteId).getBody();
         } catch (FeignException e) {
-            if (e.status() == HttpStatus.NOT_FOUND.value())
+            logger.error(e.getLocalizedMessage());
+            if (e.status() == HttpStatus.NOT_FOUND.value()){
                 throw new ResourceNotFoundException("Flashcards", "note_id", noteId);
-            else
-                throw new WebAPIException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            }
+            else {
+                throw new WebAPIException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+            }
         }
     }
 
