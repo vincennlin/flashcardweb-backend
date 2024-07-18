@@ -1,5 +1,6 @@
 package com.vincennlin.noteservice.service.impl;
 
+import com.vincennlin.noteservice.exception.ResourceOwnershipException;
 import com.vincennlin.noteservice.exception.WebAPIException;
 import com.vincennlin.noteservice.client.FlashcardServiceClient;
 import com.vincennlin.noteservice.entity.Note;
@@ -84,6 +85,8 @@ public class NoteServiceImpl implements NoteService {
         Note note = noteRepository.findById(noteId).orElseThrow(() ->
                 new ResourceNotFoundException("Note", "id", noteId));
 
+        authorizeOwnership(note.getUserId());
+
         note.setContent(noteDto.getContent());
 
         Note updatedNote = noteRepository.save(note);
@@ -101,6 +104,8 @@ public class NoteServiceImpl implements NoteService {
 
         Note note = noteRepository.findById(noteId).orElseThrow(() ->
                 new ResourceNotFoundException("Note", "id", noteId));
+
+        authorizeOwnership(note.getUserId());
 
         noteRepository.delete(note);
     }
@@ -127,12 +132,15 @@ public class NoteServiceImpl implements NoteService {
 //        return (FlashcardwebUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 //    }
 //
-//    private void authorizeOwnership(Long userId) {
-//        Long currentUserId = getCurrentUserId();
+    private void authorizeOwnership(Long ownerId) {
+        Long currentUserId = getCurrentUserId();
 //        if (!currentUserId.equals(userId) && !containsRole("ROLE_ADMIN")) {
 //            throw new ResourceOwnershipException(currentUserId, userId);
 //        }
-//    }
+        if (!currentUserId.equals(ownerId)) {
+            throw new ResourceOwnershipException(currentUserId, ownerId);
+        }
+    }
 //
 //    private Boolean currentRoleContainsAdmin() {
 //        return containsRole("ROLE_ADMIN");
