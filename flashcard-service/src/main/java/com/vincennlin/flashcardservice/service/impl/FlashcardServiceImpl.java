@@ -7,6 +7,7 @@ import com.vincennlin.flashcardservice.entity.concrete.*;
 import com.vincennlin.flashcardservice.exception.FlashcardTypeException;
 import com.vincennlin.flashcardservice.exception.ResourceNotFoundException;
 import com.vincennlin.flashcardservice.exception.ResourceOwnershipException;
+import com.vincennlin.flashcardservice.exception.WebAPIException;
 import com.vincennlin.flashcardservice.payload.FlashcardDto;
 import com.vincennlin.flashcardservice.payload.NoteClientResponse;
 import com.vincennlin.flashcardservice.payload.concrete.FillInTheBlankFlashcardDto;
@@ -16,10 +17,10 @@ import com.vincennlin.flashcardservice.payload.concrete.TrueFalseFlashcardDto;
 import com.vincennlin.flashcardservice.repository.FlashcardRepository;
 import com.vincennlin.flashcardservice.repository.OptionRepository;
 import com.vincennlin.flashcardservice.service.FlashcardService;
-import com.vincennlin.noteservice.entity.Note;
-import com.vincennlin.noteservice.payload.NoteDto;
+import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -38,14 +39,11 @@ public class FlashcardServiceImpl implements FlashcardService {
     private FlashcardRepository flashcardRepository;
 
     private OptionRepository optionRepository;
-//
+
 //    @Override
 //    public List<FlashcardDto> getFlashcardsByNoteId(Long noteId) {
 //
-//        Note note = noteRepository.findById(noteId).orElseThrow(() ->
-//                new ResourceNotFoundException("Note", "id", noteId));
-//
-//        authorizeOwnership(note.getUser().getId());
+//        Note note = getNoteById(noteId);
 //
 //        List<Flashcard> flashcards = note.getFlashcards();
 //
@@ -58,22 +56,20 @@ public class FlashcardServiceImpl implements FlashcardService {
 //        Flashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
 //                new ResourceNotFoundException("Flashcard", "id", flashcardId));
 //
-//        authorizeOwnership(flashcard.getUser().getId());
-//
 //        return mapToDto(flashcard);
 //    }
-//
+
     @Override
     public FlashcardDto createFlashcard(Long noteId, ShortAnswerFlashcardDto shortAnswerFlashcardDto) {
 
-        Note note = getNoteById(noteId);
+        NoteClientResponse noteClientResponse = getNoteClientResponseByNoteId(noteId);
 
         shortAnswerFlashcardDto.setUserId(getCurrentUserId());
 
         ShortAnswerFlashcard shortAnswerFlashcard = modelMapper.map(shortAnswerFlashcardDto, ShortAnswerFlashcard.class);
         shortAnswerFlashcard.setType(FlashcardType.SHORT_ANSWER);
 
-        shortAnswerFlashcard.setNote(note);
+        shortAnswerFlashcard.setNoteId(noteClientResponse.getId());
 
         Flashcard newFlashcard = flashcardRepository.save(shortAnswerFlashcard);
 
@@ -83,14 +79,14 @@ public class FlashcardServiceImpl implements FlashcardService {
     @Override
     public FlashcardDto createFlashcard(Long noteId, FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto) {
 
-        Note note = getNoteById(noteId);
+        NoteClientResponse noteClientResponse = getNoteClientResponseByNoteId(noteId);
 
         fillInTheBlankFlashcardDto.setUserId(getCurrentUserId());
 
         FillInTheBlankFlashcard fillInTheBlankFlashcard = modelMapper.map(fillInTheBlankFlashcardDto, FillInTheBlankFlashcard.class);
         fillInTheBlankFlashcard.setType(FlashcardType.FILL_IN_THE_BLANK);
 
-        fillInTheBlankFlashcard.setNote(note);
+        fillInTheBlankFlashcard.setNoteId(noteClientResponse.getId());
 
         fillInTheBlankFlashcard.getInBlankAnswers().forEach(
                 inBlankAnswers -> inBlankAnswers.setFlashcard(fillInTheBlankFlashcard));
@@ -104,13 +100,13 @@ public class FlashcardServiceImpl implements FlashcardService {
     @Override
     public FlashcardDto createFlashcard(Long noteId, MultipleChoiceFlashcardDto multipleChoiceFlashcardDto) {
 
-        Note note = getNoteById(noteId);
+        NoteClientResponse noteClientResponse = getNoteClientResponseByNoteId(noteId);
 
         multipleChoiceFlashcardDto.setUserId(getCurrentUserId());
 
         MultipleChoiceFlashcard multipleChoiceFlashcard = modelMapper.map(multipleChoiceFlashcardDto, MultipleChoiceFlashcard.class);
         multipleChoiceFlashcard.setType(FlashcardType.MULTIPLE_CHOICE);
-        multipleChoiceFlashcard.setNote(note);
+        multipleChoiceFlashcard.setNoteId(noteClientResponse.getId());
 
         List<Option> options = multipleChoiceFlashcard.getOptions();
         options.forEach(option -> option.setFlashcard(multipleChoiceFlashcard));
@@ -129,14 +125,14 @@ public class FlashcardServiceImpl implements FlashcardService {
     @Override
     public FlashcardDto createFlashcard(Long noteId, TrueFalseFlashcardDto trueFalseFlashcardDto) {
 
-        Note note = getNoteById(noteId);
+        NoteClientResponse noteClientResponse = getNoteClientResponseByNoteId(noteId);
 
         trueFalseFlashcardDto.setUserId(getCurrentUserId());
 
         TrueFalseFlashcard trueFalseFlashcard = modelMapper.map(trueFalseFlashcardDto, TrueFalseFlashcard.class);
         trueFalseFlashcard.setType(FlashcardType.TRUE_FALSE);
 
-        trueFalseFlashcard.setNote(note);
+        trueFalseFlashcard.setNoteId(noteClientResponse.getId());
 
         Flashcard newFlashcard = flashcardRepository.save(trueFalseFlashcard);
 
@@ -289,12 +285,15 @@ public class FlashcardServiceImpl implements FlashcardService {
         return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
     }
 
-    private Note getNoteById(Long noteId) {
-        ResponseEntity<NoteDto> responseEntity = noteServiceClient.getNoteById(noteId);
-        if (responseEntity.getStatusCode().is2xxSuccessful()) {
-            return modelMapper.map(responseEntity.getBody(), Note.class);
-        } else {
-            throw new ResourceNotFoundException("Note", "id", noteId);
+    private NoteClientResponse getNoteClientResponseByNoteId(Long noteId) {
+        try{
+            ResponseEntity<NoteClientResponse> responseEntity = noteServiceClient.getNoteById(noteId);
+            return responseEntity.getBody();
+        } catch (FeignException e) {
+            if (e.status() == HttpStatus.NOT_FOUND.value())
+                throw new ResourceNotFoundException("Note", "id", noteId);
+            else
+                throw new WebAPIException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
@@ -302,20 +301,20 @@ public class FlashcardServiceImpl implements FlashcardService {
 //        return getUserDetails().getAuthorities().stream().anyMatch(
 //                authority -> authority.getAuthority().equals(roleName));
 //    }
-//
-//    private FlashcardDto mapToDto(Flashcard flashcard) {
-//        FlashcardDto flashcardDto;
-//        if (flashcard.getType() == FlashcardType.SHORT_ANSWER){
-//            flashcardDto = modelMapper.map(flashcard, ShortAnswerFlashcardDto.class);
-//        } else if (flashcard.getType() == FlashcardType.FILL_IN_THE_BLANK){
-//            flashcardDto = modelMapper.map(flashcard, FillInTheBlankFlashcardDto.class);
-//        } else if (flashcard.getType() == FlashcardType.MULTIPLE_CHOICE){
-//            flashcardDto = modelMapper.map(flashcard, MultipleChoiceFlashcardDto.class);
-//        } else if (flashcard.getType() == FlashcardType.TRUE_FALSE){
-//            flashcardDto = modelMapper.map(flashcard, TrueFalseFlashcardDto.class);
-//        } else  {
-//            throw new IllegalArgumentException("Flashcard type is not supported");
-//        }
-//        return flashcardDto;
-//    }
+
+    private FlashcardDto mapToDto(Flashcard flashcard) {
+        FlashcardDto flashcardDto;
+        if (flashcard.getType() == FlashcardType.SHORT_ANSWER){
+            flashcardDto = modelMapper.map(flashcard, ShortAnswerFlashcardDto.class);
+        } else if (flashcard.getType() == FlashcardType.FILL_IN_THE_BLANK){
+            flashcardDto = modelMapper.map(flashcard, FillInTheBlankFlashcardDto.class);
+        } else if (flashcard.getType() == FlashcardType.MULTIPLE_CHOICE){
+            flashcardDto = modelMapper.map(flashcard, MultipleChoiceFlashcardDto.class);
+        } else if (flashcard.getType() == FlashcardType.TRUE_FALSE){
+            flashcardDto = modelMapper.map(flashcard, TrueFalseFlashcardDto.class);
+        } else  {
+            throw new IllegalArgumentException("Flashcard type is not supported");
+        }
+        return flashcardDto;
+    }
 }

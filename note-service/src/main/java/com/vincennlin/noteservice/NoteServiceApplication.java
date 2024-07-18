@@ -10,8 +10,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @EnableDiscoveryClient
-@EntityScan(basePackages = {"com.vincennlin.noteservice.entity", "com.vincennlin.userservice.entity"})
-@EnableJpaRepositories(basePackages = {"com.vincennlin.noteservice.repository", "com.vincennlin.userservice.repository"})
 @SpringBootApplication
 public class NoteServiceApplication {
 

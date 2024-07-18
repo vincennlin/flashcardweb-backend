@@ -2,7 +2,6 @@ package com.vincennlin.noteservice.config;
 
 import com.vincennlin.noteservice.filter.AuthorizationFilter;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
