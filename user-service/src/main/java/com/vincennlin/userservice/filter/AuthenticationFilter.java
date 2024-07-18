@@ -1,8 +1,9 @@
-package com.vincennlin.userservice.security;
+package com.vincennlin.userservice.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vincennlin.userservice.payload.LoginDto;
 import com.vincennlin.userservice.payload.UserDto;
+import com.vincennlin.userservice.security.FlashcardwebUserDetails;
 import com.vincennlin.userservice.service.UserService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -67,6 +68,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         Instant now = Instant.now();
         String token = Jwts.builder()
+                .claim("scope", authResult.getAuthorities())
                 .subject(userDto.getId().toString())
                 .expiration(Date.from(now.plusMillis(Long.parseLong(tokenExpirationTime))))
                 .issuedAt(Date.from(now))
