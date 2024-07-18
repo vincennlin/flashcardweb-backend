@@ -19,8 +19,9 @@ import com.vincennlin.flashcardservice.service.FlashcardService;
 import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +31,8 @@ import java.util.List;
 @AllArgsConstructor
 @Service
 public class FlashcardServiceImpl implements FlashcardService {
+
+    private static final Logger logger = LoggerFactory.getLogger(FlashcardServiceImpl.class);
 
     private FlashcardRepository flashcardRepository;
 
@@ -277,10 +280,11 @@ public class FlashcardServiceImpl implements FlashcardService {
         try{
             return noteServiceClient.getNoteById(noteId).getBody();
         } catch (FeignException e) {
+            logger.error(e.getLocalizedMessage());
             if (e.status() == HttpStatus.NOT_FOUND.value())
                 throw new ResourceNotFoundException("Note", "id", noteId);
             else
-                throw new WebAPIException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+                throw new WebAPIException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
         }
     }
 
