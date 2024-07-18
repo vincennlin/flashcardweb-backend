@@ -32,32 +32,31 @@ import java.util.List;
 @Service
 public class FlashcardServiceImpl implements FlashcardService {
 
-    private NoteServiceClient noteServiceClient;
+    private FlashcardRepository flashcardRepository;
 
     private ModelMapper modelMapper;
 
-    private FlashcardRepository flashcardRepository;
-
     private OptionRepository optionRepository;
 
-//    @Override
-//    public List<FlashcardDto> getFlashcardsByNoteId(Long noteId) {
-//
-//        Note note = getNoteById(noteId);
-//
-//        List<Flashcard> flashcards = note.getFlashcards();
-//
-//        return flashcards.stream().map(this::mapToDto).toList();
-//    }
-//
-//    @Override
-//    public FlashcardDto getFlashcardById(Long flashcardId) {
-//
-//        Flashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
-//                new ResourceNotFoundException("Flashcard", "id", flashcardId));
-//
-//        return mapToDto(flashcard);
-//    }
+    private NoteServiceClient noteServiceClient;
+
+    @Override
+    public List<FlashcardDto> getFlashcardsByNoteId(Long noteId) {
+
+        List<Flashcard> flashcards = flashcardRepository.findByNoteId(noteId).orElseThrow(() ->
+                new ResourceNotFoundException("Flashcards", "noteId", noteId));
+
+        return flashcards.stream().map(this::mapToDto).toList();
+    }
+
+    @Override
+    public FlashcardDto getFlashcardById(Long flashcardId) {
+
+        Flashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
+                new ResourceNotFoundException("Flashcard", "id", flashcardId));
+
+        return mapToDto(flashcard);
+    }
 
     @Override
     public FlashcardDto createFlashcard(Long noteId, ShortAnswerFlashcardDto shortAnswerFlashcardDto) {

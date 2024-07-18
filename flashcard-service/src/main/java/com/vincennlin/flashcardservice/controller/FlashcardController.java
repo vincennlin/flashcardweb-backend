@@ -126,57 +126,41 @@ public class FlashcardController {
     @GetMapping("/notes/{note_id}/flashcards")
     public ResponseEntity<List<FlashcardDto>> getFlashcardsByNoteId(@PathVariable(name = "note_id") @Min(1) Long noteId) {
 
-//        List<FlashcardDto> flashcardsResponse = flashcardService.getFlashcardsByNoteId(noteId);
-
-        ShortAnswerFlashcardDto flashcard1 = new ShortAnswerFlashcardDto();
-        flashcard1.setId(1L);
-        flashcard1.setQuestion("What is Java?");
-        flashcard1.setType(FlashcardType.SHORT_ANSWER);
-        flashcard1.setNoteId(noteId);
-        flashcard1.setShortAnswer("Java is a programming language.");
-
-        TrueFalseFlashcardDto flashcard2 = new TrueFalseFlashcardDto();
-        flashcard2.setId(2L);
-        flashcard2.setQuestion("Java is an object-oriented programming language.");
-        flashcard2.setType(FlashcardType.TRUE_FALSE);
-        flashcard2.setNoteId(noteId);
-        flashcard2.setTrueFalseAnswer(true);
-
-        List<FlashcardDto> flashcardsResponse = List.of(flashcard1, flashcard2);
+        List<FlashcardDto> flashcardsResponse = flashcardService.getFlashcardsByNoteId(noteId);
 
         return new ResponseEntity<>(flashcardsResponse, HttpStatus.OK);
     }
-//
-//    @Operation(
-//            summary = "取得特定字卡",
-//            description = "根據 flashcard_id 取得特定字卡"
-//    )
-//    @ApiResponse(
-//            responseCode = "200",
-//            description = "成功取得特定字卡",
-//            content = @Content(
-//                    mediaType = "application/json",
-//                    examples = @ExampleObject(value = """
-//                            {
-//                                "id": 1,
-//                                "question": "What is Java?",
-//                                "type": "SHORT_ANSWER",
-//                                "note_id": 1,
-//                                "short_answer": "Java is a programming language."
-//                            }
-//                            """)
-//            )
-//    )
-//    @SecurityRequirement(name = "Bear Authentication")
+
+    @Operation(
+            summary = "取得特定字卡",
+            description = "根據 flashcard_id 取得特定字卡"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "成功取得特定字卡",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                "id": 1,
+                                "question": "What is Java?",
+                                "type": "SHORT_ANSWER",
+                                "note_id": 1,
+                                "short_answer": "Java is a programming language."
+                            }
+                            """)
+            )
+    )
+    @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-//    @GetMapping("/flashcards/{flashcard_id}")
-//    public ResponseEntity<FlashcardDto> getFlashcardById(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId) {
-//
-//        FlashcardDto flashcardResponse = flashcardService.getFlashcardById(flashcardId);
-//
-//        return new ResponseEntity<>(flashcardResponse, HttpStatus.OK);
-//    }
-//
+    @GetMapping("/flashcards/{flashcard_id}")
+    public ResponseEntity<FlashcardDto> getFlashcardById(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId) {
+
+        FlashcardDto flashcardResponse = flashcardService.getFlashcardById(flashcardId);
+
+        return new ResponseEntity<>(flashcardResponse, HttpStatus.OK);
+    }
+
     @Operation(
             summary = "新增問答題字卡",
             description = "根據 note_id 新增問答題字卡"
