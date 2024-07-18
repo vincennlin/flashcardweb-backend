@@ -20,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -246,6 +248,7 @@ public class NoteController {
             )
     )
     @SecurityRequirement(name = "Bear Authentication")
+    @PreAuthorize("principal == #userId")
 //    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/notes/user/{user_id}")
     public ResponseEntity<NotePageResponse> getNotesByUserId(
@@ -348,6 +351,7 @@ public class NoteController {
             )
     )
     @SecurityRequirement(name = "Bear Authentication")
+    @PostAuthorize("returnObject.body.userId == principal")
 //    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/notes/{note_id}")
     public ResponseEntity<NoteDto> getNoteById(@PathVariable(name = "note_id") @Min(1) Long id) {

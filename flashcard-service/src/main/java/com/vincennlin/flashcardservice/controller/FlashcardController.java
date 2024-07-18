@@ -18,6 +18,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -122,6 +124,7 @@ public class FlashcardController {
     )
     @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PostAuthorize("returnObject.body.userId == principal")
     @GetMapping("/notes/{note_id}/flashcards")
     public ResponseEntity<List<AbstractFlashcardDto>> getFlashcardsByNoteId(@PathVariable(name = "note_id") @Min(1) Long noteId) {
 
@@ -152,6 +155,7 @@ public class FlashcardController {
     )
     @SecurityRequirement(name = "Bear Authentication")
 //    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PostAuthorize("returnObject.body.userId == principal")
     @GetMapping("/flashcards/{flashcard_id}")
     public ResponseEntity<AbstractFlashcardDto> getFlashcardById(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId) {
 
