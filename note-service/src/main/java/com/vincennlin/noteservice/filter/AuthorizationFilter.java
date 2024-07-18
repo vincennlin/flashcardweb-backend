@@ -54,10 +54,8 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
         if (tokenSecret == null) return null;
 
         JwtClaimsParser jwtClaimsParser = new JwtClaimsParser(token, tokenSecret);
-        String userId = jwtClaimsParser.getJwtSubject();
+        Long userId = Long.parseLong(jwtClaimsParser.getJwtSubject());
 
-        if (userId == null) return null;
-
-        return new UsernamePasswordAuthenticationToken(userId, null, jwtClaimsParser.getUserAuthorities());
+        return new UsernamePasswordAuthenticationToken(userId, authorizationHeader, jwtClaimsParser.getUserAuthorities());
     }
 }

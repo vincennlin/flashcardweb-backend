@@ -9,7 +9,6 @@ import com.vincennlin.flashcardservice.exception.ResourceNotFoundException;
 import com.vincennlin.flashcardservice.exception.ResourceOwnershipException;
 import com.vincennlin.flashcardservice.exception.WebAPIException;
 import com.vincennlin.flashcardservice.payload.AbstractFlashcardDto;
-import com.vincennlin.flashcardservice.payload.NoteClientResponse;
 import com.vincennlin.flashcardservice.payload.concrete.FillInTheBlankFlashcardDto;
 import com.vincennlin.flashcardservice.payload.concrete.MultipleChoiceFlashcardDto;
 import com.vincennlin.flashcardservice.payload.concrete.ShortAnswerFlashcardDto;
@@ -24,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -46,14 +44,16 @@ public class FlashcardServiceImpl implements FlashcardService {
 
     private NoteServiceClient noteServiceClient;
 
-    @PostFilter("filterObject.userId == principal or hasAuthority('ADVANCED')")
     @Override
     public List<AbstractFlashcardDto> getFlashcardsByNoteId(Long noteId) {
 
         List<AbstractFlashcard> flashcards = flashcardRepository.findByNoteId(noteId).orElseThrow(() ->
                 new ResourceNotFoundException("Flashcards", "noteId", noteId));
 
-        return flashcards.stream().map(this::mapToDto).toList();
+        return flashcards.stream().map(flashcard -> {
+            authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
+            return mapToDto(flashcard);
+        }).toList();
     }
 
     @PostAuthorize("returnObject.userId == principal or hasAuthority('ADVANCED')")
@@ -69,16 +69,14 @@ public class FlashcardServiceImpl implements FlashcardService {
     @Override
     public AbstractFlashcardDto createFlashcard(Long noteId, ShortAnswerFlashcardDto shortAnswerFlashcardDto) {
 
-        NoteClientResponse noteClientResponse = getNoteClientResponseByNoteId(noteId);
-
-        authorizeOwnership(noteClientResponse.getUserId());
+        authorizeOwnershipByNoteId(noteId);
 
         shortAnswerFlashcardDto.setUserId(getCurrentUserId());
 
         ShortAnswerFlashcard shortAnswerFlashcard = modelMapper.map(shortAnswerFlashcardDto, ShortAnswerFlashcard.class);
         shortAnswerFlashcard.setType(FlashcardType.SHORT_ANSWER);
 
-        shortAnswerFlashcard.setNoteId(noteClientResponse.getId());
+        shortAnswerFlashcard.setNoteId(noteId);
 
         AbstractFlashcard newFlashcard = flashcardRepository.save(shortAnswerFlashcard);
 
@@ -88,16 +86,14 @@ public class FlashcardServiceImpl implements FlashcardService {
     @Override
     public AbstractFlashcardDto createFlashcard(Long noteId, FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto) {
 
-        NoteClientResponse noteClientResponse = getNoteClientResponseByNoteId(noteId);
-
-        authorizeOwnership(noteClientResponse.getUserId());
+        authorizeOwnershipByNoteId(noteId);
 
         fillInTheBlankFlashcardDto.setUserId(getCurrentUserId());
 
         FillInTheBlankFlashcard fillInTheBlankFlashcard = modelMapper.map(fillInTheBlankFlashcardDto, FillInTheBlankFlashcard.class);
         fillInTheBlankFlashcard.setType(FlashcardType.FILL_IN_THE_BLANK);
 
-        fillInTheBlankFlashcard.setNoteId(noteClientResponse.getId());
+        fillInTheBlankFlashcard.setNoteId(noteId);
 
         fillInTheBlankFlashcard.getInBlankAnswers().forEach(
                 inBlankAnswers -> inBlankAnswers.setFlashcard(fillInTheBlankFlashcard));
@@ -111,15 +107,13 @@ public class FlashcardServiceImpl implements FlashcardService {
     @Override
     public AbstractFlashcardDto createFlashcard(Long noteId, MultipleChoiceFlashcardDto multipleChoiceFlashcardDto) {
 
-        NoteClientResponse noteClientResponse = getNoteClientResponseByNoteId(noteId);
-
-        authorizeOwnership(noteClientResponse.getUserId());
+        authorizeOwnershipByNoteId(noteId);
 
         multipleChoiceFlashcardDto.setUserId(getCurrentUserId());
 
         MultipleChoiceFlashcard multipleChoiceFlashcard = modelMapper.map(multipleChoiceFlashcardDto, MultipleChoiceFlashcard.class);
         multipleChoiceFlashcard.setType(FlashcardType.MULTIPLE_CHOICE);
-        multipleChoiceFlashcard.setNoteId(noteClientResponse.getId());
+        multipleChoiceFlashcard.setNoteId(noteId);
 
         List<Option> options = multipleChoiceFlashcard.getOptions();
         options.forEach(option -> option.setFlashcard(multipleChoiceFlashcard));
@@ -138,16 +132,14 @@ public class FlashcardServiceImpl implements FlashcardService {
     @Override
     public AbstractFlashcardDto createFlashcard(Long noteId, TrueFalseFlashcardDto trueFalseFlashcardDto) {
 
-        NoteClientResponse noteClientResponse = getNoteClientResponseByNoteId(noteId);
-
-        authorizeOwnership(noteClientResponse.getUserId());
+        authorizeOwnershipByNoteId(noteId);
 
         trueFalseFlashcardDto.setUserId(getCurrentUserId());
 
         TrueFalseFlashcard trueFalseFlashcard = modelMapper.map(trueFalseFlashcardDto, TrueFalseFlashcard.class);
         trueFalseFlashcard.setType(FlashcardType.TRUE_FALSE);
 
-        trueFalseFlashcard.setNoteId(noteClientResponse.getId());
+        trueFalseFlashcard.setNoteId(noteId);
 
         AbstractFlashcard newFlashcard = flashcardRepository.save(trueFalseFlashcard);
 
@@ -161,7 +153,7 @@ public class FlashcardServiceImpl implements FlashcardService {
         AbstractFlashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
                 new ResourceNotFoundException("Flashcard", "id", flashcardId));
 
-        authorizeOwnership(flashcard.getUserId());
+        authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
 
         if(flashcard.getType() != FlashcardType.SHORT_ANSWER){
             throw new FlashcardTypeException(flashcardId, flashcard.getType(), FlashcardType.SHORT_ANSWER);
@@ -186,7 +178,7 @@ public class FlashcardServiceImpl implements FlashcardService {
         AbstractFlashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
                 new ResourceNotFoundException("Flashcard", "id", flashcardId));
 
-        authorizeOwnership(flashcard.getUserId());
+        authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
 
         if(flashcard.getType() != FlashcardType.FILL_IN_THE_BLANK){
             throw new FlashcardTypeException(flashcardId, flashcard.getType(), FlashcardType.FILL_IN_THE_BLANK);
@@ -225,7 +217,7 @@ public class FlashcardServiceImpl implements FlashcardService {
         AbstractFlashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
                 new ResourceNotFoundException("Flashcard", "id", flashcardId));
 
-        authorizeOwnership(flashcard.getUserId());
+        authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
 
         if(flashcard.getType() != FlashcardType.MULTIPLE_CHOICE){
             throw new FlashcardTypeException(flashcardId, flashcard.getType(), FlashcardType.MULTIPLE_CHOICE);
@@ -267,7 +259,7 @@ public class FlashcardServiceImpl implements FlashcardService {
         AbstractFlashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
                 new ResourceNotFoundException("Flashcard", "id", flashcardId));
 
-        authorizeOwnership(flashcard.getUserId());
+        authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
 
         if(flashcard.getType() != FlashcardType.TRUE_FALSE){
             throw new FlashcardTypeException(flashcardId, flashcard.getType(), FlashcardType.TRUE_FALSE);
@@ -291,7 +283,7 @@ public class FlashcardServiceImpl implements FlashcardService {
         AbstractFlashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
                 new ResourceNotFoundException("Flashcard", "id", flashcardId));
 
-        authorizeOwnership(flashcard.getUserId());
+        authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
 
         flashcardRepository.delete(flashcard);
     }
@@ -300,10 +292,19 @@ public class FlashcardServiceImpl implements FlashcardService {
         return Long.parseLong(getAuthentication().getPrincipal().toString());
     }
 
-    private void authorizeOwnership(Long ownerId) {
-        Long currentUserId = getCurrentUserId();
-        if (!currentUserId.equals(ownerId) && !containsAuthority("ADVANCED")) {
-            throw new ResourceOwnershipException(currentUserId, ownerId);
+    private String getAuthorization() {
+        return getAuthentication().getCredentials().toString();
+    }
+
+    private void authorizeOwnershipByNoteId(Long noteId) {
+        if (!isNoteOwner(noteId) && !containsAuthority("ADVANCED")) {
+            throw new ResourceOwnershipException(getCurrentUserId(), "Note");
+        }
+    }
+
+    private void authorizeOwnershipByFlashcardOwnerId(Long flashcardOwnerId) {
+        if (flashcardOwnerId != getCurrentUserId() && !containsAuthority("ADVANCED")) {
+            throw new ResourceOwnershipException(getCurrentUserId(), "Flashcard");
         }
     }
 
@@ -316,9 +317,9 @@ public class FlashcardServiceImpl implements FlashcardService {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
-    private NoteClientResponse getNoteClientResponseByNoteId(Long noteId) {
+    private Boolean isNoteOwner(Long noteId) {
         try{
-            return noteServiceClient.getNoteById(noteId).getBody();
+            return noteServiceClient.isNoteOwner(noteId, getAuthorization()).getBody();
         } catch (FeignException e) {
             logger.error(e.getLocalizedMessage());
             if (e.status() == HttpStatus.NOT_FOUND.value())

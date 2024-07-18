@@ -13,6 +13,8 @@ public interface NoteService {
 
     NoteDto getNoteById(Long noteId);
 
+    Boolean isNoteOwner(Long noteId);
+
     NoteDto createNote(NoteDto noteDto);
 
     NoteDto updateNote(Long noteId, NoteDto noteDto);

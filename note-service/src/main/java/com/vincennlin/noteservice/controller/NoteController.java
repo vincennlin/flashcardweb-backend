@@ -22,6 +22,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,6 +43,7 @@ public class NoteController {
 
     @GetMapping("/notes/status/check")
     public ResponseEntity<String> status() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return new ResponseEntity<>("Note Service is up and running on port " + env.getProperty("local.server.port"), HttpStatus.OK);
     }
 
@@ -360,6 +363,12 @@ public class NoteController {
         return new ResponseEntity<>(noteResponse, HttpStatus.OK);
     }
 
+    @GetMapping("/notes/{note_id}/is-owner")
+    @SecurityRequirement(name = "Bear Authentication")
+    public ResponseEntity<Boolean> isNoteOwner(@PathVariable(name = "note_id") @Min(1) Long id) {
+        return new ResponseEntity<>(noteService.isNoteOwner(id), HttpStatus.OK);
+    }
+
     @Operation(
             summary = "新增筆記",
             description = "新增筆記"
@@ -488,6 +497,7 @@ public class NoteController {
     @PreAuthorize("hasAuthority('UPDATE')")
     @PutMapping("/notes/{note_id}")
     public ResponseEntity<NoteDto> updateNote(@PathVariable(name = "note_id") @Min(1) Long id,
+                                              @RequestHeader("Authorization") String authorization,
                                               @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                       content = @Content(
                                                               mediaType = "application/json",
