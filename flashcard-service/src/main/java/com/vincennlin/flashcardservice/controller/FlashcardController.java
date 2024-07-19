@@ -155,7 +155,7 @@ public class FlashcardController {
     )
     @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasAuthority('READ')")
-    @PostAuthorize("returnObject.body.userId == principal or hasAuthority('ADVANCED')")
+//    @PostAuthorize("returnObject.body.userId == principal or hasAuthority('ADVANCED')")
     @GetMapping("/flashcards/{flashcard_id}")
     public ResponseEntity<AbstractFlashcardDto> getFlashcardById(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId) {
 

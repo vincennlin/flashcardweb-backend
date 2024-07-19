@@ -17,7 +17,6 @@ import lombok.Setter;
 )
 public class InBlankAnswerDto {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @Schema(

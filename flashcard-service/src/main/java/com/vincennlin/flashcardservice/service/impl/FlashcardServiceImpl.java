@@ -22,6 +22,7 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -47,8 +48,9 @@ public class FlashcardServiceImpl implements FlashcardService {
     @Override
     public List<AbstractFlashcardDto> getFlashcardsByNoteId(Long noteId) {
 
-        List<AbstractFlashcard> flashcards = flashcardRepository.findByNoteId(noteId).orElseThrow(() ->
-                new ResourceNotFoundException("Flashcards", "noteId", noteId));
+        authorizeOwnershipByNoteId(noteId);
+
+        List<AbstractFlashcard> flashcards = flashcardRepository.findByNoteId(noteId);
 
         return flashcards.stream().map(flashcard -> {
             authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
@@ -56,12 +58,13 @@ public class FlashcardServiceImpl implements FlashcardService {
         }).toList();
     }
 
-    @PostAuthorize("returnObject.userId == principal or hasAuthority('ADVANCED')")
     @Override
     public AbstractFlashcardDto getFlashcardById(Long flashcardId) {
 
         AbstractFlashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
                 new ResourceNotFoundException("Flashcard", "id", flashcardId));
+
+        authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
 
         return mapToDto(flashcard);
     }
@@ -318,15 +321,18 @@ public class FlashcardServiceImpl implements FlashcardService {
     }
 
     private Boolean isNoteOwner(Long noteId) {
+        ResponseEntity<Boolean> response = null;
         try{
-            return noteServiceClient.isNoteOwner(noteId, getAuthorization()).getBody();
-        } catch (FeignException e) {
+            response = noteServiceClient.isNoteOwner(noteId, getAuthorization());
+        } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
-            if (e.status() == HttpStatus.NOT_FOUND.value())
+            if (e instanceof FeignException && ((FeignException)e).status() == HttpStatus.NOT_FOUND.value())
                 throw new ResourceNotFoundException("Note", "id", noteId);
-            else
+            else if (!(e instanceof ResourceNotFoundException))
                 throw new WebAPIException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+            throw e;
         }
+        return response.getBody();
     }
 
     private AbstractFlashcardDto mapToDto(AbstractFlashcard flashcard) {
