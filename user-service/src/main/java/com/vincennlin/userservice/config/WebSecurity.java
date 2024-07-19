@@ -59,10 +59,11 @@ public class WebSecurity {
 //                        .requestMatchers(new AntPathRequestMatcher("/api/v1/**")).permitAll()
 //                        .requestMatchers(new AntPathRequestMatcher("/actuator/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/actuator/**")).access(
-                                new WebExpressionAuthorizationManager(webExpressionString)
-                        )
+                                new WebExpressionAuthorizationManager(webExpressionString))
                         .requestMatchers(new AntPathRequestMatcher("/api/v1/**")).access(
                                 new WebExpressionAuthorizationManager(webExpressionString))
+                        .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
 //                        .anyRequest().authenticated()
         );
 
