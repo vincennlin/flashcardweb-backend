@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
 
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setMessage("User registered successfully!");
-        registerResponse.setUserDto(modelMapper.map(newUser, UserDto.class));
+        registerResponse.setAccountInfo(modelMapper.map(newUser, AccountInfoDto.class));
 
         return registerResponse;
     }
