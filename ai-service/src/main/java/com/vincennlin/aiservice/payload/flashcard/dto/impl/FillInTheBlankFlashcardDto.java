@@ -1,7 +1,8 @@
-package com.vincennlin.aiservice.payload.flashcard.concrete;
+package com.vincennlin.aiservice.payload.flashcard.dto.impl;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vincennlin.aiservice.payload.flashcard.FlashcardDto;
+import com.vincennlin.aiservice.constant.FlashcardType;
+import com.vincennlin.aiservice.payload.flashcard.dto.AbstractFlashcardDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -12,13 +13,16 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Schema(
         name = "FillInTheBlankFlashcardDto",
         description = "填空題的 Data Transfer Object"
 )
-public class FillInTheBlankFlashcardDto extends FlashcardDto {
+public class FillInTheBlankFlashcardDto extends AbstractFlashcardDto {
+
+    public FillInTheBlankFlashcardDto() {
+        super(FlashcardType.FILL_IN_THE_BLANK);
+    }
 
     @Schema(
             name = "in_blank_answers",

@@ -1,4 +1,4 @@
-package com.vincennlin.aiservice.payload.flashcard.concrete;
+package com.vincennlin.aiservice.payload.flashcard.dto.impl;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
