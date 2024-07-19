@@ -61,6 +61,7 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return request.getServletPath().contains("auth");
+        boolean shouldNotFilter = request.getRequestURI().contains("auth");
+        return shouldNotFilter;
     }
 }

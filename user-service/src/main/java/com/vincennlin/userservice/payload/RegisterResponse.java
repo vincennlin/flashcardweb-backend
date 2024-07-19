@@ -25,12 +25,12 @@ public class RegisterResponse {
     private String message;
 
     @Schema(
-            name = "user_dto",
+            name = "account_info",
             description = "註冊成功的使用者資訊",
             example = "{\"id\": 1, \"name\": \"user\", \"username\": \"user\", \"email\": \"user@gmail.com\", \"roles\": [{\"name\": \"ROLE_USER\"}]}"
     )
     @JsonProperty(
-            value = "user_dto"
+            value = "account_info"
     )
-    private UserDto userDto;
+    private AccountInfoDto accountInfo;
 }

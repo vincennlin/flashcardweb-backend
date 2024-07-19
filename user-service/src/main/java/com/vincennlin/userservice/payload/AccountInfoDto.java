@@ -80,11 +80,4 @@ public class AccountInfoDto {
     )
     @UpdateTimestamp
     private LocalDateTime lastUpdated;
-//    @Schema(
-//            name = "roles",
-//            description = "用戶身份列表",
-//            example = "[{\"name\": \"ROLE_USER\"}]"
-//    )
-//    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-//    private Set<RoleDto> roles;
 }
