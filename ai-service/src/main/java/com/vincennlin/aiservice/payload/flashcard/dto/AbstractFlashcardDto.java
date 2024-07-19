@@ -1,14 +1,8 @@
-package com.vincennlin.aiservice.payload.flashcard;
+package com.vincennlin.aiservice.payload.flashcard.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.vincennlin.aiservice.constant.FlashcardType;
-import com.vincennlin.aiservice.payload.flashcard.concrete.FillInTheBlankFlashcardDto;
-import com.vincennlin.aiservice.payload.flashcard.concrete.MultipleChoiceFlashcardDto;
-import com.vincennlin.aiservice.payload.flashcard.concrete.ShortAnswerFlashcardDto;
-import com.vincennlin.aiservice.payload.flashcard.concrete.TrueFalseFlashcardDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -22,20 +16,14 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        property = "type"
-)
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = ShortAnswerFlashcardDto.class, name = "SHORT_ANSWER"),
-        @JsonSubTypes.Type(value = FillInTheBlankFlashcardDto.class, name = "FILL_IN_THE_BLANK"),
-        @JsonSubTypes.Type(value = MultipleChoiceFlashcardDto.class, name = "MULTIPLE_CHOICE"),
-        @JsonSubTypes.Type(value = TrueFalseFlashcardDto.class, name = "TRUE_FALSE")
-})
 @Schema(
-        name = "FlashcardDto"
+        name = "AbstractFlashcardDto"
 )
-public class FlashcardDto {
+public abstract class AbstractFlashcardDto {
+
+    protected AbstractFlashcardDto(FlashcardType type) {
+        this.type = type;
+    }
 
     @Schema(
             name = "question",

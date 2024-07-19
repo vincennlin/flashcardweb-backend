@@ -1,7 +1,8 @@
-package com.vincennlin.aiservice.payload.flashcard.concrete;
+package com.vincennlin.aiservice.payload.flashcard.dto.impl;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vincennlin.aiservice.payload.flashcard.FlashcardDto;
+import com.vincennlin.aiservice.constant.FlashcardType;
+import com.vincennlin.aiservice.payload.flashcard.dto.AbstractFlashcardDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -9,13 +10,16 @@ import lombok.*;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Schema(
         name = "TrueFalseFlashcardDto",
         description = "是非題的 Data Transfer Object"
 )
-public class TrueFalseFlashcardDto extends FlashcardDto {
+public class TrueFalseFlashcardDto extends AbstractFlashcardDto {
+
+    public TrueFalseFlashcardDto() {
+        super(FlashcardType.TRUE_FALSE);
+    }
 
     @Schema(
             description = "答案是否為真，ture 或 false 的布林值",

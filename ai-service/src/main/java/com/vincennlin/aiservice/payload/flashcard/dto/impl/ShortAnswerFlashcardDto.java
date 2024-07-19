@@ -1,8 +1,8 @@
-package com.vincennlin.aiservice.payload.flashcard.concrete;
+package com.vincennlin.aiservice.payload.flashcard.dto.impl;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vincennlin.aiservice.constant.FlashcardType;
-import com.vincennlin.aiservice.payload.flashcard.FlashcardDto;
+import com.vincennlin.aiservice.payload.flashcard.dto.AbstractFlashcardDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
@@ -10,13 +10,16 @@ import lombok.*;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Schema(
         name = "ShortAnswerFlashcardDto",
         description = "問答題的 Data Transfer Object"
 )
-public class ShortAnswerFlashcardDto extends FlashcardDto {
+public class ShortAnswerFlashcardDto extends AbstractFlashcardDto {
+
+    public ShortAnswerFlashcardDto() {
+        super(FlashcardType.SHORT_ANSWER);
+    }
 
     @Schema(
             name = "short_answer",

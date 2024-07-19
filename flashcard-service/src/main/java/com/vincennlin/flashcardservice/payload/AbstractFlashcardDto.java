@@ -2,7 +2,6 @@ package com.vincennlin.flashcardservice.payload;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.vincennlin.flashcardservice.constant.FlashcardType;
 import com.vincennlin.flashcardservice.operation.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;

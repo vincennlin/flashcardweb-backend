@@ -1,4 +1,4 @@
-package com.vincennlin.aiservice.payload;
+package com.vincennlin.aiservice.payload.note;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

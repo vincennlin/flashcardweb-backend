@@ -1,4 +1,4 @@
-package com.vincennlin.aiservice.payload.flashcard.concrete;
+package com.vincennlin.aiservice.payload.flashcard.dto.impl;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
