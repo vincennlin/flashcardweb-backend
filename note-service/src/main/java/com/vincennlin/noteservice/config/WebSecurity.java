@@ -1,6 +1,9 @@
 package com.vincennlin.noteservice.config;
 
 import com.vincennlin.noteservice.filter.AuthorizationFilter;
+import com.vincennlin.noteservice.filter.FlashcardwebExceptionTranslationFilter;
+import com.vincennlin.noteservice.security.FlashcardwebAccessDeniedHandler;
+import com.vincennlin.noteservice.security.JwtAuthenticationEntryPoint;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +16,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -46,7 +50,14 @@ public class WebSecurity {
 //                        .anyRequest().authenticated()
         );
 
-        http.addFilter(new AuthorizationFilter(authenticationManager, environment));
+        // 未完成，目前不會用到
+        ExceptionTranslationFilter flashcardwebExceptionTranslationFilter =
+                new FlashcardwebExceptionTranslationFilter(new JwtAuthenticationEntryPoint());
+        flashcardwebExceptionTranslationFilter.setAccessDeniedHandler(new FlashcardwebAccessDeniedHandler());
+
+        http.addFilter(new AuthorizationFilter(authenticationManager, environment))
+                .addFilter(flashcardwebExceptionTranslationFilter)
+        ;
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

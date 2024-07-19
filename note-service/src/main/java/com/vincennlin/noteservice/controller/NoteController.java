@@ -251,7 +251,7 @@ public class NoteController {
             )
     )
     @SecurityRequirement(name = "Bear Authentication")
-    @PreAuthorize("principal == #userId or hasAuthority('ADVANCED')")
+    @PostAuthorize("principal == #userId or hasAuthority('ADVANCED')")
     @GetMapping("/notes/user/{user_id}")
     public ResponseEntity<NotePageResponse> getNotesByUserId(
             @PathVariable(name = "user_id") @Min(1) Long userId,
