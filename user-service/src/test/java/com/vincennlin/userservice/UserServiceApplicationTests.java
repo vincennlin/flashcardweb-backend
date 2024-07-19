@@ -5,6 +5,7 @@ import com.vincennlin.userservice.payload.LoginDto;
 import com.vincennlin.userservice.payload.RegisterDto;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -12,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -27,6 +29,8 @@ class UserServiceApplicationTests {
 
 	@Autowired
 	private MockMvc mockMvc;
+
+	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(UserServiceApplicationTests.class);
 
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -192,10 +196,11 @@ class UserServiceApplicationTests {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(loginDto));
 
-		mockMvc.perform(requestBuilder)
+		MvcResult adminResult = mockMvc.perform(requestBuilder)
 				.andExpect(status().is(200))
 				.andExpect(header().exists("access_token"))
-				.andExpect(header().string("token_type", "Bearer"));
+				.andExpect(header().string("token_type", "Bearer"))
+				.andReturn();
 
 		loginDto.setUsernameOrEmail("test1");
 		loginDto.setPassword("test1");
@@ -205,10 +210,29 @@ class UserServiceApplicationTests {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(loginDto));
 
-		mockMvc.perform(requestBuilder)
+		MvcResult test1Result = mockMvc.perform(requestBuilder)
 				.andExpect(status().is(200))
 				.andExpect(header().exists("access_token"))
-				.andExpect(header().string("token_type", "Bearer"));
+				.andExpect(header().string("token_type", "Bearer"))
+				.andReturn();
+
+		loginDto.setUsernameOrEmail("test2");
+		loginDto.setPassword("test2");
+
+		requestBuilder = MockMvcRequestBuilders
+				.post(loginUrl)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(loginDto));
+
+		MvcResult test2Result = mockMvc.perform(requestBuilder)
+				.andExpect(status().is(200))
+				.andExpect(header().exists("access_token"))
+				.andExpect(header().string("token_type", "Bearer"))
+				.andReturn();
+
+		logger.info("Admin token: " + adminResult.getResponse().getHeader("access_token"));
+		logger.info("Test1 token: " + test1Result.getResponse().getHeader("access_token"));
+		logger.info("Test2 token: " + test2Result.getResponse().getHeader("access_token"));
 	}
 
 	@Test
