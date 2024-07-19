@@ -1,13 +1,13 @@
 package com.vincennlin.aiservice.controller;
 
+import com.vincennlin.aiservice.payload.NoteDto;
+import com.vincennlin.aiservice.payload.flashcard.FlashcardDto;
 import com.vincennlin.aiservice.service.AiService;
 import lombok.AllArgsConstructor;
+import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
 @RequestMapping("/api/v1")
@@ -22,5 +22,13 @@ public class AiController {
         String generation = aiService.generate(message);
 
         return new ResponseEntity<>(generation, HttpStatus.OK);
+    }
+
+    @PostMapping("/ai/generate-flashcard")
+    public  ResponseEntity<FlashcardDto> generateFlashcard(@RequestBody NoteDto noteDto) {
+
+        FlashcardDto generatedFlashcard = aiService.generateFlashcard(noteDto);
+
+        return new ResponseEntity<>(generatedFlashcard, HttpStatus.OK);
     }
 }
