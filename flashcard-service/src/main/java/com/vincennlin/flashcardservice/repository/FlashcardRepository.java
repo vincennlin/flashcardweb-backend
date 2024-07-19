@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface FlashcardRepository extends JpaRepository<AbstractFlashcard, Long> {
 
-    Optional<List<AbstractFlashcard>> findByNoteId(Long noteId);
+    List<AbstractFlashcard> findByNoteId(Long noteId);
 }
