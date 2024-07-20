@@ -1,9 +1,13 @@
-package com.vincennlin.flashcardservice.payload.concrete;
+package com.vincennlin.flashcardservice.payload.flashcard.dto.impl;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vincennlin.flashcardservice.entity.AbstractFlashcard;
+import com.vincennlin.flashcardservice.entity.concrete.MultipleChoiceFlashcard;
+import com.vincennlin.flashcardservice.entity.concrete.Option;
 import com.vincennlin.flashcardservice.operation.Operation;
-import com.vincennlin.flashcardservice.payload.AbstractFlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.type.FlashcardType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
@@ -14,7 +18,6 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(
@@ -22,6 +25,10 @@ import java.util.List;
         description = "選擇題的 Data Transfer Object"
 )
 public class MultipleChoiceFlashcardDto extends AbstractFlashcardDto {
+
+    public MultipleChoiceFlashcardDto() {
+        super(FlashcardType.MULTIPLE_CHOICE);
+    }
 
     @Schema(
             name = "options",

@@ -1,12 +1,15 @@
-package com.vincennlin.flashcardservice.payload;
+package com.vincennlin.flashcardservice.payload.flashcard.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vincennlin.flashcardservice.constant.FlashcardType;
+import com.vincennlin.flashcardservice.entity.AbstractFlashcard;
+import com.vincennlin.flashcardservice.payload.flashcard.type.FlashcardType;
 import com.vincennlin.flashcardservice.operation.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
+import org.modelmapper.ModelMapper;
 
 @Getter
 @Setter
@@ -17,6 +20,10 @@ import lombok.*;
         description = "不會用到，只是拿來給其他字卡繼承用的 Data Transfer Object"
 )
 public abstract class AbstractFlashcardDto {
+
+    protected AbstractFlashcardDto(FlashcardType type) {
+        this.type = type;
+    }
 
     @Schema(
             name = "id",
@@ -72,6 +79,13 @@ public abstract class AbstractFlashcardDto {
             access = JsonProperty.Access.READ_ONLY
     )
     private Long userId;
+
+    @JsonIgnore
+    private ModelMapper modelMapper = new ModelMapper();
+
+    public AbstractFlashcard mapToEntity() {
+        return modelMapper.map(this, getType().getFlashcardEntityClass());
+    }
 
     public abstract void execute(Operation operation);
 }

@@ -1,9 +1,9 @@
 package com.vincennlin.flashcardservice.operation;
 
-import com.vincennlin.flashcardservice.payload.concrete.FillInTheBlankFlashcardDto;
-import com.vincennlin.flashcardservice.payload.concrete.MultipleChoiceFlashcardDto;
-import com.vincennlin.flashcardservice.payload.concrete.ShortAnswerFlashcardDto;
-import com.vincennlin.flashcardservice.payload.concrete.TrueFalseFlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.FillInTheBlankFlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.MultipleChoiceFlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.ShortAnswerFlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.TrueFalseFlashcardDto;
 
 public interface Operation {
     void apply(FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto);

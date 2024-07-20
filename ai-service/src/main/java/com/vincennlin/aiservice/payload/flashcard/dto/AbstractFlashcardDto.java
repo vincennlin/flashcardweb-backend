@@ -2,7 +2,7 @@ package com.vincennlin.aiservice.payload.flashcard.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vincennlin.aiservice.constant.FlashcardType;
+import com.vincennlin.aiservice.payload.flashcard.type.FlashcardType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;

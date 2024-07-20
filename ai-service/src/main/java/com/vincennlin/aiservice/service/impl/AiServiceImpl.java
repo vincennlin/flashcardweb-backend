@@ -2,8 +2,7 @@ package com.vincennlin.aiservice.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vincennlin.aiservice.exception.JsonFormatException;
-import com.vincennlin.aiservice.payload.flashcard.state.FlashcardContext;
-import com.vincennlin.aiservice.payload.flashcard.state.FlashcardState;
+import com.vincennlin.aiservice.payload.flashcard.type.FlashcardType;
 import com.vincennlin.aiservice.payload.note.NoteDto;
 import com.vincennlin.aiservice.payload.flashcard.dto.AbstractFlashcardDto;
 import com.vincennlin.aiservice.service.AiService;
@@ -38,12 +37,10 @@ public class AiServiceImpl implements AiService {
     }
 
     @Override
-    public AbstractFlashcardDto generateFlashcard(NoteDto noteDto, FlashcardState flashcardState) {
-
-        FlashcardContext flashcardContext = new FlashcardContext(flashcardState);
+    public AbstractFlashcardDto generateFlashcard(NoteDto noteDto, FlashcardType flashcardType) {
 
         List<Message> messages = List.of(
-                flashcardContext.getSystemMessage(),
+                flashcardType.getSystemMessage(),
                 new UserMessage(noteDto.getContent())
         );
 
@@ -55,17 +52,17 @@ public class AiServiceImpl implements AiService {
 
         String responseContent = response.getResults().get(0).getOutput().getContent();
 
-        return preprocessAndParseJson(responseContent, flashcardContext);
+        return preprocessAndParseJson(responseContent, flashcardType);
     }
 
-    private AbstractFlashcardDto preprocessAndParseJson(String responseContent, FlashcardContext context) {
+    private AbstractFlashcardDto preprocessAndParseJson(String responseContent, FlashcardType flashcardType) {
 
         if (responseContent.startsWith("```json") && responseContent.endsWith("```")) {
             responseContent = responseContent.substring(7, responseContent.length() - 3).trim();
         }
 
         try {
-            return objectMapper.readValue(responseContent, context.getFlashcardDtoClass());
+            return objectMapper.readValue(responseContent, flashcardType.getFlashcardDtoClass());
         } catch (Exception e) {
             throw new JsonFormatException("Failed to parse response content to FlashcardDto", e.getMessage());
         }
