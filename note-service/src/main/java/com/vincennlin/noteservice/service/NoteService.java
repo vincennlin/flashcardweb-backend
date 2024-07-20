@@ -1,8 +1,8 @@
 package com.vincennlin.noteservice.service;
 
 
-import com.vincennlin.noteservice.payload.NoteDto;
-import com.vincennlin.noteservice.payload.NotePageResponse;
+import com.vincennlin.noteservice.payload.note.NoteDto;
+import com.vincennlin.noteservice.payload.note.NotePageResponse;
 import org.springframework.data.domain.Pageable;
 
 public interface NoteService {

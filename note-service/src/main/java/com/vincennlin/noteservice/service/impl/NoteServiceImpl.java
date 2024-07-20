@@ -5,9 +5,9 @@ import com.vincennlin.noteservice.exception.WebAPIException;
 import com.vincennlin.noteservice.client.FlashcardServiceClient;
 import com.vincennlin.noteservice.entity.Note;
 import com.vincennlin.noteservice.exception.ResourceNotFoundException;
-import com.vincennlin.noteservice.payload.NoteDto;
-import com.vincennlin.noteservice.payload.NotePageResponse;
-import com.vincennlin.noteservice.payload.flashcard.FlashcardDto;
+import com.vincennlin.noteservice.payload.note.NoteDto;
+import com.vincennlin.noteservice.payload.note.NotePageResponse;
+import com.vincennlin.noteservice.payload.flashcard.dto.AbstractFlashcardDto;
 import com.vincennlin.noteservice.repository.NoteRepository;
 import com.vincennlin.noteservice.service.NoteService;
 import feign.FeignException;
@@ -58,11 +58,11 @@ public class NoteServiceImpl implements NoteService {
         Note note = noteRepository.findById(noteId).orElseThrow(() ->
                 new ResourceNotFoundException("Note", "id", noteId));
 
-        List<FlashcardDto> flashcardDtoList = getFlashcardsByNoteId(noteId);
+        List<AbstractFlashcardDto> abstractFlashcardDtoList = getFlashcardsByNoteId(noteId);
 
         NoteDto noteDto = modelMapper.map(note, NoteDto.class);
 
-        noteDto.setFlashcards(flashcardDtoList);
+        noteDto.setFlashcards(abstractFlashcardDtoList);
 
         return noteDto;
     }
@@ -128,7 +128,7 @@ public class NoteServiceImpl implements NoteService {
         return getAuthentication().getCredentials().toString();
     }
 
-    private List<FlashcardDto> getFlashcardsByNoteId(Long noteId) {
+    private List<AbstractFlashcardDto> getFlashcardsByNoteId(Long noteId) {
         try{
             return flashcardServiceClient.getFlashcardsByNoteId(noteId, getAuthorization()).getBody();
         } catch (FeignException e) {
@@ -165,8 +165,8 @@ public class NoteServiceImpl implements NoteService {
                 modelMapper.map(note, NoteDto.class)).toList();
 
         for (NoteDto noteDto : content) {
-            List<FlashcardDto> flashcardDtoList = getFlashcardsByNoteId(noteDto.getId());
-            noteDto.setFlashcards(flashcardDtoList);
+            List<AbstractFlashcardDto> abstractFlashcardDtoList = getFlashcardsByNoteId(noteDto.getId());
+            noteDto.setFlashcards(abstractFlashcardDtoList);
         }
 
         NotePageResponse notePageResponse = new NotePageResponse();

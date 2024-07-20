@@ -1,4 +1,4 @@
-package com.vincennlin.flashcardservice.entity.concrete;
+package com.vincennlin.flashcardservice.entity.impl;
 
 import com.vincennlin.flashcardservice.entity.AbstractFlashcard;
 import jakarta.persistence.*;

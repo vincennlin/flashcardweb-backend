@@ -2,10 +2,10 @@ package com.vincennlin.flashcardservice.payload.flashcard.type;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vincennlin.flashcardservice.entity.AbstractFlashcard;
-import com.vincennlin.flashcardservice.entity.concrete.FillInTheBlankFlashcard;
-import com.vincennlin.flashcardservice.entity.concrete.MultipleChoiceFlashcard;
-import com.vincennlin.flashcardservice.entity.concrete.ShortAnswerFlashcard;
-import com.vincennlin.flashcardservice.entity.concrete.TrueFalseFlashcard;
+import com.vincennlin.flashcardservice.entity.impl.FillInTheBlankFlashcard;
+import com.vincennlin.flashcardservice.entity.impl.MultipleChoiceFlashcard;
+import com.vincennlin.flashcardservice.entity.impl.ShortAnswerFlashcard;
+import com.vincennlin.flashcardservice.entity.impl.TrueFalseFlashcard;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.*;
 import lombok.Getter;

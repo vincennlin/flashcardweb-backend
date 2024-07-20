@@ -1,4 +1,4 @@
-package com.vincennlin.flashcardservice.entity.concrete;
+package com.vincennlin.flashcardservice.entity.impl;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,8 +12,8 @@ import lombok.Setter;
 @AllArgsConstructor
 
 @Entity
-@Table(name = "in_blank_answers")
-public class InBlankAnswer {
+@Table(name = "options")
+public class Option {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,5 +23,5 @@ public class InBlankAnswer {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flashcard_id")
-    private FillInTheBlankFlashcard flashcard;
+    private MultipleChoiceFlashcard flashcard;
 }

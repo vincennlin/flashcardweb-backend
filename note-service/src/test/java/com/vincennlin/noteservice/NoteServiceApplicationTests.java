@@ -2,11 +2,10 @@ package com.vincennlin.noteservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vincennlin.noteservice.client.FlashcardServiceClient;
-import com.vincennlin.noteservice.payload.NoteDto;
-import com.vincennlin.noteservice.payload.flashcard.FlashcardDto;
-import com.vincennlin.noteservice.payload.flashcard.concrete.ShortAnswerFlashcardDto;
-import com.vincennlin.noteservice.payload.flashcard.concrete.TrueFalseFlashcardDto;
-import feign.Response;
+import com.vincennlin.noteservice.payload.note.NoteDto;
+import com.vincennlin.noteservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.dto.impl.ShortAnswerFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.dto.impl.TrueFalseFlashcardDto;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -57,7 +56,7 @@ class NoteServiceApplicationTests {
 	@BeforeEach
 	public void beforeEach() {
 
-		ResponseEntity<List<FlashcardDto>> mockResponse = getMockFlashcardsResponse();
+		ResponseEntity<List<AbstractFlashcardDto>> mockResponse = getMockFlashcardsResponse();
 
 		Mockito.when(flashcardServiceClient.getFlashcardsByNoteId(Mockito.anyLong(), Mockito.anyString()))
 				.thenReturn(mockResponse);
@@ -394,7 +393,7 @@ class NoteServiceApplicationTests {
 				.andExpect(status().is(400));
 	}
 
-	private ResponseEntity<List<FlashcardDto>> getMockFlashcardsResponse() {
+	private ResponseEntity<List<AbstractFlashcardDto>> getMockFlashcardsResponse() {
 
 		ShortAnswerFlashcardDto flashcardDto1 = new ShortAnswerFlashcardDto();
 		flashcardDto1.setId(1L);
@@ -410,8 +409,8 @@ class NoteServiceApplicationTests {
 		flashcardDto2.setNoteId(1L);
 		flashcardDto2.setUserId(2L);
 
-		List<FlashcardDto> flashcardDtos = List.of(flashcardDto1, flashcardDto2);
+		List<AbstractFlashcardDto> abstractFlashcardDtos = List.of(flashcardDto1, flashcardDto2);
 
-		return new ResponseEntity<>(flashcardDtos, HttpStatus.OK);
+		return new ResponseEntity<>(abstractFlashcardDtos, HttpStatus.OK);
 	}
 }

@@ -1,8 +1,8 @@
 package com.vincennlin.noteservice.controller;
 
 import com.vincennlin.noteservice.constant.AppConstants;
-import com.vincennlin.noteservice.payload.NoteDto;
-import com.vincennlin.noteservice.payload.NotePageResponse;
+import com.vincennlin.noteservice.payload.note.NoteDto;
+import com.vincennlin.noteservice.payload.note.NotePageResponse;
 import com.vincennlin.noteservice.service.NoteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
