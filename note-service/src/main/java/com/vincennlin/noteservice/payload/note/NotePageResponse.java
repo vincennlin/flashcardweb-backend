@@ -1,4 +1,4 @@
-package com.vincennlin.noteservice.payload;
+package com.vincennlin.noteservice.payload.note;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

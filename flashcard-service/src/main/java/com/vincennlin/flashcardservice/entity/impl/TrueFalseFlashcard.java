@@ -1,4 +1,4 @@
-package com.vincennlin.flashcardservice.entity.concrete;
+package com.vincennlin.flashcardservice.entity.impl;
 
 import com.vincennlin.flashcardservice.entity.AbstractFlashcard;
 import jakarta.persistence.Column;
@@ -15,9 +15,9 @@ import lombok.Setter;
 @AllArgsConstructor
 
 @Entity
-@Table(name = "short_answers")
-public class ShortAnswerFlashcard extends AbstractFlashcard {
+@Table(name = "true_false_answers")
+public class TrueFalseFlashcard extends AbstractFlashcard {
 
-    @Column(name = "short_answer")
-    private String shortAnswer;
+    @Column(name = "true_false_answer")
+    private boolean trueFalseAnswer;
 }

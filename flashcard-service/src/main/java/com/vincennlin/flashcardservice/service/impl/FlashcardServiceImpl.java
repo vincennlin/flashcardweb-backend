@@ -4,7 +4,7 @@ import com.vincennlin.flashcardservice.client.NoteServiceClient;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.*;
 import com.vincennlin.flashcardservice.payload.flashcard.type.FlashcardType;
 import com.vincennlin.flashcardservice.entity.AbstractFlashcard;
-import com.vincennlin.flashcardservice.entity.concrete.*;
+import com.vincennlin.flashcardservice.entity.impl.*;
 import com.vincennlin.flashcardservice.exception.FlashcardTypeException;
 import com.vincennlin.flashcardservice.exception.ResourceNotFoundException;
 import com.vincennlin.flashcardservice.exception.ResourceOwnershipException;

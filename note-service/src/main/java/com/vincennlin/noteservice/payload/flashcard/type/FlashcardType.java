@@ -1,13 +1,8 @@
-package com.vincennlin.flashcardservice.payload.flashcard.type;
+package com.vincennlin.noteservice.payload.flashcard.type;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vincennlin.flashcardservice.entity.AbstractFlashcard;
-import com.vincennlin.flashcardservice.entity.impl.FillInTheBlankFlashcard;
-import com.vincennlin.flashcardservice.entity.impl.MultipleChoiceFlashcard;
-import com.vincennlin.flashcardservice.entity.impl.ShortAnswerFlashcard;
-import com.vincennlin.flashcardservice.entity.impl.TrueFalseFlashcard;
-import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
-import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.*;
+import com.vincennlin.noteservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.dto.impl.*;
 import lombok.Getter;
 
 import java.util.List;
@@ -47,11 +42,6 @@ public enum FlashcardType implements AbstractFlashcardType {
         }
 
         @Override
-        public Class<? extends AbstractFlashcard> getFlashcardEntityClass() {
-            return MultipleChoiceFlashcard.class;
-        }
-
-        @Override
         public String toString() {
             return "MULTIPLE_CHOICE";
         }
@@ -73,11 +63,6 @@ public enum FlashcardType implements AbstractFlashcardType {
         @Override
         public Class<? extends AbstractFlashcardDto> getFlashcardDtoClass() {
             return TrueFalseFlashcardDto.class;
-        }
-
-        @Override
-        public Class<? extends AbstractFlashcard> getFlashcardEntityClass() {
-            return TrueFalseFlashcard.class;
         }
 
         @Override
@@ -115,11 +100,6 @@ public enum FlashcardType implements AbstractFlashcardType {
         }
 
         @Override
-        public Class<? extends AbstractFlashcard> getFlashcardEntityClass() {
-            return FillInTheBlankFlashcard.class;
-        }
-
-        @Override
         public String toString() {
             return "FILL_IN_THE_BLANK";
         }
@@ -141,11 +121,6 @@ public enum FlashcardType implements AbstractFlashcardType {
         @Override
         public Class<? extends AbstractFlashcardDto> getFlashcardDtoClass() {
             return ShortAnswerFlashcardDto.class;
-        }
-
-        @Override
-        public Class<? extends AbstractFlashcard> getFlashcardEntityClass() {
-            return ShortAnswerFlashcard.class;
         }
 
         @Override

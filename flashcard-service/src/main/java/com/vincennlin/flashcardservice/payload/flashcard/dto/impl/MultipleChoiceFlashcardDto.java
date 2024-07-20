@@ -2,9 +2,6 @@ package com.vincennlin.flashcardservice.payload.flashcard.dto.impl;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vincennlin.flashcardservice.entity.AbstractFlashcard;
-import com.vincennlin.flashcardservice.entity.concrete.MultipleChoiceFlashcard;
-import com.vincennlin.flashcardservice.entity.concrete.Option;
 import com.vincennlin.flashcardservice.operation.Operation;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
 import com.vincennlin.flashcardservice.payload.flashcard.type.FlashcardType;
