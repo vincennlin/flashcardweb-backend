@@ -1,8 +1,8 @@
 package com.vincennlin.aiservice.payload.flashcard.dto.impl;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vincennlin.aiservice.constant.FlashcardType;
 import com.vincennlin.aiservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.aiservice.payload.flashcard.type.FlashcardType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -48,7 +48,7 @@ public class FillInTheBlankFlashcardDto extends AbstractFlashcardDto {
                 "inBlankAnswers=" + inBlankAnswers +
                 ", fullAnswer='" + fullAnswer + '\'' +
                 ", question='" + getQuestion() + '\'' +
-                ", type=" + getType() +
+                ", type=" + getType().toString() +
                 ", extraInfo='" + getExtraInfo() + '\'' +
                 '}';
     }

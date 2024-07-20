@@ -1,9 +1,6 @@
 package com.vincennlin.aiservice.controller;
 
-import com.vincennlin.aiservice.payload.flashcard.state.impl.FillInTheBlank;
-import com.vincennlin.aiservice.payload.flashcard.state.impl.MultipleChoice;
-import com.vincennlin.aiservice.payload.flashcard.state.impl.ShortAnswer;
-import com.vincennlin.aiservice.payload.flashcard.state.impl.TrueFalse;
+import com.vincennlin.aiservice.payload.flashcard.type.FlashcardType;
 import com.vincennlin.aiservice.payload.note.NoteDto;
 import com.vincennlin.aiservice.payload.flashcard.dto.AbstractFlashcardDto;
 import com.vincennlin.aiservice.service.AiService;
@@ -30,7 +27,7 @@ public class AiController {
     @PostMapping("/ai/generate/flashcard/short-answer")
     public  ResponseEntity<AbstractFlashcardDto> generateShortAnswerFlashcard(@RequestBody NoteDto noteDto) {
 
-        AbstractFlashcardDto generatedFlashcard = aiService.generateFlashcard(noteDto, new ShortAnswer());
+        AbstractFlashcardDto generatedFlashcard = aiService.generateFlashcard(noteDto, FlashcardType.SHORT_ANSWER);
 
         return new ResponseEntity<>(generatedFlashcard, HttpStatus.OK);
     }
@@ -38,7 +35,7 @@ public class AiController {
     @PostMapping("/ai/generate/flashcard/fill-in-the-blank")
     public  ResponseEntity<AbstractFlashcardDto> generateFillInTheBlankFlashcard(@RequestBody NoteDto noteDto) {
 
-        AbstractFlashcardDto generatedFlashcard = aiService.generateFlashcard(noteDto, new FillInTheBlank());
+        AbstractFlashcardDto generatedFlashcard = aiService.generateFlashcard(noteDto, FlashcardType.FILL_IN_THE_BLANK);
 
         return new ResponseEntity<>(generatedFlashcard, HttpStatus.OK);
     }
@@ -46,7 +43,7 @@ public class AiController {
     @PostMapping("/ai/generate/flashcard/multiple-choice")
     public  ResponseEntity<AbstractFlashcardDto> generateMultipleChoiceFlashcard(@RequestBody NoteDto noteDto) {
 
-        AbstractFlashcardDto generatedFlashcard = aiService.generateFlashcard(noteDto, new MultipleChoice());
+        AbstractFlashcardDto generatedFlashcard = aiService.generateFlashcard(noteDto, FlashcardType.MULTIPLE_CHOICE);
 
         return new ResponseEntity<>(generatedFlashcard, HttpStatus.OK);
     }
@@ -54,7 +51,7 @@ public class AiController {
     @PostMapping("/ai/generate/flashcard/true-false")
     public  ResponseEntity<AbstractFlashcardDto> generateTrueFalseFlashcard(@RequestBody NoteDto noteDto) {
 
-        AbstractFlashcardDto generatedFlashcard = aiService.generateFlashcard(noteDto, new TrueFalse());
+        AbstractFlashcardDto generatedFlashcard = aiService.generateFlashcard(noteDto, FlashcardType.TRUE_FALSE);
 
         return new ResponseEntity<>(generatedFlashcard, HttpStatus.OK);
     }

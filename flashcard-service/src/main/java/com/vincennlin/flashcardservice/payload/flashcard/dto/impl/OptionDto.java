@@ -1,4 +1,4 @@
-package com.vincennlin.flashcardservice.payload.concrete;
+package com.vincennlin.flashcardservice.payload.flashcard.dto.impl;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

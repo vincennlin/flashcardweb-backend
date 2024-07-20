@@ -1,10 +1,10 @@
 package com.vincennlin.flashcardservice.controller;
 
-import com.vincennlin.flashcardservice.payload.AbstractFlashcardDto;
-import com.vincennlin.flashcardservice.payload.concrete.FillInTheBlankFlashcardDto;
-import com.vincennlin.flashcardservice.payload.concrete.MultipleChoiceFlashcardDto;
-import com.vincennlin.flashcardservice.payload.concrete.ShortAnswerFlashcardDto;
-import com.vincennlin.flashcardservice.payload.concrete.TrueFalseFlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.FillInTheBlankFlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.MultipleChoiceFlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.ShortAnswerFlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.TrueFalseFlashcardDto;
 import com.vincennlin.flashcardservice.service.FlashcardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,8 +18,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -163,6 +161,8 @@ public class FlashcardController {
 
         return new ResponseEntity<>(flashcardResponse, HttpStatus.OK);
     }
+
+
 
     @Operation(
             summary = "新增問答題字卡",
