@@ -1,10 +1,13 @@
 package com.vincennlin.noteservice.service.impl;
 
+import com.vincennlin.noteservice.client.AiServiceClient;
 import com.vincennlin.noteservice.exception.ResourceOwnershipException;
 import com.vincennlin.noteservice.exception.WebAPIException;
 import com.vincennlin.noteservice.client.FlashcardServiceClient;
 import com.vincennlin.noteservice.entity.Note;
 import com.vincennlin.noteservice.exception.ResourceNotFoundException;
+import com.vincennlin.noteservice.payload.flashcard.type.FlashcardType;
+import com.vincennlin.noteservice.payload.note.FlashcardTypeQuantity;
 import com.vincennlin.noteservice.payload.note.NoteDto;
 import com.vincennlin.noteservice.payload.note.NotePageResponse;
 import com.vincennlin.noteservice.payload.flashcard.dto.AbstractFlashcardDto;
@@ -30,6 +33,7 @@ import java.util.List;
 public class NoteServiceImpl implements NoteService {
 
     private final static Logger logger = LoggerFactory.getLogger(NoteServiceImpl.class);
+    private final AiServiceClient aiServiceClient;
 
     private NoteRepository noteRepository;
 
@@ -65,15 +69,6 @@ public class NoteServiceImpl implements NoteService {
         noteDto.setFlashcards(abstractFlashcardDtoList);
 
         return noteDto;
-    }
-
-    @Override
-    public Boolean isNoteOwner(Long noteId) {
-
-        Note note = noteRepository.findById(noteId).orElseThrow(() ->
-                new ResourceNotFoundException("Note", "id", noteId));
-
-        return note.getUserId().equals(getCurrentUserId());
     }
 
     @Override
@@ -118,6 +113,30 @@ public class NoteServiceImpl implements NoteService {
         authorizeOwnership(note.getUserId());
 
         noteRepository.delete(note);
+    }
+
+    @Override
+    public Boolean isNoteOwner(Long noteId) {
+
+        Note note = noteRepository.findById(noteId).orElseThrow(() ->
+                new ResourceNotFoundException("Note", "id", noteId));
+
+        return note.getUserId().equals(getCurrentUserId());
+    }
+
+    @Override
+    public AbstractFlashcardDto generateFlashcard(Long noteId, FlashcardType flashcardType) {
+
+        Note note = noteRepository.findById(noteId).orElseThrow(() ->
+                new ResourceNotFoundException("Note", "id", noteId));
+
+        authorizeOwnership(note.getUserId());
+
+        AbstractFlashcardDto generatedFlashcard = getGeneratedFlashcard(note, flashcardType);
+
+        //Todo:: Save the generated flashcard to the flashcard service
+
+        return generatedFlashcard;
     }
 
     private Long getCurrentUserId() {
@@ -178,5 +197,27 @@ public class NoteServiceImpl implements NoteService {
         notePageResponse.setLast(pageOfNotes.isLast());
 
         return notePageResponse;
+    }
+
+    private AbstractFlashcardDto getGeneratedFlashcard(Note note, FlashcardType flashcardType) {
+        switch (flashcardType) {
+            case SHORT_ANSWER -> {
+                return aiServiceClient.generateShortAnswerFlashcard(mapToDto(note), getAuthorization()).getBody();
+            }
+            case FILL_IN_THE_BLANK -> {
+                return aiServiceClient.generateFillInTheBlankFlashcard(mapToDto(note), getAuthorization()).getBody();
+            }
+            case MULTIPLE_CHOICE -> {
+                return aiServiceClient.generateMultipleChoiceFlashcard(mapToDto(note), getAuthorization()).getBody();
+            }
+            case TRUE_FALSE -> {
+                return aiServiceClient.generateTrueFalseFlashcard(mapToDto(note), getAuthorization()).getBody();
+            }
+            default -> throw new WebAPIException(HttpStatus.BAD_REQUEST, "Invalid flashcard type");
+        }
+    }
+
+    private NoteDto mapToDto(Note note) {
+        return modelMapper.map(note, NoteDto.class);
     }
 }

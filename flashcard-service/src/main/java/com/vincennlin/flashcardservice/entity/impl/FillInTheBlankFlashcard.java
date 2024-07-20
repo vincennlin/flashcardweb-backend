@@ -22,6 +22,6 @@ public class FillInTheBlankFlashcard extends AbstractFlashcard {
     @Column(name = "in_blank_answers")
     private List<InBlankAnswer> inBlankAnswers;
 
-    @Column(name = "full_answer")
+    @Column(name = "full_answer", length = 3000)
     private String fullAnswer;
 }

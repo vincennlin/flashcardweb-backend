@@ -18,6 +18,6 @@ import lombok.Setter;
 @Table(name = "short_answers")
 public class ShortAnswerFlashcard extends AbstractFlashcard {
 
-    @Column(name = "short_answer")
+    @Column(name = "short_answer", length = 3000)
     private String shortAnswer;
 }

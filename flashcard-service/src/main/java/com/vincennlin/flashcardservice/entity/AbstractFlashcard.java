@@ -25,6 +25,7 @@ public abstract class AbstractFlashcard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 3000)
     private String question;
 
     @Column(name = "extra_info")
