@@ -1,6 +1,9 @@
 package com.vincennlin.noteservice.controller;
 
 import com.vincennlin.noteservice.constant.AppConstants;
+import com.vincennlin.noteservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.type.FlashcardType;
+import com.vincennlin.noteservice.payload.note.GenerateFlashcardRequest;
 import com.vincennlin.noteservice.payload.note.NoteDto;
 import com.vincennlin.noteservice.payload.note.NotePageResponse;
 import com.vincennlin.noteservice.service.NoteService;
@@ -363,12 +366,6 @@ public class NoteController {
         return new ResponseEntity<>(noteResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/notes/{note_id}/is-owner")
-    @SecurityRequirement(name = "Bear Authentication")
-    public ResponseEntity<Boolean> isNoteOwner(@PathVariable(name = "note_id") @Min(1) Long id) {
-        return new ResponseEntity<>(noteService.isNoteOwner(id), HttpStatus.OK);
-    }
-
     @Operation(
             summary = "新增筆記",
             description = "新增筆記"
@@ -530,5 +527,21 @@ public class NoteController {
         noteService.deleteNoteById(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/notes/{note_id}/is-owner")
+    @SecurityRequirement(name = "Bear Authentication")
+    public ResponseEntity<Boolean> isNoteOwner(@PathVariable(name = "note_id") @Min(1) Long id) {
+        return new ResponseEntity<>(noteService.isNoteOwner(id), HttpStatus.OK);
+    }
+
+    @PostMapping("/notes/{note_id}/generate/flashcard")
+    @SecurityRequirement(name = "Bear Authentication")
+    public ResponseEntity<AbstractFlashcardDto> generateFlashcard(@PathVariable(name = "note_id") @Min(1) Long id,
+                                                                  @Valid @RequestBody GenerateFlashcardRequest request) {
+
+        AbstractFlashcardDto flashcard = noteService.generateFlashcard(id, request.getType());
+
+        return new ResponseEntity<>(flashcard, HttpStatus.OK);
     }
 }

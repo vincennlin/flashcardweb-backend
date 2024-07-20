@@ -1,8 +1,10 @@
 package com.vincennlin.noteservice.payload.flashcard.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
+import com.vincennlin.noteservice.payload.flashcard.dto.impl.FillInTheBlankFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.dto.impl.MultipleChoiceFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.dto.impl.ShortAnswerFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.dto.impl.TrueFalseFlashcardDto;
 import com.vincennlin.noteservice.payload.flashcard.type.FlashcardType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
@@ -16,6 +18,19 @@ import org.modelmapper.ModelMapper;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        property = "type",
+        include = JsonTypeInfo.As.EXISTING_PROPERTY,
+        visible = true
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = ShortAnswerFlashcardDto.class, name = "SHORT_ANSWER"),
+        @JsonSubTypes.Type(value = FillInTheBlankFlashcardDto.class, name = "FILL_IN_THE_BLANK"),
+        @JsonSubTypes.Type(value = MultipleChoiceFlashcardDto.class, name = "MULTIPLE_CHOICE"),
+        @JsonSubTypes.Type(value = TrueFalseFlashcardDto.class, name = "TRUE_FALSE")
+})
 @Schema(
         name = "AbstractFlashcardDto",
         description = "不會用到，只是拿來給其他字卡繼承用的 Data Transfer Object"
