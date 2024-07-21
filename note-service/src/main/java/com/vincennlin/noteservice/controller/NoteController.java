@@ -643,7 +643,7 @@ public class NoteController {
                                                                           )
                                                                   ) GenerateFlashcardRequest request) {
 
-        AbstractFlashcardDto flashcard = noteService.generateFlashcard(id, request.getType());
+        AbstractFlashcardDto flashcard = noteService.generateFlashcard(id, request);
 
         return new ResponseEntity<>(flashcard, HttpStatus.OK);
     }

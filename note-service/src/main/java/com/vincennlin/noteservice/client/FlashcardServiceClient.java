@@ -22,25 +22,10 @@ public interface FlashcardServiceClient {
     ResponseEntity<Void> deleteFlashcardsByNoteId(@PathVariable("note_id") Long noteId,
                                                   @RequestHeader("Authorization") String authorization);
 
-    @PostMapping("/api/v1/notes/{note_id}/flashcards/short-answer")
-    ResponseEntity<AbstractFlashcardDto> generateShortAnswerFlashcard(@PathVariable("note_id") Long noteId,
-                                                                      @RequestBody ShortAnswerFlashcardDto shortAnswerFlashcardDto,
+    @PostMapping("/api/v1/notes/{note_id}/flashcard")
+    ResponseEntity<AbstractFlashcardDto> createFlashcard(@PathVariable("note_id") Long noteId,
+                                                                      @RequestBody AbstractFlashcardDto flashcardDto,
                                                                       @RequestHeader("Authorization") String authorization);
-
-    @PostMapping("/api/v1/notes/{note_id}/flashcards/fill-in-the-blank")
-    ResponseEntity<AbstractFlashcardDto> generateFillInTheBlankFlashcard(@PathVariable("note_id") Long noteId,
-                                                                         @RequestBody FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto,
-                                                                         @RequestHeader("Authorization") String authorization);
-
-    @PostMapping("/api/v1/notes/{note_id}/flashcards/multiple-choice")
-    ResponseEntity<AbstractFlashcardDto> generateMultipleChoiceFlashcard(@PathVariable("note_id") Long noteId,
-                                                                         @RequestBody MultipleChoiceFlashcardDto multipleChoiceFlashcardDto,
-                                                                         @RequestHeader("Authorization") String authorization);
-
-    @PostMapping("/api/v1/notes/{note_id}/flashcards/true-false")
-    ResponseEntity<AbstractFlashcardDto> generateTrueFalseFlashcard(@PathVariable("note_id") Long noteId,
-                                                                    @RequestBody TrueFalseFlashcardDto trueFalseFlashcardDto,
-                                                                    @RequestHeader("Authorization") String authorization);
 
     @PostMapping("/api/v1/notes/{note_id}/flashcards")
     ResponseEntity<List<AbstractFlashcardDto>> createFlashcards(@PathVariable("note_id") Long noteId,
