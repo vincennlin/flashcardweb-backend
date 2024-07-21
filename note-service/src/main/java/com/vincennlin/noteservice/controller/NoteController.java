@@ -7,7 +7,10 @@ import com.vincennlin.noteservice.payload.note.NoteDto;
 import com.vincennlin.noteservice.payload.note.NotePageResponse;
 import com.vincennlin.noteservice.payload.request.GenerateFlashcardsRequest;
 import com.vincennlin.noteservice.service.NoteService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -33,8 +36,28 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Tag(
-        name = "筆記 API",
-        description = "筆記的 CRUD API"
+        name = "筆記服務",
+        description = "筆記相關的 API"
+)
+@OpenAPIDefinition(
+        info = @Info(
+                title = "Flashcardweb note-ws API",
+                version = "1.0",
+                description = "Flashcardweb 筆記服務相關的 API",
+                contact = @io.swagger.v3.oas.annotations.info.Contact(
+                        name = "vincennlin",
+                        email = "vincentagwa@gmail.com",
+                        url = "https://github.com/vincennlin"
+                ),
+                license = @License(
+                        name = "Apache 2.0",
+                        url = "http://www.apache.org/licenses/LICENSE-2.0"
+                )
+        ),
+        externalDocs = @io.swagger.v3.oas.annotations.ExternalDocumentation(
+                description = "Flashcard Web Backend API Documentation",
+                url = "https://github.com/vincennlin/flashcardweb-backend"
+        )
 )
 @AllArgsConstructor
 @RestController
@@ -46,6 +69,19 @@ public class NoteController {
 
     private NoteService noteService;
 
+    @Operation(
+            summary = "檢查筆記服務狀態",
+            description = "檢查筆記服務是否正常運作"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "筆記服務正常運作",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = "Note Service is up and running on port 50434")
+            )
+    )
+    @SecurityRequirement(name = "Bear Authentication")
     @GetMapping("/notes/status/check")
     public ResponseEntity<String> status() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -63,85 +99,90 @@ public class NoteController {
                     mediaType = "application/json",
                     examples = @ExampleObject(value = """
                             {
-                                "content": [
-                                    {
-                                        "id": 1,
-                                        "content": "This is a note about Java",
-                                        "date_created": "2024-07-03T22:16:07.129041",
-                                        "last_updated": "2024-07-03T22:16:07.129134",
-                                        "flashcards": [
-                                            {
-                                                "id": 1,
-                                                "question": "What is Java?",
-                                                "type": "SHORT_ANSWER",
-                                                "note_id": 1,
-                                                "short_answer": "Java is a programming language."
-                                            },
-                                            {
-                                                "id": 2,
-                                                "question": "In Java, ___ allows an object to take on many forms, enabling a single method to have ___ behaviors depending on the object's ___.",
-                                                "type": "FILL_IN_THE_BLANK",
-                                                "note_id": 1,
-                                                "in_blank_answers": [
-                                                    {
-                                                        "id": 1,
-                                                        "text": "polymorphism"
-                                                    },
-                                                    {
-                                                        "id": 2,
-                                                        "text": "different"
-                                                    },
-                                                    {
-                                                        "id": 3,
-                                                        "text": "type"
-                                                    }
-                                                ],
-                                                "full_answer": "In Java, polymorphism allows an object to take on many forms, enabling a single method to have different behaviors depending on the object's type."
-                                            },
-                                            {
-                                                "id": 3,
-                                                "question": "What is Java??",
-                                                "type": "MULTIPLE_CHOICE",
-                                                "options": [
-                                                    {
-                                                        "id": 1,
-                                                        "text": "Java is a programming language."
-                                                    },
-                                                    {
-                                                        "id": 2,
-                                                        "text": "Java is a type of coffee."
-                                                    },
-                                                    {
-                                                        "id": 3,
-                                                        "text": "Java is a type of tea."
-                                                    },
-                                                    {
-                                                        "id": 4,
-                                                        "text": "Java is a type of fruit."
-                                                    }
-                                                ],
-                                                "note_id": 1,
-                                                "answer_option": {
-                                                    "id": 1,
-                                                    "text": "Java is a programming language."
-                                                }
-                                            },
-                                            {
-                                                "id": 4,
-                                                "question": "Java is an object-oriented programming language.",
-                                                "type": "TRUE_FALSE",
-                                                "note_id": 1,
-                                                "true_false_answer": true
-                                            }
-                                        ]
-                                    }
-                                ],
-                                "pageNo": 0,
-                                "pageSize": 10,
-                                "totalElements": 1,
-                                "totalPages": 1,
-                                "last": true
-                            }
+                                 "content": [
+                                     {
+                                         "id": 1,
+                                         "content": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這不僅使它們在時間敏感的應用（如即時應用）中有價值，還使它們成為其他提供最壞情況保證的資料結構的基礎模板。例如，在計算幾何中使用的許多資料結構都可以基於紅黑樹實現。紅黑樹在函數式程式設計中也特別有用。在這裡，它們是最常用的持久資料結構之一，用來構造關聯陣列和集合。每次插入或刪除之後，它們能保持為以前的版本。除了 O(log n) 的時間之外，紅黑樹的持久版本每次插入或刪除還需要 O(log n) 的空間。紅黑樹是2-3-4樹的一種等價結構。換句話說，對於每個2-3-4樹，都存在至少一個數據元素是同樣次序的紅黑樹。在2-3-4樹上的插入和刪除操作也等同於在紅黑樹中的顏色翻轉和旋轉。這使得2-3-4樹成為理解紅黑樹背後邏輯的重要工具，這也是為什麼很多介紹演算法的教科書在介紹紅黑樹之前會先介紹2-3-4樹，儘管2-3-4樹在實踐中不常使用。",
+                                         "user_id": 1,
+                                         "date_created": "2024-07-21T18:59:53.171794",
+                                         "last_updated": "2024-07-21T19:26:02.228534",
+                                         "flashcards": [
+                                             {
+                                                 "id": 1,
+                                                 "question": "紅黑樹的主要特點是什麼？",
+                                                 "type": "SHORT_ANSWER",
+                                                 "note_id": 1,
+                                                 "user_id": 1,
+                                                 "short_answer": "紅黑樹在插入、刪除和搜尋時間方面提供最壞情況保證，並且是持久資料結構，能保持歷史版本。"
+                                             },
+                                             {
+                                                 "id": 2,
+                                                 "question": "紅黑樹和AVL樹都提供了最好的最壞情況保證，這使得它們有價值於___、___和___等時間敏感的應用。",
+                                                 "type": "FILL_IN_THE_BLANK",
+                                                 "note_id": 1,
+                                                 "user_id": 1,
+                                                 "in_blank_answers": [
+                                                     {
+                                                         "id": 2,
+                                                         "text": "即時應用"
+                                                     },
+                                                     {
+                                                         "id": 3,
+                                                         "text": "計算幾何"
+                                                     },
+                                                     {
+                                                         "id": 4,
+                                                         "text": "持久資料結構"
+                                                     }
+                                                 ],
+                                                 "full_answer": "紅黑樹和AVL樹都提供了最好的最壞情況保證，這使得它們有價值於即時應用、計算幾何和持久資料結構等時間敏感的應用。"
+                                             },
+                                             {
+                                                 "id": 3,
+                                                 "question": "紅黑樹在函數式程式設計中不常用。這句話是？",
+                                                 "type": "TRUE_FALSE",
+                                                 "note_id": 1,
+                                                 "user_id": 1,
+                                                 "true_false_answer": false
+                                             },
+                                             {
+                                                 "id": 4,
+                                                 "question": "以下哪一個是紅黑樹的特性？",
+                                                 "type": "MULTIPLE_CHOICE",
+                                                 "options": [
+                                                     {
+                                                         "id": 1,
+                                                         "text": "每次操作需要 O(log n) 的時間"
+                                                     },
+                                                     {
+                                                         "id": 2,
+                                                         "text": "無法保持為以前的版本"
+                                                     },
+                                                     {
+                                                         "id": 3,
+                                                         "text": "不支持持久資料結構"
+                                                     },
+                                                     {
+                                                         "id": 4,
+                                                         "text": "只能用於靜態資料結構"
+                                                     }
+                                                 ],
+                                                 "note_id": 1,
+                                                 "user_id": 1,
+                                                 "answer_option": {
+                                                     "id": 1,
+                                                     "text": "每次操作需要 O(log n) 的時間"
+                                                 }
+                                             }
+                                         ]
+                                     }
+                                 ],
+                                 "pageNo": 0,
+                                 "pageSize": 10,
+                                 "totalElements": 1,
+                                 "totalPages": 1,
+                                 "last": true
+                             }
                             """)
             )
     )
@@ -173,85 +214,90 @@ public class NoteController {
                     mediaType = "application/json",
                     examples = @ExampleObject(value = """
                             {
-                                "content": [
-                                    {
-                                        "id": 1,
-                                        "content": "This is a note about Java",
-                                        "date_created": "2024-07-03T22:16:07.129041",
-                                        "last_updated": "2024-07-03T22:16:07.129134",
-                                        "flashcards": [
-                                            {
-                                                "id": 1,
-                                                "question": "What is Java?",
-                                                "type": "SHORT_ANSWER",
-                                                "note_id": 1,
-                                                "short_answer": "Java is a programming language."
-                                            },
-                                            {
-                                                "id": 2,
-                                                "question": "In Java, ___ allows an object to take on many forms, enabling a single method to have ___ behaviors depending on the object's ___.",
-                                                "type": "FILL_IN_THE_BLANK",
-                                                "note_id": 1,
-                                                "in_blank_answers": [
-                                                    {
-                                                        "id": 1,
-                                                        "text": "polymorphism"
-                                                    },
-                                                    {
-                                                        "id": 2,
-                                                        "text": "different"
-                                                    },
-                                                    {
-                                                        "id": 3,
-                                                        "text": "type"
-                                                    }
-                                                ],
-                                                "full_answer": "In Java, polymorphism allows an object to take on many forms, enabling a single method to have different behaviors depending on the object's type."
-                                            },
-                                            {
-                                                "id": 3,
-                                                "question": "What is Java??",
-                                                "type": "MULTIPLE_CHOICE",
-                                                "options": [
-                                                    {
-                                                        "id": 1,
-                                                        "text": "Java is a programming language."
-                                                    },
-                                                    {
-                                                        "id": 2,
-                                                        "text": "Java is a type of coffee."
-                                                    },
-                                                    {
-                                                        "id": 3,
-                                                        "text": "Java is a type of tea."
-                                                    },
-                                                    {
-                                                        "id": 4,
-                                                        "text": "Java is a type of fruit."
-                                                    }
-                                                ],
-                                                "note_id": 1,
-                                                "answer_option": {
-                                                    "id": 1,
-                                                    "text": "Java is a programming language."
-                                                }
-                                            },
-                                            {
-                                                "id": 4,
-                                                "question": "Java is an object-oriented programming language.",
-                                                "type": "TRUE_FALSE",
-                                                "note_id": 1,
-                                                "true_false_answer":
-                                            }
-                                        ]
-                                    }
-                                ],
-                                "pageNo": 0,
-                                "pageSize": 10,
-                                "totalElements": 1,
-                                "totalPages": 1,
-                                "last": true
-                            }
+                                 "content": [
+                                     {
+                                         "id": 1,
+                                         "content": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這不僅使它們在時間敏感的應用（如即時應用）中有價值，還使它們成為其他提供最壞情況保證的資料結構的基礎模板。例如，在計算幾何中使用的許多資料結構都可以基於紅黑樹實現。紅黑樹在函數式程式設計中也特別有用。在這裡，它們是最常用的持久資料結構之一，用來構造關聯陣列和集合。每次插入或刪除之後，它們能保持為以前的版本。除了 O(log n) 的時間之外，紅黑樹的持久版本每次插入或刪除還需要 O(log n) 的空間。紅黑樹是2-3-4樹的一種等價結構。換句話說，對於每個2-3-4樹，都存在至少一個數據元素是同樣次序的紅黑樹。在2-3-4樹上的插入和刪除操作也等同於在紅黑樹中的顏色翻轉和旋轉。這使得2-3-4樹成為理解紅黑樹背後邏輯的重要工具，這也是為什麼很多介紹演算法的教科書在介紹紅黑樹之前會先介紹2-3-4樹，儘管2-3-4樹在實踐中不常使用。",
+                                         "user_id": 1,
+                                         "date_created": "2024-07-21T18:59:53.171794",
+                                         "last_updated": "2024-07-21T19:26:02.228534",
+                                         "flashcards": [
+                                             {
+                                                 "id": 1,
+                                                 "question": "紅黑樹的主要特點是什麼？",
+                                                 "type": "SHORT_ANSWER",
+                                                 "note_id": 1,
+                                                 "user_id": 1,
+                                                 "short_answer": "紅黑樹在插入、刪除和搜尋時間方面提供最壞情況保證，並且是持久資料結構，能保持歷史版本。"
+                                             },
+                                             {
+                                                 "id": 2,
+                                                 "question": "紅黑樹和AVL樹都提供了最好的最壞情況保證，這使得它們有價值於___、___和___等時間敏感的應用。",
+                                                 "type": "FILL_IN_THE_BLANK",
+                                                 "note_id": 1,
+                                                 "user_id": 1,
+                                                 "in_blank_answers": [
+                                                     {
+                                                         "id": 2,
+                                                         "text": "即時應用"
+                                                     },
+                                                     {
+                                                         "id": 3,
+                                                         "text": "計算幾何"
+                                                     },
+                                                     {
+                                                         "id": 4,
+                                                         "text": "持久資料結構"
+                                                     }
+                                                 ],
+                                                 "full_answer": "紅黑樹和AVL樹都提供了最好的最壞情況保證，這使得它們有價值於即時應用、計算幾何和持久資料結構等時間敏感的應用。"
+                                             },
+                                             {
+                                                 "id": 3,
+                                                 "question": "紅黑樹在函數式程式設計中不常用。這句話是？",
+                                                 "type": "TRUE_FALSE",
+                                                 "note_id": 1,
+                                                 "user_id": 1,
+                                                 "true_false_answer": false
+                                             },
+                                             {
+                                                 "id": 4,
+                                                 "question": "以下哪一個是紅黑樹的特性？",
+                                                 "type": "MULTIPLE_CHOICE",
+                                                 "options": [
+                                                     {
+                                                         "id": 1,
+                                                         "text": "每次操作需要 O(log n) 的時間"
+                                                     },
+                                                     {
+                                                         "id": 2,
+                                                         "text": "無法保持為以前的版本"
+                                                     },
+                                                     {
+                                                         "id": 3,
+                                                         "text": "不支持持久資料結構"
+                                                     },
+                                                     {
+                                                         "id": 4,
+                                                         "text": "只能用於靜態資料結構"
+                                                     }
+                                                 ],
+                                                 "note_id": 1,
+                                                 "user_id": 1,
+                                                 "answer_option": {
+                                                     "id": 1,
+                                                     "text": "每次操作需要 O(log n) 的時間"
+                                                 }
+                                             }
+                                         ]
+                                     }
+                                 ],
+                                 "pageNo": 0,
+                                 "pageSize": 10,
+                                 "totalElements": 1,
+                                 "totalPages": 1,
+                                 "last": true
+                             }
                             """)
             )
     )
@@ -284,76 +330,81 @@ public class NoteController {
                     mediaType = "application/json",
                     examples = @ExampleObject(value = """
                             {
-                                "id": 1,
-                                "content": "This is a note about Java",
-                                "date_created": "2024-07-03T22:16:07.129041",
-                                "last_updated": "2024-07-03T22:16:07.129134",
-                                "flashcards": [
-                                    {
-                                        "id": 1,
-                                        "question": "What is Java?",
-                                        "type": "SHORT_ANSWER",
-                                        "note_id": 1,
-                                        "short_answer": "Java is a programming language."
-                                    },
-                                    {
-                                        "id": 2,
-                                        "question": "In Java, ___ allows an object to take on many forms, enabling a single method to have ___ behaviors depending on the object's ___.",
-                                        "type": "FILL_IN_THE_BLANK",
-                                        "note_id": 1,
-                                        "in_blank_answers": [
-                                            {
-                                                "id": 1,
-                                                "text": "polymorphism"
-                                            },
-                                            {
-                                                "id": 2,
-                                                "text": "different"
-                                            },
-                                            {
-                                                "id": 3,
-                                                "text": "type"
-                                            }
-                                        ],
-                                        "full_answer": "In Java, polymorphism allows an object to take on many forms, enabling a single method to have different behaviors depending on the object's type."
-                                    },
-                                    {
-                                        "id": 3,
-                                        "question": "What is Java??",
-                                        "type": "MULTIPLE_CHOICE",
-                                        "options": [
-                                            {
-                                                "id": 1,
-                                                "text": "Java is a programming language."
-                                            },
-                                            {
-                                                "id": 2,
-                                                "text": "Java is a type of coffee."
-                                            },
-                                            {
-                                                "id": 3,
-                                                "text": "Java is a type of tea."
-                                            },
-                                            {
-                                                "id": 4,
-                                                "text": "Java is a type of fruit."
-                                            }
-                                        ],
-                                        "note_id": 1,
-                                        "answer_option": {
-                                            "id": 1,
-                                            "text": "Java is a programming language."
-                                        }
-                                    },
-                                    {
-                                        "id": 4,
-                                        "question": "Java is an object-oriented programming language.",
-                                        "type": "TRUE_FALSE",
-                                        "note_id": 1,
-                                        "true_false_answer": true
-                                    }
-                                ]
-                            }
+                                 "id": 1,
+                                 "content": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這不僅使它們在時間敏感的應用（如即時應用）中有價值，還使它們成為其他提供最壞情況保證的資料結構的基礎模板。例如，在計算幾何中使用的許多資料結構都可以基於紅黑樹實現。紅黑樹在函數式程式設計中也特別有用。在這裡，它們是最常用的持久資料結構之一，用來構造關聯陣列和集合。每次插入或刪除之後，它們能保持為以前的版本。除了 O(log n) 的時間之外，紅黑樹的持久版本每次插入或刪除還需要 O(log n) 的空間。紅黑樹是2-3-4樹的一種等價結構。換句話說，對於每個2-3-4樹，都存在至少一個數據元素是同樣次序的紅黑樹。在2-3-4樹上的插入和刪除操作也等同於在紅黑樹中的顏色翻轉和旋轉。這使得2-3-4樹成為理解紅黑樹背後邏輯的重要工具，這也是為什麼很多介紹演算法的教科書在介紹紅黑樹之前會先介紹2-3-4樹，儘管2-3-4樹在實踐中不常使用。",
+                                 "user_id": 1,
+                                 "date_created": "2024-07-21T18:59:53.171794",
+                                 "last_updated": "2024-07-21T19:26:02.228534",
+                                 "flashcards": [
+                                     {
+                                         "id": 1,
+                                         "question": "紅黑樹的主要特點是什麼？",
+                                         "type": "SHORT_ANSWER",
+                                         "note_id": 1,
+                                         "user_id": 1,
+                                         "short_answer": "紅黑樹在插入、刪除和搜尋時間方面提供最壞情況保證，並且是持久資料結構，能保持歷史版本。"
+                                     },
+                                     {
+                                         "id": 2,
+                                         "question": "紅黑樹和AVL樹都提供了最好的最壞情況保證，這使得它們有價值於___、___和___等時間敏感的應用。",
+                                                 "type": "FILL_IN_THE_BLANK",
+                                                 "note_id": 1,
+                                                 "user_id": 1,
+                                                 "in_blank_answers": [
+                                                     {
+                                                         "id": 2,
+                                                         "text": "即時應用"
+                                                     },
+                                                     {
+                                                         "id": 3,
+                                                         "text": "計算幾何"
+                                                     },
+                                                     {
+                                                         "id": 4,
+                                                         "text": "持久資料結構"
+                                                     }
+                                                 ],
+                                                 "full_answer": "紅黑樹和AVL樹都提供了最好的最壞情況保證，這使得它們有價值於即時應用、計算幾何和持久資料結構等時間敏感的應用。"
+                                     },
+                                     {
+                                         "id": 3,
+                                         "question": "紅黑樹在函數式程式設計中不常用。這句話是？",
+                                         "type": "TRUE_FALSE",
+                                         "note_id": 1,
+                                         "user_id": 1,
+                                         "true_false_answer": false
+                                     },
+                                     {
+                                         "id": 4,
+                                         "question": "以下哪一個是紅黑樹的特性？",
+                                         "type": "MULTIPLE_CHOICE",
+                                         "options": [
+                                             {
+                                                 "id": 1,
+                                                 "text": "每次操作需要 O(log n) 的時間"
+                                             },
+                                             {
+                                                 "id": 2,
+                                                 "text": "無法保持為以前的版本"
+                                             },
+                                             {
+                                                 "id": 3,
+                                                 "text": "不支持持久資料結構"
+                                             },
+                                             {
+                                                 "id": 4,
+                                                 "text": "只能用於靜態資料結構"
+                                             }
+                                         ],
+                                         "note_id": 1,
+                                         "user_id": 1,
+                                         "answer_option": {
+                                             "id": 1,
+                                             "text": "每次操作需要 O(log n) 的時間"
+                                         }
+                                     }
+                                 ]
+                             }
                             """)
             )
     )
@@ -380,9 +431,10 @@ public class NoteController {
                     examples = @ExampleObject(value = """
                             {
                                 "id": 1,
-                                "content": "This is a note about Java",
-                                "date_created": "2024-07-03T22:16:07.129041",
-                                "last_updated": "2024-07-03T22:16:07.129134",
+                                "content": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這不僅使它們在時間敏感的應用（如即時應用）中有價值，還使它們成為其他提供最壞情況保證的資料結構的基礎模板。例如，在計算幾何中使用的許多資料結構都可以基於紅黑樹實現。紅黑樹在函數式程式設計中也特別有用。在這裡，它們是最常用的持久資料結構之一，用來構造關聯陣列和集合。每次插入或刪除之後，它們能保持為以前的版本。除了 O(log n) 的時間之外，紅黑樹的持久版本每次插入或刪除還需要 O(log n) 的空間。紅黑樹是2-3-4樹的一種等價結構。換句話說，對於每個2-3-4樹，都存在至少一個數據元素是同樣次序的紅黑樹。在2-3-4樹上的插入和刪除操作也等同於在紅黑樹中的顏色翻轉和旋轉。這使得2-3-4樹成為理解紅黑樹背後邏輯的重要工具，這也是為什麼很多介紹演算法的教科書在介紹紅黑樹之前會先介紹2-3-4樹，儘管2-3-4樹在實踐中不常使用。",
+                                "user_id": 1,
+                                "date_created": "2024-07-21T18:59:53.171794",
+                                "last_updated": "2024-07-21T18:59:53.173535",
                                 "flashcards": null
                             }
                             """)
@@ -419,76 +471,81 @@ public class NoteController {
                     mediaType = "application/json",
                     examples = @ExampleObject(value = """
                             {
-                                 "id": 1,
-                                 "content": "(Updated) This is a note about Java.",
-                                 "date_created": "2024-07-03T22:16:07.129041",
-                                 "last_updated": "2024-07-03T22:19:34.485403",
-                                 "flashcards": [
-                                     {
-                                         "id": 1,
-                                         "question": "What is Java?",
-                                         "type": "SHORT_ANSWER",
-                                         "note_id": 1,
-                                         "short_answer": "Java is a programming language."
-                                     },
-                                     {
-                                         "id": 2,
-                                         "question": "In Java, ___ allows an object to take on many forms, enabling a single method to have ___ behaviors depending on the object's ___.",
+                                "id": 1,
+                                "content": "（已更新）紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這不僅使它們在時間敏感的應用（如即時應用）中有價值，還使它們成為其他提供最壞情況保證的資料結構的基礎模板。例如，在計算幾何中使用的許多資料結構都可以基於紅黑樹實現。紅黑樹在函數式程式設計中也特別有用。在這裡，它們是最常用的持久資料結構之一，用來構造關聯陣列和集合。每次插入或刪除之後，它們能保持為以前的版本。除了 O(log n) 的時間之外，紅黑樹的持久版本每次插入或刪除還需要 O(log n) 的空間。紅黑樹是2-3-4樹的一種等價結構。換句話說，對於每個2-3-4樹，都存在至少一個數據元素是同樣次序的紅黑樹。在2-3-4樹上的插入和刪除操作也等同於在紅黑樹中的顏色翻轉和旋轉。這使得2-3-4樹成為理解紅黑樹背後邏輯的重要工具，這也是為什麼很多介紹演算法的教科書在介紹紅黑樹之前會先介紹2-3-4樹，儘管2-3-4樹在實踐中不常使用。",
+                                "user_id": 1,
+                                "date_created": "2024-07-21T18:59:53.171794",
+                                "last_updated": "2024-07-21T18:59:53.173535",
+                                "flashcards": [
+                                    {
+                                        "id": 1,
+                                        "question": "紅黑樹的主要特點是什麼？",
+                                        "type": "SHORT_ANSWER",
+                                        "note_id": 1,
+                                        "user_id": 1,
+                                        "short_answer": "紅黑樹在插入、刪除和搜尋時間方面提供最壞情況保證，並且是持久資料結構，能保持歷史版本。"
+                                    },
+                                    {
+                                        "id": 2,
+                                        "question": "紅黑樹和AVL樹都提供了最好的最壞情況保證，這使得它們有價值於___、___和___等時間敏感的應用。",
                                          "type": "FILL_IN_THE_BLANK",
                                          "note_id": 1,
+                                         "user_id": 1,
                                          "in_blank_answers": [
                                              {
-                                                 "id": 1,
-                                                 "text": "polymorphism"
-                                             },
-                                             {
                                                  "id": 2,
-                                                 "text": "different"
+                                                 "text": "即時應用"
                                              },
                                              {
                                                  "id": 3,
-                                                 "text": "type"
-                                             }
-                                         ],
-                                         "full_answer": "In Java, polymorphism allows an object to take on many forms, enabling a single method to have different behaviors depending on the object's type."
-                                     },
-                                     {
-                                         "id": 3,
-                                         "question": "What is Java??",
-                                         "type": "MULTIPLE_CHOICE",
-                                         "options": [
-                                             {
-                                                 "id": 1,
-                                                 "text": "Java is a programming language."
-                                             },
-                                             {
-                                                 "id": 2,
-                                                 "text": "Java is a type of coffee."
-                                             },
-                                             {
-                                                 "id": 3,
-                                                 "text": "Java is a type of tea."
+                                                 "text": "計算幾何"
                                              },
                                              {
                                                  "id": 4,
-                                                 "text": "Java is a type of fruit."
+                                                 "text": "持久資料結構"
                                              }
                                          ],
-                                         "note_id": 1,
-                                         "answer_option": {
-                                             "id": 1,
-                                             "text": "Java is a programming language."
-                                         }
-                                     },
-                                     {
-                                         "id": 4,
-                                         "question": "Java is an object-oriented programming language.",
-                                         "type": "TRUE_FALSE",
-                                         "note_id": 1,
-                                         "true_false_answer": true
-                                     }
-                                 ]
-                             }
+                                         "full_answer": "紅黑樹和AVL樹都提供了最好的最壞情況保證，這使得它們有價值於即時應用、計算幾何和持久資料結構等時間敏感的應用。"
+                                    },
+                                    {
+                                        "id": 3,
+                                        "question": "紅黑樹在函數式程式設計中不常用。這句話是？",
+                                        "type": "TRUE_FALSE",
+                                        "note_id": 1,
+                                        "user_id": 1,
+                                        "true_false_answer": false
+                                    },
+                                    {
+                                        "id": 4,
+                                        "question": "以下哪一個是紅黑樹的特性？",
+                                        "type": "MULTIPLE_CHOICE",
+                                        "options": [
+                                            {
+                                                "id": 1,
+                                                "text": "每次操作需要 O(log n) 的時間"
+                                            },
+                                            {
+                                                "id": 2,
+                                                "text": "無法保持為以前的版本"
+                                            },
+                                            {
+                                                "id": 3,
+                                                "text": "不支持持久資料結構"
+                                            },
+                                            {
+                                                "id": 4,
+                                                "text": "只能用於靜態資料結構"
+                                            }
+                                        ],
+                                        "note_id": 1,
+                                        "user_id": 1,
+                                        "answer_option": {
+                                            "id": 1,
+                                            "text": "每次操作需要 O(log n) 的時間"
+                                        }
+                                    }
+                                ]
+                            }
                             """)
             )
     )
@@ -502,7 +559,7 @@ public class NoteController {
                                                               mediaType = "application/json",
                                                               examples = @ExampleObject(value = """
                                                                       {
-                                                                          "content":"(Updated) This is a note about Java."
+                                                                          "content":"（已更新）紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這不僅使它們在時間敏感的應用（如即時應用）中有價值，還使它們成為其他提供最壞情況保證的資料結構的基礎模板。例如，在計算幾何中使用的許多資料結構都可以基於紅黑樹實現。紅黑樹在函數式程式設計中也特別有用。在這裡，它們是最常用的持久資料結構之一，用來構造關聯陣列和集合。每次插入或刪除之後，它們能保持為以前的版本。除了 O(log n) 的時間之外，紅黑樹的持久版本每次插入或刪除還需要 O(log n) 的空間。紅黑樹是2-3-4樹的一種等價結構。換句話說，對於每個2-3-4樹，都存在至少一個數據元素是同樣次序的紅黑樹。在2-3-4樹上的插入和刪除操作也等同於在紅黑樹中的顏色翻轉和旋轉。這使得2-3-4樹成為理解紅黑樹背後邏輯的重要工具，這也是為什麼很多介紹演算法的教科書在介紹紅黑樹之前會先介紹2-3-4樹，儘管2-3-4樹在實踐中不常使用。"
                                                                       }
                                                                       """)
                                                       )
@@ -531,26 +588,170 @@ public class NoteController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/notes/{note_id}/is-owner")
+    @Operation(
+            summary = "檢查是否為筆記擁有者",
+            description = "根據 JWT Token 檢查是否為該 note_id 的筆記擁有者"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "成功檢查是否為筆記擁有者",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = "true")
+            )
+    )
     @SecurityRequirement(name = "Bear Authentication")
+    @GetMapping("/notes/{note_id}/is-owner")
     public ResponseEntity<Boolean> isNoteOwner(@PathVariable(name = "note_id") @Min(1) Long id) {
         return new ResponseEntity<>(noteService.isNoteOwner(id), HttpStatus.OK);
     }
 
-    @PostMapping("/notes/{note_id}/generate/flashcard")
+    @Operation(
+            summary = "生成一個字卡",
+            description = "根據 note_id，將筆記內容傳給 ChatGPT，生成一個簡答題字卡並存進資料庫"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "成功生成字卡",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                "id": 1,
+                                "question": "紅黑樹的主要特點是什麼？",
+                                "type": "SHORT_ANSWER",
+                                "note_id": 1,
+                                "user_id": 1,
+                                "short_answer": "紅黑樹在插入、刪除和搜尋時間方面提供最壞情況保證，並且是持久資料結構，能保持歷史版本。"
+                            }
+                            """)
+            )
+    )
     @SecurityRequirement(name = "Bear Authentication")
+    @PostMapping("/notes/{note_id}/generate/flashcard")
     public ResponseEntity<AbstractFlashcardDto> generateFlashcard(@PathVariable(name = "note_id") @Min(1) Long id,
-                                                                  @RequestBody GenerateFlashcardRequest request) {
+                                                                  @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                                          content = @Content(
+                                                                                  mediaType = "application/json",
+                                                                                  examples = {
+                                                                                          @ExampleObject(value = """
+                                                                                          {
+                                                                                              "type": "SHORT_ANSWER"
+                                                                                          }
+                                                                                          """)
+                                                                                  }
+                                                                          )
+                                                                  ) GenerateFlashcardRequest request) {
 
         AbstractFlashcardDto flashcard = noteService.generateFlashcard(id, request.getType());
 
         return new ResponseEntity<>(flashcard, HttpStatus.OK);
     }
 
-    @PostMapping("/notes/{note_id}/generate/flashcards")
+    @Operation(
+            summary = "生成多張字卡",
+            description = "根據 note_id，自訂要生成的字卡題目數量，將筆記內容傳給 ChatGPT，生成相對應數量的字卡並存進資料庫"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "成功生成多張字卡",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            [
+                                {
+                                    "id": 2,
+                                    "question": "紅黑樹和AVL樹都提供了最好的最壞情況保證，這使得它們有價值於___、___和___等時間敏感的應用。",
+                                     "type": "FILL_IN_THE_BLANK",
+                                     "note_id": 1,
+                                     "user_id": 1,
+                                     "in_blank_answers": [
+                                         {
+                                             "id": 2,
+                                             "text": "即時應用"
+                                         },
+                                         {
+                                             "id": 3,
+                                             "text": "計算幾何"
+                                         },
+                                         {
+                                             "id": 4,
+                                             "text": "持久資料結構"
+                                         }
+                                     ],
+                                     "full_answer": "紅黑樹和AVL樹都提供了最好的最壞情況保證，這使得它們有價值於即時應用、計算幾何和持久資料結構等時間敏感的應用。"
+                                },
+                                {
+                                    "id": 3,
+                                    "question": "紅黑樹在函數式程式設計中不常用。這句話是？",
+                                    "type": "TRUE_FALSE",
+                                    "note_id": 1,
+                                    "user_id": 1,
+                                    "true_false_answer": false
+                                },
+                                {
+                                    "id": 4,
+                                    "question": "以下哪一個是紅黑樹的特性？",
+                                    "type": "MULTIPLE_CHOICE",
+                                    "options": [
+                                        {
+                                            "id": 1,
+                                            "text": "每次操作需要 O(log n) 的時間"
+                                        },
+                                        {
+                                            "id": 2,
+                                            "text": "無法保持為以前的版本"
+                                        },
+                                        {
+                                            "id": 3,
+                                            "text": "不支持持久資料結構"
+                                        },
+                                        {
+                                            "id": 4,
+                                            "text": "只能用於靜態資料結構"
+                                        }
+                                    ],
+                                    "note_id": 1,
+                                    "user_id": 1,
+                                    "answer_option": {
+                                        "id": 1,
+                                        "text": "每次操作需要 O(log n) 的時間"
+                                    }
+                                }
+                            ]
+                            """)
+            )
+    )
     @SecurityRequirement(name = "Bear Authentication")
+    @PostMapping("/notes/{note_id}/generate/flashcards")
     public ResponseEntity<List<AbstractFlashcardDto>> generateFlashcards(@PathVariable(name = "note_id") @Min(1) Long id,
-                                                                  @RequestBody GenerateFlashcardsRequest request) {
+                                                                  @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                                          content = @Content(
+                                                                                  mediaType = "application/json",
+                                                                                  examples = @ExampleObject(value = """
+                                                                                          {
+                                                                                              "type_quantities": [
+                                                                                                  {
+                                                                                                      "type": "SHORT_ANSWER",
+                                                                                                      "quantity":0
+                                                                                                  },
+                                                                                                  {
+                                                                                                      "type": "FILL_IN_THE_BLANK",
+                                                                                                      "quantity":1
+                                                                                                  },
+                                                                                                  {
+                                                                                                      "type": "MULTIPLE_CHOICE",
+                                                                                                      "quantity":1
+                                                                                                  },
+                                                                                                  {
+                                                                                                      "type": "TRUE_FALSE",
+                                                                                                      "quantity":1
+                                                                                                  }
+                                                                                              ]
+                                                                                          }
+                                                                                          """)
+                                                                          )
+                                                                  ) GenerateFlashcardsRequest request) {
 
         List<AbstractFlashcardDto> flashcards = noteService.generateFlashcards(id, request);
 

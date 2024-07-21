@@ -30,7 +30,7 @@ public class FillInTheBlankFlashcardDto extends AbstractFlashcardDto {
     @Schema(
             name = "in_blank_answers",
             description = "填空答案列表，儲存 BlankAnswerDto 的陣列",
-            example = "[{\"text\":\"answer 1\"}, {\"text\":\"answer 2\"}]"
+            example = "[{\"id\": 2, \"text\": \"即時應用\"}, {\"id\": 3, \"text\": \"計算幾何\"}, {\"id\": 4, \"text\": \"持久資料結構\"}]"
     )
     @NotEmpty(message = "In blank answers cannot be empty")
     @JsonProperty("in_blank_answers")
@@ -39,7 +39,7 @@ public class FillInTheBlankFlashcardDto extends AbstractFlashcardDto {
     @Schema(
             name = "full_answer",
             description = "完整答案",
-            example = "This is the full answer with all blanks filled in."
+            example = "紅黑樹和AVL樹都提供了最好的最壞情況保證，這使得它們有價值於即時應用、計算幾何和持久資料結構等時間敏感的應用。"
     )
     @NotBlank(message = "Full answer cannot be blank")
     @JsonProperty("full_answer")
