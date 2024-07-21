@@ -18,10 +18,11 @@ import java.util.List;
 @Table(name = "multiple_choice")
 public class MultipleChoiceFlashcard extends AbstractFlashcard {
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "flashcard")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER,
+            mappedBy = "flashcard", orphanRemoval = true)
     private List<Option> options;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "answer_option_id")
     private Option answerOption;
 }

@@ -16,12 +16,18 @@ import lombok.Setter;
 )
 public class InBlankAnswerDto {
 
+    @Schema(
+            name = "id",
+            description = "填空答案的 id",
+            example = "1"
+
+    )
     private Long id;
 
     @Schema(
             name = "text",
             description = "空格答案",
-            example = "an answer"
+            example = "2-3-4樹"
     )
     private String text;
 }
