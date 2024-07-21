@@ -19,6 +19,12 @@ import lombok.Setter;
 )
 public class OptionDto {
 
+    @Schema(
+            name = "id",
+            description = "選項的 id",
+            example = "1"
+
+    )
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
