@@ -35,8 +35,8 @@ public class TypeQuantity {
             description = "要生成的字卡數量",
             example = "1"
     )
-    @Min(value = 1, message = "The value for 'quantity' must be greater than 0")
-    @Max(value = 3, message = "The value for 'quantity' must be less than or equal to 3")
+    @Min(value = 0, message = "The value for 'quantity' must be greater than or equal to 0")
+    @Max(value = 5, message = "The value for 'quantity' must be less than or equal to 5")
     @JsonProperty(value = "quantity")
     private Integer quantity;
 }
