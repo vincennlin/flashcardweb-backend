@@ -2,7 +2,10 @@ package com.vincennlin.userservice.controller;
 
 import com.vincennlin.userservice.payload.*;
 import com.vincennlin.userservice.service.UserService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,8 +22,28 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Tag(
-        name = "帳號驗證 API",
+        name = "用戶相關 API",
         description = "用戶註冊、登入、登出相關的 API"
+)
+@OpenAPIDefinition(
+        info = @Info(
+                title = "Flashcardweb user-ws API",
+                version = "1.0",
+                description = "Flashcardweb 用戶服務相關的 API",
+                contact = @io.swagger.v3.oas.annotations.info.Contact(
+                        name = "vincennlin",
+                        email = "vincentagwa@gmail.com",
+                        url = "https://github.com/vincennlin"
+                ),
+                license = @License(
+                        name = "Apache 2.0",
+                        url = "http://www.apache.org/licenses/LICENSE-2.0"
+                )
+        ),
+        externalDocs = @io.swagger.v3.oas.annotations.ExternalDocumentation(
+                description = "Flashcard Web Backend API Documentation",
+                url = "https://github.com/vincennlin/flashcardweb-backend"
+        )
 )
 @AllArgsConstructor
 @RestController
@@ -29,17 +52,30 @@ public class UserController {
 
     private Environment env;
 
+    private UserService userService;
+
+    @Operation(
+            summary = "檢查用戶服務狀態",
+            description = "檢查用戶服務是否正常運作"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "用戶服務正常運作",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = "User Service is up and running on port 61827")
+            )
+    )
+    @SecurityRequirement(name = "Bear Authentication")
     @GetMapping("/users/status/check")
     public ResponseEntity<String> status() {
         return new ResponseEntity<>("User Service is up and running on port: " + env.getProperty("local.server.port")
                 + " with token " + env.getProperty("token.secret"), HttpStatus.OK);
     }
 
-    private UserService userService;
-
     @Operation(
             summary = "註冊用戶",
-            description = "註冊一個新用戶注意 username 和 email 都不可和其他用戶重複，password 至少 4 個字元"
+            description = "註冊一個新用戶，注意 username 和 email 都不可和其他用戶重複，password 至少 4 個字元"
     )
     @ApiResponse(
             responseCode = "201",
@@ -54,13 +90,8 @@ public class UserController {
                                     "name": "user",
                                     "username": "user",
                                     "email": "user@gmail.com",
-                                    "roles": [
-                                        {
-                                            "name": "ROLE_USER"
-                                        }
-                                    ],
-                                    "date_created": "2024-07-07T12:20:13.712345",
-                                    "last_updated": "2024-07-07T12:20:13.712412"
+                                    "date_created": "2024-07-21T21:58:12.642225",
+                                    "last_updated": "2024-07-21T21:58:12.642802"
                                 }
                             }
                             """)
@@ -92,7 +123,7 @@ public class UserController {
     )
     @ApiResponse(
             responseCode = "200",
-            description = "登入成功，Response Header 會包含 JWT Token"
+            description = "登入成功，Response Header 的 'access_token' 欄位會包含 JWT Token，'user_id' 會包含用戶的 id"
     )
     @PostMapping(value = {"/auth/login"})
     public ResponseEntity<Void> login(@Valid @RequestBody
@@ -110,6 +141,29 @@ public class UserController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "取得用戶資訊",
+            description = "根據用戶 id 取得用戶資訊"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "取得用戶資訊",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                "id": 1,
+                                "name": "user",
+                                "username": "user",
+                                "email": "user@gmail.com",
+                                "date_created": "2024-07-21T21:59:34.451019",
+                                "last_updated": "2024-07-21T21:59:34.45108"
+                            }
+                            """
+                    )
+            )
+    )
+    @SecurityRequirement(name = "Bear Authentication")
     @GetMapping("/users/{user_id}")
     public ResponseEntity<UserDto> getUserByUserId(@PathVariable("user_id") Long userId) {
 
@@ -133,13 +187,8 @@ public class UserController {
                                 "name": "user",
                                 "username": "user",
                                 "email": "user@gmail.com",
-                                "roles": [
-                                    {
-                                        "name": "ROLE_USER"
-                                    }
-                                ],
-                                "date_created": "2024-07-07T12:20:13.712345",
-                                "last_updated": "2024-07-07T12:20:13.712412"
+                                "date_created": "2024-07-21T21:59:34.451019",
+                                "last_updated": "2024-07-21T21:59:34.45108"
                             }
                             """)
             )
@@ -165,45 +214,30 @@ public class UserController {
                     mediaType = "application/json",
                     examples = @ExampleObject(value = """
                             [
-                                {
-                                    "id": 1,
-                                    "name": "user",
-                                    "username": "user",
-                                    "email": "user@gmail.com",
-                                    "roles": [
-                                        {
-                                            "name": "ROLE_USER"
-                                        }
-                                    ],
-                                    "date_created": "2024-07-07T12:20:13.712345",
-                                    "last_updated": "2024-07-07T12:20:13.712412"
-                                },
-                                {
-                                    "id": 2,
-                                    "name": "admin",
-                                    "username": "admin",
-                                    "email": "admin@gmail.com",
-                                    "roles": [
-                                        {
-                                            "name": "ROLE_ADMIN"
-                                        }
-                                    ],
-                                    "date_created": "2024-07-07T12:21:01.971015",
-                                    "last_updated": "2024-07-07T12:21:01.971034"
-                                },
-                                {
-                                    "id": 3,
-                                    "name": "test",
-                                    "username": "test",
-                                    "email": "test@gmail.com",
-                                    "roles": [
-                                        {
-                                            "name": "ROLE_USER"
-                                        }
-                                    ],
-                                    "date_created": "2024-07-07T12:21:06.531122",
-                                    "last_updated": "2024-07-07T12:21:06.531217"
-                                }
+                                 {
+                                     "id": 1,
+                                     "name": "admin",
+                                     "username": "admin",
+                                     "email": "admin@gmail.com",
+                                     "date_created": "2024-07-18T13:39:10.829251",
+                                     "last_updated": "2024-07-18T13:39:10.829308"
+                                 },
+                                 {
+                                     "id": 2,
+                                     "name": "user",
+                                     "username": "user",
+                                     "email": "user@gmail.com",
+                                     "date_created": "2024-07-18T13:41:31.917832",
+                                     "last_updated": "2024-07-18T22:59:26.437294"
+                                 },
+                                 {
+                                     "id": 3,
+                                     "name": "test",
+                                     "username": "test",
+                                     "email": "test@gmail.com",
+                                     "date_created": "2024-07-19T10:15:32.789745",
+                                     "last_updated": "2024-07-19T10:15:32.790476"
+                                 }
                             ]
                             """)
             )
@@ -228,23 +262,18 @@ public class UserController {
             content = @Content(
                     mediaType = "application/json",
                     examples = @ExampleObject(value = """
-                                            {
-                                                "message": "User updated successfully! Please login again.",
-                                                "account_info": {
-                                                    "id": 1,
-                                                    "name": "user_updated",
-                                                    "username": "user_updated",
-                                                    "email": "user_updated@gmail.com",
-                                                    "roles": [
-                                                        {
-                                                            "name": "ROLE_USER"
-                                                        }
-                                                    ],
-                                                    "date_created": "2024-07-07T13:33:15.659823",
-                                                    "last_updated": "2024-07-07T13:37:35.066182"
-                                                }
-                                            }
-                                            """)
+                            {
+                                "message": "User updated successfully! Please login again.",
+                                "account_info": {
+                                    "id": 1,
+                                    "name": "user_updated",
+                                    "username": "user_updated",
+                                    "email": "user_updated@gmail.com",
+                                    "date_created": "2024-07-21T21:59:34.451019",
+                                    "last_updated": "2024-07-21T21:59:34.45108"
+                                }
+                            }
+                            """)
             )
     )
     @SecurityRequirement(name = "Bear Authentication")

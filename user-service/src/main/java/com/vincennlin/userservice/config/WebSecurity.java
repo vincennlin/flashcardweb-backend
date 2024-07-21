@@ -3,6 +3,8 @@ package com.vincennlin.userservice.config;
 import com.vincennlin.userservice.filter.AuthenticationFilter;
 import com.vincennlin.userservice.filter.AuthorizationFilter;
 import com.vincennlin.userservice.service.UserService;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +20,12 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+@SecurityScheme(
+        name = "Bear Authentication",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
+)
 @AllArgsConstructor
 @Configuration
 @EnableWebSecurity
