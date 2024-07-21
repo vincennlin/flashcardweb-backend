@@ -2,10 +2,10 @@ package com.vincennlin.noteservice.controller;
 
 import com.vincennlin.noteservice.constant.AppConstants;
 import com.vincennlin.noteservice.payload.flashcard.dto.AbstractFlashcardDto;
-import com.vincennlin.noteservice.payload.flashcard.type.FlashcardType;
-import com.vincennlin.noteservice.payload.note.GenerateFlashcardRequest;
+import com.vincennlin.noteservice.payload.request.GenerateFlashcardRequest;
 import com.vincennlin.noteservice.payload.note.NoteDto;
 import com.vincennlin.noteservice.payload.note.NotePageResponse;
+import com.vincennlin.noteservice.payload.request.GenerateFlashcardsRequest;
 import com.vincennlin.noteservice.service.NoteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -29,6 +29,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(
         name = "筆記 API",
@@ -538,10 +540,20 @@ public class NoteController {
     @PostMapping("/notes/{note_id}/generate/flashcard")
     @SecurityRequirement(name = "Bear Authentication")
     public ResponseEntity<AbstractFlashcardDto> generateFlashcard(@PathVariable(name = "note_id") @Min(1) Long id,
-                                                                  @Valid @RequestBody GenerateFlashcardRequest request) {
+                                                                  @RequestBody GenerateFlashcardRequest request) {
 
         AbstractFlashcardDto flashcard = noteService.generateFlashcard(id, request.getType());
 
         return new ResponseEntity<>(flashcard, HttpStatus.OK);
+    }
+
+    @PostMapping("/notes/{note_id}/generate/flashcards")
+    @SecurityRequirement(name = "Bear Authentication")
+    public ResponseEntity<List<AbstractFlashcardDto>> generateFlashcards(@PathVariable(name = "note_id") @Min(1) Long id,
+                                                                  @RequestBody GenerateFlashcardsRequest request) {
+
+        List<AbstractFlashcardDto> flashcards = noteService.generateFlashcards(id, request);
+
+        return new ResponseEntity<>(flashcards, HttpStatus.OK);
     }
 }

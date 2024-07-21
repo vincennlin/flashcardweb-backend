@@ -88,6 +88,7 @@ public class FlashcardServiceImpl implements FlashcardService {
         }
     }
 
+    @Transactional
     public AbstractFlashcardDto createFillInTheBlankFlashcard(FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto) {
 
         FillInTheBlankFlashcard fillInTheBlankFlashcard = modelMapper.map(fillInTheBlankFlashcardDto, FillInTheBlankFlashcard.class);
@@ -110,14 +111,23 @@ public class FlashcardServiceImpl implements FlashcardService {
         MultipleChoiceFlashcard multipleChoiceFlashcard = (MultipleChoiceFlashcard) multipleChoiceFlashcardDto.mapToEntity();
 
         List<Option> options = multipleChoiceFlashcard.getOptions();
-        options.forEach(option -> option.setFlashcard(multipleChoiceFlashcard));
         List<Option> savedOptions = optionRepository.saveAll(options);
 
         multipleChoiceFlashcard.setAnswerOption(savedOptions.get(multipleChoiceFlashcardDto.getAnswerIndex() - 1));
 
-        AbstractFlashcard newFlashcard = flashcardRepository.save(multipleChoiceFlashcard);
+        MultipleChoiceFlashcard newFlashcard = flashcardRepository.save(multipleChoiceFlashcard);
+        options.forEach(option -> option.setFlashcard(newFlashcard));
+
+        optionRepository.saveAll(options);
 
         return mapToDto(newFlashcard);
+    }
+
+    @Override
+    public List<AbstractFlashcardDto> createFlashcards(Long noteId, List<AbstractFlashcardDto> flashcardDtoList) {
+
+        return flashcardDtoList.stream().map(flashcardDto ->
+                createFlashcard(noteId, flashcardDto)).toList();
     }
 
     @Override

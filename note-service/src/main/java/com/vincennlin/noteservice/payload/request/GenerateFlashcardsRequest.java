@@ -1,6 +1,8 @@
-package com.vincennlin.noteservice.payload.note;
+package com.vincennlin.noteservice.payload.request;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vincennlin.noteservice.payload.note.NoteDto;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -10,17 +12,17 @@ import lombok.Setter;
 
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class GenerateFlashcardsRequest {
 
-    @Min(value = 1, message = "Note id must be greater than 0")
-    @JsonProperty(value = "note_id")
-    private Long noteId;
+    @JsonProperty(value = "note")
+    private NoteDto note;
 
     @NotEmpty(message = "Type quantities cannot be empty")
     @JsonProperty(value = "type_quantities")
-    private List<FlashcardTypeQuantity> typeQuantities;
+    private List<TypeQuantity> typeQuantities;
 }

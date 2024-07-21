@@ -41,4 +41,9 @@ public interface FlashcardServiceClient {
     ResponseEntity<AbstractFlashcardDto> generateTrueFalseFlashcard(@PathVariable("note_id") Long noteId,
                                                                     @RequestBody TrueFalseFlashcardDto trueFalseFlashcardDto,
                                                                     @RequestHeader("Authorization") String authorization);
+
+    @PostMapping("/api/v1/notes/{note_id}/flashcards")
+    ResponseEntity<List<AbstractFlashcardDto>> createFlashcards(@PathVariable("note_id") Long noteId,
+                                                                @RequestBody List<AbstractFlashcardDto> flashcardDtoList,
+                                                                @RequestHeader("Authorization") String authorization);
 }

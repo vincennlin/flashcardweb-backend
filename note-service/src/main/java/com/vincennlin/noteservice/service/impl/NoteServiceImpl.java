@@ -14,6 +14,7 @@ import com.vincennlin.noteservice.payload.flashcard.type.FlashcardType;
 import com.vincennlin.noteservice.payload.note.NoteDto;
 import com.vincennlin.noteservice.payload.note.NotePageResponse;
 import com.vincennlin.noteservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.noteservice.payload.request.GenerateFlashcardsRequest;
 import com.vincennlin.noteservice.repository.NoteRepository;
 import com.vincennlin.noteservice.service.NoteService;
 import feign.FeignException;
@@ -140,6 +141,21 @@ public class NoteServiceImpl implements NoteService {
         AbstractFlashcardDto generatedFlashcard = getGeneratedFlashcard(note, flashcardType);
 
         return saveGeneratedFlashcard(noteId, generatedFlashcard);
+    }
+
+    @Override
+    public List<AbstractFlashcardDto> generateFlashcards(Long noteId, GenerateFlashcardsRequest request) {
+
+        Note note = noteRepository.findById(noteId).orElseThrow(() ->
+                new ResourceNotFoundException("Note", "id", noteId));
+
+        authorizeOwnership(note.getUserId());
+
+        request.setNote(mapToDto(note));
+
+        List<AbstractFlashcardDto> generatedFlashcards = aiServiceClient.generateFlashcards(request, getAuthorization()).getBody();
+
+        return flashcardServiceClient.createFlashcards(noteId, generatedFlashcards, getAuthorization()).getBody();
     }
 
     private Long getCurrentUserId() {

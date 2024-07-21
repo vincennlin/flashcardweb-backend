@@ -389,6 +389,17 @@ public class FlashcardController {
         return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
     }
 
+    @SecurityRequirement(name = "Bear Authentication")
+    @PreAuthorize("hasAuthority('CREATE')")
+    @PostMapping("/notes/{note_id}/flashcards")
+    public ResponseEntity<List<AbstractFlashcardDto>> createFlashcards(@PathVariable(name = "note_id") @Min(1) Long noteId,
+                                                                       @RequestBody List<AbstractFlashcardDto> flashcardDtoList) {
+
+        List<AbstractFlashcardDto> createdFlashcards = flashcardService.createFlashcards(noteId, flashcardDtoList);
+
+        return new ResponseEntity<>(createdFlashcards, HttpStatus.CREATED);
+    }
+
     @Operation(
             summary = "更新問答題字卡",
             description = "根據 flashcard_id 更新問答題字卡"
