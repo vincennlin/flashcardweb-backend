@@ -3,8 +3,9 @@ package com.vincennlin.aiservice.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vincennlin.aiservice.exception.JsonFormatException;
 import com.vincennlin.aiservice.payload.flashcard.type.FlashcardType;
-import com.vincennlin.aiservice.payload.note.NoteDto;
 import com.vincennlin.aiservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.aiservice.payload.request.GenerateFlashcardRequest;
+import com.vincennlin.aiservice.payload.request.GenerateFlashcardsRequest;
 import com.vincennlin.aiservice.service.AiService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -14,7 +15,6 @@ import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.openai.OpenAiChatModel;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,8 +27,6 @@ public class AiServiceImpl implements AiService {
 
     private final OpenAiChatModel openAiChatModel;
 
-    private Environment env;
-
     private ObjectMapper objectMapper;
 
     @Override
@@ -37,11 +35,11 @@ public class AiServiceImpl implements AiService {
     }
 
     @Override
-    public AbstractFlashcardDto generateFlashcard(NoteDto noteDto, FlashcardType flashcardType) {
+    public AbstractFlashcardDto generateFlashcard(GenerateFlashcardRequest request) {
 
         List<Message> messages = List.of(
-                flashcardType.getSystemMessage(),
-                new UserMessage(noteDto.getContent())
+                request.getType().getSystemMessage(),
+                new UserMessage(request.getContent())
         );
 
 //        ChatOptions chatOptions = flashcardContext.getChatOptions();
@@ -52,19 +50,59 @@ public class AiServiceImpl implements AiService {
 
         String responseContent = response.getResults().get(0).getOutput().getContent();
 
-        return preprocessAndParseJson(responseContent, flashcardType);
+        return parseGeneratedFlashcardJson(responseContent, request.getType());
     }
 
-    private AbstractFlashcardDto preprocessAndParseJson(String responseContent, FlashcardType flashcardType) {
+    @Override
+    public List<AbstractFlashcardDto> generateFlashcards(GenerateFlashcardsRequest request) {
 
-        if (responseContent.startsWith("```json") && responseContent.endsWith("```")) {
-            responseContent = responseContent.substring(7, responseContent.length() - 3).trim();
-        }
+        List<Message> messages = List.of(
+                request.getInitialSystemMessage(),
+                request.getResponseFormatExampleSystemMessage(),
+                new UserMessage(getGenerateFlashcardsRequestJsonString(request))
+        );
 
+        ChatResponse response = openAiChatModel.call(new Prompt(messages));
+
+        logger.info("response: {}", response.toString());
+
+        String responseContent = response.getResults().get(0).getOutput().getContent();
+
+        List<AbstractFlashcardDto> generatedFlashcards = parseGeneratedFlashcardsJson(responseContent);
+
+        return generatedFlashcards;
+    }
+
+    private AbstractFlashcardDto parseGeneratedFlashcardJson(String responseContent, FlashcardType flashcardType) {
+        responseContent = preProcessJson(responseContent);
         try {
-            return objectMapper.readValue(responseContent, flashcardType.getFlashcardDtoClass());
+            return objectMapper.readValue(preProcessJson(responseContent), flashcardType.getFlashcardDtoClass());
         } catch (Exception e) {
             throw new JsonFormatException("Failed to parse response content to FlashcardDto", e.getMessage());
         }
+    }
+
+    private List<AbstractFlashcardDto> parseGeneratedFlashcardsJson(String responseContent) {
+        responseContent = preProcessJson(responseContent);
+        try {
+            return objectMapper.readValue(preProcessJson(responseContent), objectMapper.getTypeFactory().constructCollectionType(List.class, AbstractFlashcardDto.class));
+        } catch (Exception e) {
+            throw new JsonFormatException("Failed to parse response content to FlashcardDto", e.getMessage());
+        }
+    }
+
+    private String getGenerateFlashcardsRequestJsonString(GenerateFlashcardsRequest request) {
+        try {
+            return objectMapper.writeValueAsString(request);
+        } catch (Exception e) {
+            throw new JsonFormatException("Failed to generate GenerateFlashcardsRequest Json String", e.getMessage());
+        }
+    }
+
+    private String preProcessJson(String json) {
+        if (json.startsWith("```json") && json.endsWith("```")) {
+            return json.substring(7, json.length() - 3).trim();
+        }
+        return json;
     }
 }

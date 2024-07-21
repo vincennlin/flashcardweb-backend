@@ -27,7 +27,7 @@ public class ShortAnswerFlashcardDto extends AbstractFlashcardDto {
     @Schema(
             name = "short_answer",
             description = "問答題的答案",
-            example = "Java is a programming language."
+            example = "紅黑樹在插入、刪除和搜尋時間方面提供最壞情況保證，並且是持久資料結構，能保持歷史版本。"
     )
     @JsonProperty("short_answer")
     @NotEmpty(message = "The value for 'short_answer' cannot be empty")

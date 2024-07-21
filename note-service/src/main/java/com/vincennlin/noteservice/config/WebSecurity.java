@@ -4,6 +4,8 @@ import com.vincennlin.noteservice.filter.AuthorizationFilter;
 import com.vincennlin.noteservice.filter.FlashcardwebExceptionTranslationFilter;
 import com.vincennlin.noteservice.security.FlashcardwebAccessDeniedHandler;
 import com.vincennlin.noteservice.security.JwtAuthenticationEntryPoint;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +22,12 @@ import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+@SecurityScheme(
+        name = "Bear Authentication",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
+)
 @AllArgsConstructor
 @EnableMethodSecurity(prePostEnabled = true)
 @Configuration

@@ -23,7 +23,7 @@ public class InBlankAnswerDto {
     @Schema(
             name = "text",
             description = "空格答案",
-            example = "an answer"
+            example = "2-3-4樹"
     )
     private String text;
 }

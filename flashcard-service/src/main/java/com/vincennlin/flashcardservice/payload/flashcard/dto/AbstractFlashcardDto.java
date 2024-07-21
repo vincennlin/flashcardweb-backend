@@ -51,7 +51,7 @@ public abstract class AbstractFlashcardDto {
     @Schema(
             name = "question",
             description = "字卡問題",
-            example = "What is Java?"
+            example = "紅黑樹的主要特點是什麼？"
     )
     @NotEmpty(message = "Question cannot be empty")
     private String question;
@@ -59,7 +59,7 @@ public abstract class AbstractFlashcardDto {
     @Schema(
             name = "extra_info",
             description = "字卡補充資訊，不一定要有",
-            example = "Java is a high-level, class-based, object-oriented programming language that is designed to have as few implementation dependencies as possible."
+            example = "紅黑樹和AVL樹都提供了最好的最壞情況保證，這使得它們有價值於即時應用、計算幾何和持久資料結構等時間敏感的應用。"
     )
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonProperty("extra_info")

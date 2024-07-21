@@ -12,6 +12,8 @@ public interface FlashcardService {
 
     AbstractFlashcardDto createFlashcard(Long noteId, AbstractFlashcardDto flashcardDto);
 
+    List<AbstractFlashcardDto> createFlashcards(Long noteId, List<AbstractFlashcardDto> flashcardDtoList);
+
     AbstractFlashcardDto updateFlashcard(Long flashcardId, AbstractFlashcardDto flashcardDto);
 
     void deleteFlashcardById(Long flashcardId);
