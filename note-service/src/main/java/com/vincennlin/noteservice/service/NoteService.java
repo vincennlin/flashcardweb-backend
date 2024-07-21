@@ -3,10 +3,12 @@ package com.vincennlin.noteservice.service;
 
 import com.vincennlin.noteservice.payload.flashcard.dto.AbstractFlashcardDto;
 import com.vincennlin.noteservice.payload.flashcard.type.FlashcardType;
-import com.vincennlin.noteservice.payload.note.FlashcardTypeQuantity;
 import com.vincennlin.noteservice.payload.note.NoteDto;
 import com.vincennlin.noteservice.payload.note.NotePageResponse;
+import com.vincennlin.noteservice.payload.request.GenerateFlashcardsRequest;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface NoteService {
 
@@ -25,4 +27,6 @@ public interface NoteService {
     Boolean isNoteOwner(Long noteId);
 
     AbstractFlashcardDto generateFlashcard(Long noteId, FlashcardType flashcardType);
+
+    List<AbstractFlashcardDto> generateFlashcards(Long noteId, GenerateFlashcardsRequest request);
 }

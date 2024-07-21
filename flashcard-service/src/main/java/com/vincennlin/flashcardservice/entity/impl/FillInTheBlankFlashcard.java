@@ -18,7 +18,8 @@ import java.util.List;
 @Table(name = "fill_in_the_blank")
 public class FillInTheBlankFlashcard extends AbstractFlashcard {
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "flashcard")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER,
+            mappedBy = "flashcard", orphanRemoval = true)
     @Column(name = "in_blank_answers")
     private List<InBlankAnswer> inBlankAnswers;
 

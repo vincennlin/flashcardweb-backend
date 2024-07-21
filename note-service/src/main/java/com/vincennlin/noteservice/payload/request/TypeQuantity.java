@@ -1,4 +1,4 @@
-package com.vincennlin.noteservice.payload.note;
+package com.vincennlin.noteservice.payload.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vincennlin.noteservice.payload.flashcard.type.FlashcardType;
@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class FlashcardTypeQuantity {
+public class TypeQuantity {
 
     @NotNull
     @JsonProperty(value = "type")
