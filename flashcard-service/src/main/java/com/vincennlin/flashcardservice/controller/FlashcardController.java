@@ -630,4 +630,22 @@ public class FlashcardController {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @Operation(
+            summary = "刪除特定筆記的所有字卡",
+            description = "根據 note_id 刪除特定筆記的所有字卡"
+    )
+    @ApiResponse(
+            responseCode = "204",
+            description = "成功刪除特定筆記的所有字卡"
+    )
+    @SecurityRequirement(name = "Bear Authentication")
+    @PreAuthorize("hasAuthority('DELETE')")
+    @DeleteMapping("/notes/{note_id}/flashcards")
+    public ResponseEntity<Void> deleteFlashcardsByNoteId(@PathVariable(name = "note_id") @Min(1) Long noteId) {
+
+        flashcardService.deleteFlashcardsByNoteId(noteId);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

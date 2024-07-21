@@ -199,6 +199,7 @@ public class FlashcardServiceImpl implements FlashcardService {
         return newFlashcard;
     }
 
+    @Transactional
     @Override
     public void deleteFlashcardById(Long flashcardId) {
 
@@ -208,6 +209,15 @@ public class FlashcardServiceImpl implements FlashcardService {
         authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
 
         flashcardRepository.delete(flashcard);
+    }
+
+    @Transactional
+    @Override
+    public void deleteFlashcardsByNoteId(Long noteId) {
+
+        authorizeOwnershipByNoteId(noteId);
+
+        flashcardRepository.deleteByNoteId(noteId);
     }
 
     private Long getCurrentUserId() {

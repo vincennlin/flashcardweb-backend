@@ -43,10 +43,7 @@ public class MultipleChoiceFlashcardDto extends AbstractFlashcardDto {
             description = "正確選項",
             example = "{\"text\":\"Java is a programming language.\"}"
     )
-    @JsonProperty(
-            value = "answer_option",
-            access = JsonProperty.Access.READ_ONLY
-    )
+    @JsonProperty(value = "answer_option")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private OptionDto answerOption;
 
