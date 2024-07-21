@@ -30,7 +30,7 @@ public class MultipleChoiceFlashcardDto extends AbstractFlashcardDto {
     @Schema(
             name = "options",
             description = "選項列表",
-            example = "[{\"text\":\"Java is a programming language.\"}, {\"text\":\"Java is a type of coffee.\"}, {\"text\":\"Java is a type of tea.\"}, {\"text\":\"Java is a type of fruit.\"}]"
+            example = "\"[{\\\"id\\\": 1, \\\"text\\\": \\\"每次操作需要 O(log n) 的時間\\\"}, {\\\"id\\\": 2, \\\"text\\\": \\\"無法保持為以前的版本\\\"}, {\\\"id\\\": 3, \\\"text\\\": \\\"不支持持久資料結構\\\"}, {\\\"id\\\": 4, \\\"text\\\": \\\"只能用於靜態資料結構\\\"}]\"\n"
     )
     @NotEmpty(message = "Options cannot be empty")
     private List<OptionDto> options;
@@ -39,7 +39,7 @@ public class MultipleChoiceFlashcardDto extends AbstractFlashcardDto {
     @Schema(
             name = "answer_option",
             description = "正確選項",
-            example = "{\"text\":\"Java is a programming language.\"}"
+            example = "{\"id\": 1, \"text\": \"每次操作需要 O(log n) 的時間\"}"
     )
     @JsonProperty(
             value = "answer_option",

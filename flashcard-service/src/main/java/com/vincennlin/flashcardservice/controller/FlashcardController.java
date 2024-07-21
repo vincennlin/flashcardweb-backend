@@ -6,7 +6,10 @@ import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.MultipleChoice
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.ShortAnswerFlashcardDto;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.TrueFalseFlashcardDto;
 import com.vincennlin.flashcardservice.service.FlashcardService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -28,6 +31,26 @@ import java.util.List;
         name = "字卡 API",
         description = "字卡的 CRUD API"
 )
+@OpenAPIDefinition(
+        info = @Info(
+                title = "Flashcardweb flashcard-ws API",
+                version = "1.0",
+                description = "Flashcardweb 字卡服務相關的 API",
+                contact = @io.swagger.v3.oas.annotations.info.Contact(
+                        name = "vincennlin",
+                        email = "vincentagwa@gmail.com",
+                        url = "https://github.com/vincennlin"
+                ),
+                license = @License(
+                        name = "Apache 2.0",
+                        url = "http://www.apache.org/licenses/LICENSE-2.0"
+                )
+        ),
+        externalDocs = @io.swagger.v3.oas.annotations.ExternalDocumentation(
+                description = "Flashcard Web Backend API Documentation",
+                url = "https://github.com/vincennlin/flashcardweb-backend"
+        )
+)
 @AllArgsConstructor
 @RestController
 @Validated
@@ -38,6 +61,19 @@ public class FlashcardController {
 
     private FlashcardService flashcardService;
 
+    @Operation(
+            summary = "檢查字卡服務狀態",
+            description = "檢查字卡服務是否運作正常"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "字卡服務運作正常",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = "Flashcard Service is up and running on port 53064")
+            )
+    )
+    @SecurityRequirement(name = "Bear Authentication")
     @GetMapping("/status/check")
     public ResponseEntity<String> status() {
         return new ResponseEntity<>("Flashcard Service is up and running on port " + env.getProperty("local.server.port"), HttpStatus.OK);
@@ -153,7 +189,6 @@ public class FlashcardController {
     )
     @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasAuthority('READ')")
-//    @PostAuthorize("returnObject.body.userId == principal or hasAuthority('ADVANCED')")
     @GetMapping("/flashcards/{flashcard_id}")
     public ResponseEntity<AbstractFlashcardDto> getFlashcardById(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId) {
 
@@ -165,235 +200,188 @@ public class FlashcardController {
 
 
     @Operation(
-            summary = "新增問答題字卡",
-            description = "根據 note_id 新增問答題字卡"
+            summary = "新增字卡",
+            description = "根據 note_id 新增字卡"
     )
     @ApiResponse(
             responseCode = "201",
-            description = "成功新增問答題字卡",
+            description = "成功新增字卡",
             content = @Content(
                     mediaType = "application/json",
                     examples = @ExampleObject(value = """
                             {
                                 "id": 1,
-                                "question": "What is Java?",
+                                "question": "紅黑樹的主要特點是什麼？",
                                 "type": "SHORT_ANSWER",
                                 "note_id": 1,
-                                "short_answer": "Java is a programming language."
+                                "user_id": 1,
+                                "short_answer": "紅黑樹在插入、刪除和搜尋時間方面提供最壞情況保證，並且是持久資料結構，能保持歷史版本。"
                             }
                             """)
             )
     )
     @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasAuthority('CREATE')")
-    @PostMapping("/notes/{note_id}/flashcards/short-answer")
-    public ResponseEntity<AbstractFlashcardDto> createShortAnswerFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
+    @PostMapping("/notes/{note_id}/flashcard")
+    public ResponseEntity<AbstractFlashcardDto> createFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
                                                                            @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                                 content = @Content(
                                                                         mediaType = "application/json",
                                                                         examples = @ExampleObject(value = """
                                                                                 {
-                                                                                    "question": "What is Java?",
-                                                                                    "short_answer": "Java is a programming language."
+                                                                                    "type": "SHORT_ANSWER",
+                                                                                    "question": "紅黑樹的主要特點是什麼？",
+                                                                                    "short_answer": "紅黑樹在插入、刪除和搜尋時間方面提供最壞情況保證，並且是持久資料結構，能保持歷史版本。"
                                                                                 }
                                                                                 """)
                                                                 )
-                                                        ) ShortAnswerFlashcardDto shortAnswerFlashcardDto){
+                                                        ) AbstractFlashcardDto flashcardDto){
 
-        AbstractFlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, shortAnswerFlashcardDto);
+        AbstractFlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, flashcardDto);
 
         return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
     }
 
     @Operation(
-            summary = "新增填空題字卡",
-            description = "根據 note_id 新增填空題字卡"
+            summary = "新增多張字卡",
+            description = "根據 note_id 新增多張字卡"
     )
     @ApiResponse(
             responseCode = "201",
-            description = "成功新增填空題字卡",
+            description = "成功新增多張字卡",
             content = @Content(
                     mediaType = "application/json",
                     examples = @ExampleObject(value = """
-                            {
-                                "id": 2,
-                                "question": "In Java, ___ allows an object to take on many forms, enabling a single method to have ___ behaviors depending on the object's ___.",
-                                "type": "FILL_IN_THE_BLANK",
-                                "note_id": 1,
-                                "in_blank_answers": [
-                                    {
-                                        "id": 1,
-                                        "text": "polymorphism"
-                                    },
-                                    {
-                                        "id": 2,
-                                        "text": "different"
-                                    },
-                                    {
-                                        "id": 3,
-                                        "text": "type"
-                                    }
-                                ],
-                                "full_answer": "In Java, polymorphism allows an object to take on many forms, enabling a single method to have different behaviors depending on the object's type."
-                            }
+                            [
+                                 {
+                                     "id": 5,
+                                     "question": "紅黑樹的主要特點是什麼？",
+                                     "type": "SHORT_ANSWER",
+                                     "note_id": 1,
+                                     "user_id": 1,
+                                     "short_answer": "紅黑樹在插入、刪除和搜尋時間方面提供最壞情況保證，並且是持久資料結構，能保持歷史版本。"
+                                 },
+                                 {
+                                     "id": 6,
+                                     "question": "紅黑樹和AVL樹都提供了最好的最壞情況保證，這使得它們有價值於___、___和___等時間敏感的應用。",
+                                     "type": "FILL_IN_THE_BLANK",
+                                     "note_id": 1,
+                                     "user_id": 1,
+                                     "in_blank_answers": [
+                                         {
+                                             "id": 4,
+                                             "text": "即時應用"
+                                         },
+                                         {
+                                             "id": 5,
+                                             "text": "計算幾何"
+                                         },
+                                         {
+                                             "id": 6,
+                                             "text": "持久資料結構"
+                                         }
+                                     ],
+                                     "full_answer": "紅黑樹和AVL樹都提供了最好的最壞情況保證，這使得它們有價值於即時應用、計算幾何和持久資料結構等時間敏感的應用。"
+                                 },
+                                 {
+                                     "id": 7,
+                                     "question": "紅黑樹在函數式程式設計中不常用。這句話是？",
+                                     "type": "TRUE_FALSE",
+                                     "note_id": 1,
+                                     "user_id": 1,
+                                     "true_false_answer": false
+                                 },
+                                 {
+                                     "id": 8,
+                                     "question": "以下哪一個是紅黑樹的特性？",
+                                     "type": "MULTIPLE_CHOICE",
+                                     "options": [
+                                         {
+                                             "id": 5,
+                                             "text": "每次操作需要 O(log n) 的時間"
+                                         },
+                                         {
+                                             "id": 6,
+                                             "text": "無法保持為以前的版本"
+                                         },
+                                         {
+                                             "id": 7,
+                                             "text": "不支持持久資料結構"
+                                         },
+                                         {
+                                             "id": 8,
+                                             "text": "只能用於靜態資料結構"
+                                         }
+                                     ],
+                                     "note_id": 1,
+                                     "user_id": 1,
+                                     "answer_option": {
+                                         "id": 5,
+                                         "text": "每次操作需要 O(log n) 的時間"
+                                     }
+                                 }
+                             ]
                             """)
             )
     )
-    @SecurityRequirement(name = "Bear Authentication")
-    @PreAuthorize("hasAuthority('CREATE')")
-    @PostMapping("/notes/{note_id}/flashcards/fill-in-the-blank")
-    public ResponseEntity<AbstractFlashcardDto> createFillInTheBlankFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
-                                                                              @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                                                content = @Content(
-                                                                        mediaType = "application/json",
-                                                                        examples = @ExampleObject(value = """
-                                                                                {
-                                                                                    "question": "In Java, ___ allows an object to take on many forms, enabling a single method to have ___ behaviors depending on the object's ___.",
-                                                                                    "in_blank_answers": [
-                                                                                        {
-                                                                                            "text": "polymorphism"
-                                                                                        },
-                                                                                        {
-                                                                                            "text": "different"
-                                                                                        },
-                                                                                        {
-                                                                                            "text": "type"
-                                                                                        }
-                                                                                    ],
-                                                                                    "full_answer": "In Java, polymorphism allows an object to take on many forms, enabling a single method to have different behaviors depending on the object's type.",
-                                                                                    "type": "FILL_IN_THE_BLANK"
-                                                                                }
-                                                                                """)
-                                                                )
-                                                        ) FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto){
-
-        AbstractFlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, fillInTheBlankFlashcardDto);
-
-        return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
-    }
-
-    @Operation(
-            summary = "新增選擇題字卡",
-            description = "根據 note_id 新增選擇題字卡"
-    )
-    @ApiResponse(
-            responseCode = "201",
-            description = "成功新增選擇題字卡",
-            content = @Content(
-                    mediaType = "application/json",
-                    examples = @ExampleObject(value = """
-                            {
-                                "id": 3,
-                                "question": "What is Java??",
-                                "type": "MULTIPLE_CHOICE",
-                                "options": [
-                                    {
-                                        "id": 1,
-                                        "text": "Java is a programming language."
-                                    },
-                                    {
-                                        "id": 2,
-                                        "text": "Java is a type of coffee."
-                                    },
-                                    {
-                                        "id": 3,
-                                        "text": "Java is a type of tea."
-                                    },
-                                    {
-                                        "id": 4,
-                                        "text": "Java is a type of fruit."
-                                    }
-                                ],
-                                "note_id": 1,
-                                "answer_option": {
-                                    "id": 1,
-                                    "text": "Java is a programming language."
-                                }
-                            }
-                            """)
-            )
-    )
-    @SecurityRequirement(name = "Bear Authentication")
-    @PreAuthorize("hasAuthority('CREATE')")
-    @PostMapping("/notes/{note_id}/flashcards/multiple-choice")
-    public ResponseEntity<AbstractFlashcardDto> createMultipleChoiceFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
-                                                                              @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                                                content = @Content(
-                                                                        mediaType = "application/json",
-                                                                        examples = @ExampleObject(value = """
-                                                                                {
-                                                                                    "question": "What is Java??",
-                                                                                    "options": [
-                                                                                        {
-                                                                                            "text": "Java is a programming language."
-                                                                                        },
-                                                                                        {
-                                                                                            "text": "Java is a type of coffee."
-                                                                                        },
-                                                                                        {
-                                                                                            "text": "Java is a type of tea."
-                                                                                        },
-                                                                                        {
-                                                                                            "text": "Java is a type of fruit."
-                                                                                        }
-                                                                                    ],
-                                                                                    "answer_index": 1
-                                                                                }
-                                                                                """)
-                                                                )
-                                                        ) MultipleChoiceFlashcardDto multipleChoiceFlashcardDto){
-
-        AbstractFlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, multipleChoiceFlashcardDto);
-
-        return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
-    }
-
-    @Operation(
-            summary = "新增是非題字卡",
-            description = "根據 note_id 新增是非題字卡"
-    )
-    @ApiResponse(
-            responseCode = "201",
-            description = "成功新增是非題字卡",
-            content = @Content(
-                    mediaType = "application/json",
-                    examples = @ExampleObject(value = """
-                            {
-                                "id": 4,
-                                "question": "Java is an object-oriented programming language.",
-                                "type": "TRUE_FALSE",
-                                "note_id": 1,
-                                "true_false_answer": true
-                            }
-                            """)
-            )
-    )
-    @SecurityRequirement(name = "Bear Authentication")
-    @PreAuthorize("hasAuthority('CREATE')")
-    @PostMapping("/notes/{note_id}/flashcards/true-false")
-    public ResponseEntity<AbstractFlashcardDto> createTrueFalseFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
-                                                                         @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                                                         content = @Content(
-                                                                                 mediaType = "application/json",
-                                                                                 examples = @ExampleObject(value = """
-                                                                                         {
-                                                                                             "question": "Java is an object-oriented programming language.",
-                                                                                             "true_false_answer": true
-                                                                                         }
-                                                                                         """)
-                                                                         )
-                                                                 ) TrueFalseFlashcardDto trueFalseFlashcardDto){
-
-        AbstractFlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, trueFalseFlashcardDto);
-
-        return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
-    }
-
     @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasAuthority('CREATE')")
     @PostMapping("/notes/{note_id}/flashcards")
     public ResponseEntity<List<AbstractFlashcardDto>> createFlashcards(@PathVariable(name = "note_id") @Min(1) Long noteId,
-                                                                       @RequestBody List<AbstractFlashcardDto> flashcardDtoList) {
+                                                                       @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                                               content = @Content(
+                                                                                       mediaType = "application/json",
+                                                                                       examples = @ExampleObject(value = """
+                                                                                               [
+                                                                                                   {
+                                                                                                       "question": "紅黑樹的主要特點是什麼？",
+                                                                                                       "type": "SHORT_ANSWER",
+                                                                                                       "short_answer": "紅黑樹在插入、刪除和搜尋時間方面提供最壞情況保證，並且是持久資料結構，能保持歷史版本。"
+                                                                                                   },
+                                                                                                   {
+                                                                                                       "question": "紅黑樹和AVL樹都提供了最好的最壞情況保證，這使得它們有價值於___、___和___等時間敏感的應用。",
+                                                                                                       "type": "FILL_IN_THE_BLANK",
+                                                                                                       "in_blank_answers": [
+                                                                                                           {
+                                                                                                               "text": "即時應用"
+                                                                                                           },
+                                                                                                           {
+                                                                                                               "text": "計算幾何"
+                                                                                                           },
+                                                                                                           {
+                                                                                                               "text": "持久資料結構"
+                                                                                                           }
+                                                                                                       ],
+                                                                                                       "full_answer": "紅黑樹和AVL樹都提供了最好的最壞情況保證，這使得它們有價值於即時應用、計算幾何和持久資料結構等時間敏感的應用。"
+                                                                                                   },
+                                                                                                   {
+                                                                                                       "question": "紅黑樹在函數式程式設計中不常用。這句話是？",
+                                                                                                       "type": "TRUE_FALSE",
+                                                                                                       "true_false_answer": false
+                                                                                                   },
+                                                                                                   {
+                                                                                                       "question": "以下哪一個是紅黑樹的特性？",
+                                                                                                       "type": "MULTIPLE_CHOICE",
+                                                                                                       "options": [
+                                                                                                           {
+                                                                                                               "text": "每次操作需要 O(log n) 的時間"
+                                                                                                           },
+                                                                                                           {
+                                                                                                               "text": "無法保持為以前的版本"
+                                                                                                           },
+                                                                                                           {
+                                                                                                               "text": "不支持持久資料結構"
+                                                                                                           },
+                                                                                                           {
+                                                                                                               "text": "只能用於靜態資料結構"
+                                                                                                           }
+                                                                                                       ],
+                                                                                                       "answer_index": 1
+                                                                                                   }
+                                                                                               ]
+                                                                                               """)
+                                                                               )
+                                                                       ) List<AbstractFlashcardDto> flashcardDtoList) {
 
         List<AbstractFlashcardDto> createdFlashcards = flashcardService.createFlashcards(noteId, flashcardDtoList);
 
@@ -412,214 +400,33 @@ public class FlashcardController {
                     examples = @ExampleObject(value = """
                             {
                                 "id": 1,
-                                "question": "(Updated) What is Java?",
+                                "question": "（已更新）紅黑樹的主要特點是什麼？",
                                 "type": "SHORT_ANSWER",
                                 "note_id": 1,
-                                "short_answer": "(Updated) A programming language!"
+                                "user_id": 1,
+                                "short_answer": "(已更新) 紅黑樹在插入、刪除和搜尋時間方面提供最壞情況保證，並且是持久資料結構，能保持歷史版本。"
                             }
                             """)
             )
     )
     @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasAuthority('UPDATE')")
-    @PutMapping("/flashcards/{flashcard_id}/short-answer")
-    public ResponseEntity<AbstractFlashcardDto> updateShortAnswerFlashcard(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
+    @PutMapping("/flashcard/{flashcard_id}")
+    public ResponseEntity<AbstractFlashcardDto> updateFlashcard(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
                                                                            @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                                 content = @Content(
                                                                         mediaType = "application/json",
                                                                         examples = @ExampleObject(value = """
                                                                                 {
-                                                                                    "question": "(Updated) What is Java?",
-                                                                                    "short_answer": "(Updated) A programming language!"
+                                                                                    "question": "（已更新）紅黑樹的主要特點是什麼？",
+                                                                                    "short_answer": "(已更新) 紅黑樹在插入、刪除和搜尋時間方面提供最壞情況保證，並且是持久資料結構，能保持歷史版本。",
+                                                                                    "type": "SHORT_ANSWER"
                                                                                 }
                                                                                 """)
                                                                 )
-                                                        ) ShortAnswerFlashcardDto shortAnswerFlashcardDto) {
+                                                        ) AbstractFlashcardDto flashcardDto) {
 
-        AbstractFlashcardDto flashcardResponse = flashcardService.updateFlashcard(flashcardId, shortAnswerFlashcardDto);
-
-        return new ResponseEntity<>(flashcardResponse, HttpStatus.OK);
-    }
-
-    @Operation(
-            summary = "更新填空題字卡",
-            description = "根據 flashcard_id 更新填空題字卡"
-    )
-    @ApiResponse(
-            responseCode = "200",
-            description = "成功更新填空題字卡",
-            content = @Content(
-                    mediaType = "application/json",
-                    examples = @ExampleObject(value = """
-                            {
-                                "id": 2,
-                                "question": "(Updated) In Java, ___ allows an object to take on many forms, enabling a single method to have ___ behaviors depending on the object's ___.",
-                                "type": "FILL_IN_THE_BLANK",
-                                "note_id": 1,
-                                "in_blank_answers": [
-                                    {
-                                        "id": 1,
-                                        "text": "(Updated) polymorphism"
-                                    },
-                                    {
-                                        "id": 2,
-                                        "text": "(Updated) different"
-                                    },
-                                    {
-                                        "id": 3,
-                                        "text": "(Updated) type"
-                                    }
-                                ],
-                                "full_answer": "(Updated) In Java, polymorphism allows an object to take on many forms, enabling a single method to have different behaviors depending on the object's type."
-                            }
-                            """)
-            )
-    )
-    @SecurityRequirement(name = "Bear Authentication")
-    @PreAuthorize("hasAuthority('UPDATE')")
-    @PutMapping("/flashcards/{flashcard_id}/fill-in-the-blank")
-    public ResponseEntity<AbstractFlashcardDto> updateFillInTheBlankFlashcard(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
-                                                                              @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                                                content = @Content(
-                                                                        mediaType = "application/json",
-                                                                        examples = @ExampleObject(value = """
-                                                                                {
-                                                                                    "question": "(Updated) In Java, ___ allows an object to take on many forms, enabling a single method to have ___ behaviors depending on the object's ___.",
-                                                                                    "in_blank_answers": [
-                                                                                        {
-                                                                                            "text": "(Updated) polymorphism"
-                                                                                        },
-                                                                                        {
-                                                                                            "text": "(Updated) different"
-                                                                                        },
-                                                                                        {
-                                                                                            "text": "(Updated) type"
-                                                                                        }
-                                                                                    ],
-                                                                                    "full_answer": "(Updated) In Java, polymorphism allows an object to take on many forms, enabling a single method to have different behaviors depending on the object's type."
-                                                                                }
-                                                                                """)
-                                                                )
-                                                        ) FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto) {
-
-        AbstractFlashcardDto flashcardResponse = flashcardService.updateFlashcard(flashcardId, fillInTheBlankFlashcardDto);
-
-        return new ResponseEntity<>(flashcardResponse, HttpStatus.OK);
-    }
-
-    @Operation(
-            summary = "更新選擇題字卡",
-            description = "根據 flashcard_id 更新選擇題字卡"
-    )
-    @ApiResponse(
-            responseCode = "200",
-            description = "成功更新選擇題字卡",
-            content = @Content(
-                    mediaType = "application/json",
-                    examples = @ExampleObject(value = """
-                            {
-                                "id": 3,
-                                "question": "(Updated) What is Java??",
-                                "type": "MULTIPLE_CHOICE",
-                                "options": [
-                                    {
-                                        "id": 1,
-                                        "text": "(Updated) Java is a programming language."
-                                    },
-                                    {
-                                        "id": 2,
-                                        "text": "(Updated) Java is a type of coffee."
-                                    },
-                                    {
-                                        "id": 3,
-                                        "text": "(Updated) Java is a type of tea."
-                                    },
-                                    {
-                                        "id": 4,
-                                        "text": "(Updated) Java is a type of fruit."
-                                    }
-                                ],
-                                "note_id": 1,
-                                "answer_option": {
-                                    "id": 2,
-                                    "text": "(Updated) Java is a type of coffee."
-                                }
-                            }
-                            """)
-            )
-    )
-    @SecurityRequirement(name = "Bear Authentication")
-    @PreAuthorize("hasAuthority('UPDATE')")
-    @PutMapping("/flashcards/{flashcard_id}/multiple-choice")
-    public ResponseEntity<AbstractFlashcardDto> updateMultipleChoiceFlashcard(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
-                                                                              @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                                                content = @Content(
-                                                                        mediaType = "application/json",
-                                                                        examples = @ExampleObject(value = """
-                                                                                {
-                                                                                    "question": "(Updated) What is Java??",
-                                                                                    "options": [
-                                                                                        {
-                                                                                            "text": "(Updated) Java is a programming language."
-                                                                                        },
-                                                                                        {
-                                                                                            "text": "(Updated) Java is a type of coffee."
-                                                                                        },
-                                                                                        {
-                                                                                            "text": "(Updated) Java is a type of tea."
-                                                                                        },
-                                                                                        {
-                                                                                            "text": "(Updated) Java is a type of fruit."
-                                                                                        }
-                                                                                    ],
-                                                                                    "answer_index": 2
-                                                                                }
-                                                                                """)
-                                                                )
-                                                        ) MultipleChoiceFlashcardDto multipleChoiceFlashcardDto) {
-
-        AbstractFlashcardDto flashcardResponse = flashcardService.updateFlashcard(flashcardId, multipleChoiceFlashcardDto);
-
-        return new ResponseEntity<>(flashcardResponse, HttpStatus.OK);
-    }
-
-    @Operation(
-            summary = "更新是非題字卡",
-            description = "根據 flashcard_id 更新是非題字卡"
-    )
-    @ApiResponse(
-            responseCode = "200",
-            description = "成功更新是非題字卡",
-            content = @Content(
-                    mediaType = "application/json",
-                    examples = @ExampleObject(value = """
-                            {
-                                "id": 4,
-                                "question": "(Updated) Java is an object-oriented programming language.",
-                                "type": "TRUE_FALSE",
-                                "note_id": 1,
-                                "true_false_answer": false
-                            }
-                            """)
-            )
-    )
-    @SecurityRequirement(name = "Bear Authentication")
-    @PreAuthorize("hasAuthority('UPDATE')")
-    @PutMapping("/flashcards/{flashcard_id}/true-false")
-    public ResponseEntity<AbstractFlashcardDto> updateTrueFalseFlashcard(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
-                                                                         @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                                                content = @Content(
-                                                                        mediaType = "application/json",
-                                                                        examples = @ExampleObject(value = """
-                                                                                {
-                                                                                    "question": "(Updated) Java is an object-oriented programming language.",
-                                                                                    "true_false_answer": false
-                                                                                }
-                                                                                """)
-                                                                )
-                                                        ) TrueFalseFlashcardDto trueFalseFlashcardDto) {
-
-        AbstractFlashcardDto flashcardResponse = flashcardService.updateFlashcard(flashcardId, trueFalseFlashcardDto);
+        AbstractFlashcardDto flashcardResponse = flashcardService.updateFlashcard(flashcardId, flashcardDto);
 
         return new ResponseEntity<>(flashcardResponse, HttpStatus.OK);
     }
