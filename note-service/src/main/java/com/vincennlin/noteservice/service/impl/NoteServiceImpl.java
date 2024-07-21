@@ -6,8 +6,11 @@ import com.vincennlin.noteservice.exception.WebAPIException;
 import com.vincennlin.noteservice.client.FlashcardServiceClient;
 import com.vincennlin.noteservice.entity.Note;
 import com.vincennlin.noteservice.exception.ResourceNotFoundException;
+import com.vincennlin.noteservice.payload.flashcard.dto.impl.FillInTheBlankFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.dto.impl.MultipleChoiceFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.dto.impl.ShortAnswerFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.dto.impl.TrueFalseFlashcardDto;
 import com.vincennlin.noteservice.payload.flashcard.type.FlashcardType;
-import com.vincennlin.noteservice.payload.note.FlashcardTypeQuantity;
 import com.vincennlin.noteservice.payload.note.NoteDto;
 import com.vincennlin.noteservice.payload.note.NotePageResponse;
 import com.vincennlin.noteservice.payload.flashcard.dto.AbstractFlashcardDto;
@@ -113,6 +116,8 @@ public class NoteServiceImpl implements NoteService {
         authorizeOwnership(note.getUserId());
 
         noteRepository.delete(note);
+
+        flashcardServiceClient.deleteFlashcardsByNoteId(noteId, getAuthorization());
     }
 
     @Override
@@ -134,9 +139,7 @@ public class NoteServiceImpl implements NoteService {
 
         AbstractFlashcardDto generatedFlashcard = getGeneratedFlashcard(note, flashcardType);
 
-        //Todo:: Save the generated flashcard to the flashcard service
-
-        return generatedFlashcard;
+        return saveGeneratedFlashcard(noteId, generatedFlashcard);
     }
 
     private Long getCurrentUserId() {
@@ -212,6 +215,28 @@ public class NoteServiceImpl implements NoteService {
             }
             case TRUE_FALSE -> {
                 return aiServiceClient.generateTrueFalseFlashcard(mapToDto(note), getAuthorization()).getBody();
+            }
+            default -> throw new WebAPIException(HttpStatus.BAD_REQUEST, "Invalid flashcard type");
+        }
+    }
+
+    private AbstractFlashcardDto saveGeneratedFlashcard(Long noteId, AbstractFlashcardDto generatedFlashcard) {
+        switch (generatedFlashcard.getType()) {
+            case SHORT_ANSWER -> {
+                return flashcardServiceClient.generateShortAnswerFlashcard(noteId,
+                        (ShortAnswerFlashcardDto) generatedFlashcard, getAuthorization()).getBody();
+            }
+            case FILL_IN_THE_BLANK -> {
+                return flashcardServiceClient.generateFillInTheBlankFlashcard(noteId,
+                        (FillInTheBlankFlashcardDto) generatedFlashcard, getAuthorization()).getBody();
+            }
+            case MULTIPLE_CHOICE -> {
+                return flashcardServiceClient.generateMultipleChoiceFlashcard(noteId,
+                        (MultipleChoiceFlashcardDto) generatedFlashcard, getAuthorization()).getBody();
+            }
+            case TRUE_FALSE -> {
+                return flashcardServiceClient.generateTrueFalseFlashcard(noteId,
+                        (TrueFalseFlashcardDto) generatedFlashcard, getAuthorization()).getBody();
             }
             default -> throw new WebAPIException(HttpStatus.BAD_REQUEST, "Invalid flashcard type");
         }

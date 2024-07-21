@@ -46,7 +46,6 @@ public abstract class AbstractFlashcardDto {
             description = "字卡 id",
             example = "1"
     )
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @Schema(
@@ -71,7 +70,6 @@ public abstract class AbstractFlashcardDto {
             description = "字卡類型，共有四種：SHORT_ANSWER, FILL_IN_THE_BLANK, MULTIPLE_CHOICE, TRUE_FALSE",
             example = "SHORT_ANSWER"
     )
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private FlashcardType type;
 
     @Schema(
@@ -79,10 +77,7 @@ public abstract class AbstractFlashcardDto {
             description = "筆記 id",
             example = "1"
     )
-    @JsonProperty(
-            value = "note_id",
-            access = JsonProperty.Access.READ_ONLY
-    )
+    @JsonProperty(value = "note_id")
     private Long noteId;
 
     @Schema(
@@ -90,10 +85,7 @@ public abstract class AbstractFlashcardDto {
             description = "字卡所屬的使用者 id",
             example = "1"
     )
-    @JsonProperty(
-            value = "user_id",
-            access = JsonProperty.Access.READ_ONLY
-    )
+    @JsonProperty(value = "user_id")
     private Long userId;
 
     @JsonIgnore
