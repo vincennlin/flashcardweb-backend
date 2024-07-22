@@ -91,7 +91,7 @@ public class FlashcardController implements FlashcardControllerSwagger{
     }
 
     @PreAuthorize("hasAuthority('DELETE')")
-    @DeleteMapping("/flashcards/{flashcard_id}")
+    @DeleteMapping("/flashcard/{flashcard_id}")
     public ResponseEntity<Void> deleteFlashcardById(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId) {
 
         flashcardService.deleteFlashcardById(flashcardId);

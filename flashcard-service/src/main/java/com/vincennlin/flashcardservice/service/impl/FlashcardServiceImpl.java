@@ -123,6 +123,7 @@ public class FlashcardServiceImpl implements FlashcardService {
         return mapToDto(newFlashcard);
     }
 
+    @Transactional
     @Override
     public List<AbstractFlashcardDto> createFlashcards(Long noteId, List<AbstractFlashcardDto> flashcardDtoList) {
 
