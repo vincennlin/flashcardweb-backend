@@ -27,3 +27,10 @@ Tag Config Server Docker Image for Docker Hub
 
 docker tag fddaf9e435a1 vincennlin/flashcardweb-config-server
 
+
+
+Build Discovery Service Docker Image
+
+docker build --tag=flashcardweb-discovery-service --force-rm=true --platform linux/amd64 .
+docker tag 4db81302f588 vincennlin/flashcardweb-discovery-service
+docker push vincennlin/flashcardweb-discovery-service
