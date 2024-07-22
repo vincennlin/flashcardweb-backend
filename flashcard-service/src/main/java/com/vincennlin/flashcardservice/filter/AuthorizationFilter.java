@@ -1,6 +1,6 @@
 package com.vincennlin.flashcardservice.filter;
 
-import com.vincennlin.jwtparser.JwtClaimsParser;
+import com.vincennlin.flashcardservice.security.JwtClaimsParser;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
