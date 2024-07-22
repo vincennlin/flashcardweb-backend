@@ -1,11 +1,18 @@
 package com.vincennlin.noteservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vincennlin.noteservice.client.AiServiceClient;
 import com.vincennlin.noteservice.client.FlashcardServiceClient;
+import com.vincennlin.noteservice.payload.flashcard.dto.impl.FillInTheBlankFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.dto.impl.MultipleChoiceFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.type.FlashcardType;
 import com.vincennlin.noteservice.payload.note.NoteDto;
 import com.vincennlin.noteservice.payload.flashcard.dto.AbstractFlashcardDto;
 import com.vincennlin.noteservice.payload.flashcard.dto.impl.ShortAnswerFlashcardDto;
 import com.vincennlin.noteservice.payload.flashcard.dto.impl.TrueFalseFlashcardDto;
+import com.vincennlin.noteservice.payload.request.GenerateFlashcardRequest;
+import com.vincennlin.noteservice.payload.request.GenerateFlashcardsRequest;
+import com.vincennlin.noteservice.payload.request.TypeQuantity;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -24,10 +31,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -53,20 +60,32 @@ class NoteServiceApplicationTests {
 	@MockBean
 	private FlashcardServiceClient flashcardServiceClient;
 
+	@MockBean
+	private AiServiceClient aiServiceClient;
+
+	private final String getNotesUrl = "/api/v1/notes";
+	private final String getNoteByIdUrl = "/api/v1/notes/{id}";
+	private final String getNoteByUserIdUrl = "/api/v1/notes/user/{userId}";
+
+	private final String createNoteUrl = "/api/v1/notes";
+
+	private final String updateNoteUrl = "/api/v1/notes/{id}";
+
+	private final String deleteNoteUrl = "/api/v1/notes/{id}";
+
+	private final String generateFlashcardUrl = "/api/v1/notes/{noteId}/generate/flashcard";
+	private final String generateFlashcardsUrl = "/api/v1/notes/{noteId}/generate/flashcards";
+
 	@BeforeEach
 	public void beforeEach() {
-
-		ResponseEntity<List<AbstractFlashcardDto>> mockResponse = getMockFlashcardsResponse();
-
-		Mockito.when(flashcardServiceClient.getFlashcardsByNoteId(Mockito.anyLong(), Mockito.anyString()))
-				.thenReturn(mockResponse);
+		mockFlashcardServiceClient();
 	}
 
 	@Test
 	public void getAllNotes_admin() throws Exception{
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.get("/api/v1/notes")
+				.get(getNotesUrl)
 				.header("Authorization", "Bearer " + adminJwtToken);
 
 		mockMvc.perform(requestBuilder)
@@ -83,7 +102,7 @@ class NoteServiceApplicationTests {
 	public void getAllNotes_user() throws Exception{
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.get("/api/v1/notes")
+				.get(getNotesUrl)
 				.header("Authorization", "Bearer " + test1UserJwtToken);
 
 		mockMvc.perform(requestBuilder)
@@ -97,7 +116,7 @@ class NoteServiceApplicationTests {
 				.andExpect(jsonPath("$.content[0].user_id", equalTo(2)));
 
 		requestBuilder = MockMvcRequestBuilders
-				.get("/api/v1/notes")
+				.get(getNotesUrl)
 				.header("Authorization", "Bearer " + test2UserJwtToken);
 
 		mockMvc.perform(requestBuilder)
@@ -115,7 +134,7 @@ class NoteServiceApplicationTests {
 	public void getNoteByUserId_success() throws Exception{
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.get("/api/v1/notes/user/{id}", 2)
+				.get(getNoteByUserIdUrl, 2)
 				.header("Authorization", "Bearer " + adminJwtToken);
 
 		mockMvc.perform(requestBuilder)
@@ -128,7 +147,7 @@ class NoteServiceApplicationTests {
 				.andExpect(jsonPath("$.content[0].flashcards", notNullValue()));
 
 		requestBuilder = MockMvcRequestBuilders
-				.get("/api/v1/notes/user/{id}", 3)
+				.get(getNoteByUserIdUrl, 3)
 				.header("Authorization", "Bearer " + adminJwtToken);
 
 		mockMvc.perform(requestBuilder)
@@ -145,7 +164,7 @@ class NoteServiceApplicationTests {
 	public void getNoteById_success() throws Exception{
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.get("/api/v1/notes/{id}", 1)
+				.get(getNoteByIdUrl, 1)
 				.header("Authorization", "Bearer " + test1UserJwtToken);
 
 		mockMvc.perform(requestBuilder)
@@ -161,7 +180,7 @@ class NoteServiceApplicationTests {
 	public void getNoteById_notFound() throws Exception{
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.get("/api/v1/notes/{id}", 100)
+				.get(getNoteByIdUrl, 100)
 				.header("Authorization", "Bearer " + test1UserJwtToken);
 
 		mockMvc.perform(requestBuilder)
@@ -173,7 +192,7 @@ class NoteServiceApplicationTests {
 	public void getNoteById_unauthenticated() throws Exception{
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.get("/api/v1/notes/{id}", 1);
+				.get(getNoteByIdUrl, 1);
 
 		mockMvc.perform(requestBuilder)
 				.andExpect(status().is(401));
@@ -184,7 +203,7 @@ class NoteServiceApplicationTests {
 	public void getNoteById_unauthorized() throws Exception{
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.get("/api/v1/notes/{id}", 4)
+				.get(getNoteByIdUrl, 4)
 				.header("Authorization", "Bearer " + test1UserJwtToken);
 
 		mockMvc.perform(requestBuilder)
@@ -200,7 +219,7 @@ class NoteServiceApplicationTests {
 		noteDto.setContent("New note");
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.post("/api/v1/notes")
+				.post(createNoteUrl)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(noteDto))
 				.header("Authorization", "Bearer " + test1UserJwtToken);
@@ -221,7 +240,7 @@ class NoteServiceApplicationTests {
 		noteDto.setContent("");
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.post("/api/v1/notes")
+				.post(createNoteUrl)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(noteDto))
 				.header("Authorization", "Bearer " + test1UserJwtToken);
@@ -238,7 +257,7 @@ class NoteServiceApplicationTests {
 		noteDto.setContent("Updated Note");
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.put("/api/v1/notes/{id}", 1)
+				.put(updateNoteUrl, 1)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(noteDto))
 				.header("Authorization", "Bearer " + test1UserJwtToken);
@@ -259,7 +278,7 @@ class NoteServiceApplicationTests {
 		noteDto.setContent("");
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.put("/api/v1/notes/{id}", 1)
+				.put(updateNoteUrl, 1)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(noteDto))
 				.header("Authorization", "Bearer " + test1UserJwtToken);
@@ -275,7 +294,7 @@ class NoteServiceApplicationTests {
 		noteDto.setContent("Updated Note");
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.put("/api/v1/notes/{id}", 100)
+				.put(updateNoteUrl, 100)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(noteDto))
 				.header("Authorization", "Bearer " + test1UserJwtToken);
@@ -289,7 +308,7 @@ class NoteServiceApplicationTests {
 	public void deleteNoteById_success() throws Exception{
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.delete("/api/v1/notes/{id}", 1)
+				.delete(deleteNoteUrl, 1)
 				.header("Authorization", "Bearer " + test1UserJwtToken);
 
 		mockMvc.perform(requestBuilder)
@@ -301,7 +320,7 @@ class NoteServiceApplicationTests {
 	public void deleteNoteById_noteNotFound() throws Exception{
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.delete("/api/v1/notes/{id}", 100)
+				.delete(deleteNoteUrl, 100)
 				.header("Authorization", "Bearer " + test1UserJwtToken);
 
 		mockMvc.perform(requestBuilder)
@@ -312,7 +331,7 @@ class NoteServiceApplicationTests {
 	public void getAllNotes_pagination() throws Exception{
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.get("/api/v1/notes")
+				.get(getNotesUrl)
 				.header("Authorization", "Bearer " + adminJwtToken)
 				.param("pageNo", "0")
 				.param("pageSize", "2");
@@ -333,7 +352,7 @@ class NoteServiceApplicationTests {
 	public void getAllNotes_pagination_illegalArgument() throws Exception{
 
 		RequestBuilder requestBuilder1 = MockMvcRequestBuilders
-				.get("/api/v1/notes")
+				.get(getNotesUrl)
 				.header("Authorization", "Bearer " + adminJwtToken)
 				.param("pageNo", "0")
 				.param("pageSize", "0");
@@ -342,7 +361,7 @@ class NoteServiceApplicationTests {
 				.andExpect(status().is(400));
 
 		RequestBuilder requestBuilder2 = MockMvcRequestBuilders
-				.get("/api/v1/notes")
+				.get(getNotesUrl)
 				.header("Authorization", "Bearer " + adminJwtToken)
 				.param("pageNo", "0")
 				.param("pageSize", "200");
@@ -351,7 +370,7 @@ class NoteServiceApplicationTests {
 				.andExpect(status().is(400));
 
 		RequestBuilder requestBuilder3 = MockMvcRequestBuilders
-				.get("/api/v1/notes")
+				.get(getNotesUrl)
 				.header("Authorization", "Bearer " + adminJwtToken)
 				.param("pageNo", "-1")
 				.param("pageSize", "10");
@@ -364,7 +383,7 @@ class NoteServiceApplicationTests {
 	public void getAllNotes_sorting() throws Exception{
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.get("/api/v1/notes")
+				.get(getNotesUrl)
 				.header("Authorization", "Bearer " + adminJwtToken)
 				.param("sortBy", "content")
 				.param("sortDir", "desc");
@@ -384,7 +403,7 @@ class NoteServiceApplicationTests {
 	public void getAllNotes_sorting_illegalArgument() throws Exception{
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.get("/api/v1/notes")
+				.get(getNotesUrl)
 				.header("Authorization", "Bearer " + adminJwtToken)
 				.param("sortBy", "illegalArgument")
 				.param("sortDir", "desc");
@@ -393,24 +412,135 @@ class NoteServiceApplicationTests {
 				.andExpect(status().is(400));
 	}
 
-	private ResponseEntity<List<AbstractFlashcardDto>> getMockFlashcardsResponse() {
+	@Test
+	public void generateFlashcard_success() throws Exception{
 
-		ShortAnswerFlashcardDto flashcardDto1 = new ShortAnswerFlashcardDto();
+		mockAiServiceClient();
+
+		GenerateFlashcardRequest request = getGenerateFlashcardRequest(FlashcardType.SHORT_ANSWER);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.post(generateFlashcardUrl, 1)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request))
+				.header("Authorization", "Bearer " + test1UserJwtToken);
+
+		mockMvc.perform(requestBuilder)
+				.andExpect(status().is(200))
+				.andExpect(jsonPath("$.type", equalTo(FlashcardType.SHORT_ANSWER.name())))
+				.andExpect(jsonPath("$.question").exists())
+				.andExpect(jsonPath("$.short_answer").exists())
+				.andExpect(jsonPath("$.note_id", equalTo(1)))
+				.andExpect(jsonPath("$.user_id", equalTo(2)))
+				.andExpect(jsonPath("$.id", notNullValue()));
+
+	}
+
+	@Test
+	public void generateFlashcards_success() throws Exception {
+
+		mockAiServiceClient();
+
+		GenerateFlashcardsRequest request = getGenerateFlashcardsRequest();
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.post(generateFlashcardsUrl, 1)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request))
+				.header("Authorization", "Bearer " + test1UserJwtToken);
+
+		mockMvc.perform(requestBuilder)
+				.andExpect(status().is(200))
+				.andExpect(jsonPath("$", hasSize(4)));
+	}
+
+	private ResponseEntity<AbstractFlashcardDto> getMockFlashcardServiceFlashcardResponse() {
+
+		ShortAnswerFlashcardDto flashcardDto = (ShortAnswerFlashcardDto) FlashcardType.SHORT_ANSWER.getFlashcardExampleDto();
+		flashcardDto.setId(1L);
+		flashcardDto.setNoteId(1L);
+		flashcardDto.setUserId(2L);
+
+		return new ResponseEntity<>(flashcardDto, HttpStatus.OK);
+	}
+
+	private ResponseEntity<List<AbstractFlashcardDto>> getMockFlashcardServiceFlashcardsResponse() {
+
+		ShortAnswerFlashcardDto flashcardDto1 = (ShortAnswerFlashcardDto) FlashcardType.SHORT_ANSWER.getFlashcardExampleDto();
 		flashcardDto1.setId(1L);
-		flashcardDto1.setQuestion("What is Java?");
-		flashcardDto1.setShortAnswer("Java is a programming language.");
 		flashcardDto1.setNoteId(1L);
 		flashcardDto1.setUserId(2L);
 
-		TrueFalseFlashcardDto flashcardDto2 = new TrueFalseFlashcardDto();
+		FillInTheBlankFlashcardDto flashcardDto2 = (FillInTheBlankFlashcardDto) FlashcardType.FILL_IN_THE_BLANK.getFlashcardExampleDto();
 		flashcardDto2.setId(2L);
-		flashcardDto2.setQuestion("Java is a programming language.");
-		flashcardDto2.setTrueFalseAnswer(true);
 		flashcardDto2.setNoteId(1L);
 		flashcardDto2.setUserId(2L);
 
-		List<AbstractFlashcardDto> abstractFlashcardDtos = List.of(flashcardDto1, flashcardDto2);
+		MultipleChoiceFlashcardDto flashcardDto3 = (MultipleChoiceFlashcardDto) FlashcardType.MULTIPLE_CHOICE.getFlashcardExampleDto();
+		flashcardDto3.setId(3L);
+		flashcardDto3.setNoteId(1L);
+		flashcardDto3.setUserId(2L);
 
-		return new ResponseEntity<>(abstractFlashcardDtos, HttpStatus.OK);
+		TrueFalseFlashcardDto flashcardDto4 = (TrueFalseFlashcardDto) FlashcardType.TRUE_FALSE.getFlashcardExampleDto();
+		flashcardDto4.setId(4L);
+		flashcardDto4.setNoteId(1L);
+		flashcardDto4.setUserId(2L);
+
+		List<AbstractFlashcardDto> abstractFlashcardList = List.of(flashcardDto1, flashcardDto2, flashcardDto3, flashcardDto4);
+
+		return new ResponseEntity<>(abstractFlashcardList, HttpStatus.OK);
 	}
+
+	private void mockFlashcardServiceClient() {
+		Mockito.when(flashcardServiceClient.getFlashcardsByNoteId(Mockito.anyLong(), Mockito.anyString()))
+				.thenReturn(getMockFlashcardServiceFlashcardsResponse());
+
+		Mockito.when(flashcardServiceClient.createFlashcard(Mockito.anyLong(), Mockito.any(), Mockito.anyString()))
+				.thenReturn(getMockFlashcardServiceFlashcardResponse());
+
+		Mockito.when(flashcardServiceClient.createFlashcards(Mockito.anyLong(), Mockito.any(), Mockito.anyString()))
+				.thenReturn(getMockFlashcardServiceFlashcardsResponse());
+	}
+
+	private ResponseEntity<AbstractFlashcardDto> getMockAiGenerateFlashcardResponse() {
+		return new ResponseEntity<>(FlashcardType.SHORT_ANSWER.getFlashcardExampleDto(), HttpStatus.OK);
+	}
+
+	private ResponseEntity<List<AbstractFlashcardDto>> getMockAiGenerateFlashcardsResponse() {
+		List<AbstractFlashcardDto> generatedFlashcard = List.of(
+				FlashcardType.SHORT_ANSWER.getFlashcardExampleDto(),
+				FlashcardType.FILL_IN_THE_BLANK.getFlashcardExampleDto(),
+				FlashcardType.MULTIPLE_CHOICE.getFlashcardExampleDto(),
+				FlashcardType.TRUE_FALSE.getFlashcardExampleDto()
+		);
+		return new ResponseEntity<>(generatedFlashcard, HttpStatus.OK);
+	}
+
+	private void mockAiServiceClient() {
+		Mockito.when(aiServiceClient.generateFlashcard(Mockito.any(), Mockito.anyString()))
+				.thenReturn(getMockAiGenerateFlashcardResponse());
+
+		Mockito.when(aiServiceClient.generateFlashcards(Mockito.any(), Mockito.anyString()))
+				.thenReturn(getMockAiGenerateFlashcardsResponse());
+	}
+
+	private GenerateFlashcardRequest getGenerateFlashcardRequest(FlashcardType type) {
+		return new GenerateFlashcardRequest("content", type);
+	}
+
+	private GenerateFlashcardsRequest getGenerateFlashcardsRequest() {
+
+		List<TypeQuantity> typeQuantities = new ArrayList<>(List.of(
+				new TypeQuantity(FlashcardType.SHORT_ANSWER, 1),
+				new TypeQuantity(FlashcardType.FILL_IN_THE_BLANK, 1),
+				new TypeQuantity(FlashcardType.MULTIPLE_CHOICE, 1),
+				new TypeQuantity(FlashcardType.TRUE_FALSE, 1)
+		));
+
+		NoteDto note = new NoteDto();
+		note.setContent("content");
+
+		return new GenerateFlashcardsRequest(note, typeQuantities);
+	}
+
 }
