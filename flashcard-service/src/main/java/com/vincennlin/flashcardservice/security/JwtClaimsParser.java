@@ -1,4 +1,4 @@
-package com.vincennlin.jwtparser;
+package com.vincennlin.flashcardservice.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwt;
