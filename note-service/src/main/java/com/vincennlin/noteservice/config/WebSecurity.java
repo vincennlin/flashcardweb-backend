@@ -48,15 +48,12 @@ public class WebSecurity {
 
         http.authorizeHttpRequests(auth ->
                 auth
-//                        .requestMatchers(new AntPathRequestMatcher("/api/v1/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/actuator/**")).permitAll()
-//                        .requestMatchers(new AntPathRequestMatcher("/actuator/**")).access(
+                        .requestMatchers(new AntPathRequestMatcher("/api/v1/**")).permitAll()
+//                        .requestMatchers(new AntPathRequestMatcher("/api/v1/**")).access(
 //                                new WebExpressionAuthorizationManager(webExpressionString))
-                        .requestMatchers(new AntPathRequestMatcher("/api/v1/**")).access(
-                                new WebExpressionAuthorizationManager(webExpressionString))
+                        .requestMatchers(new AntPathRequestMatcher("/actuator/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
-//                        .anyRequest().authenticated()
         );
 
         // 未完成，目前不會用到
