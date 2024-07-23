@@ -6,7 +6,7 @@ import com.vincennlin.noteservice.client.FlashcardServiceClient;
 import com.vincennlin.noteservice.payload.flashcard.dto.impl.FillInTheBlankFlashcardDto;
 import com.vincennlin.noteservice.payload.flashcard.dto.impl.MultipleChoiceFlashcardDto;
 import com.vincennlin.noteservice.payload.flashcard.type.FlashcardType;
-import com.vincennlin.noteservice.payload.note.NoteDto;
+import com.vincennlin.noteservice.payload.note.dto.NoteDto;
 import com.vincennlin.noteservice.payload.flashcard.dto.AbstractFlashcardDto;
 import com.vincennlin.noteservice.payload.flashcard.dto.impl.ShortAnswerFlashcardDto;
 import com.vincennlin.noteservice.payload.flashcard.dto.impl.TrueFalseFlashcardDto;

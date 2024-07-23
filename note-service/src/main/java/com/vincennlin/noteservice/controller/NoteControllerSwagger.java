@@ -2,8 +2,8 @@ package com.vincennlin.noteservice.controller;
 
 import com.vincennlin.noteservice.constant.AppConstants;
 import com.vincennlin.noteservice.payload.flashcard.dto.AbstractFlashcardDto;
-import com.vincennlin.noteservice.payload.note.NoteDto;
-import com.vincennlin.noteservice.payload.note.NotePageResponse;
+import com.vincennlin.noteservice.payload.note.dto.NoteDto;
+import com.vincennlin.noteservice.payload.note.page.NotePageResponse;
 import com.vincennlin.noteservice.payload.request.GenerateFlashcardRequest;
 import com.vincennlin.noteservice.payload.request.GenerateFlashcardsRequest;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
