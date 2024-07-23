@@ -120,18 +120,7 @@ public class NoteController implements NoteControllerSwagger {
 
     @PostMapping("/notes/{note_id}/generate/flashcard")
     public ResponseEntity<AbstractFlashcardDto> generateFlashcard(@PathVariable(name = "note_id") @Min(1) Long id,
-                                                                  @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                                                          content = @Content(
-                                                                                  mediaType = "application/json",
-                                                                                  examples = {
-                                                                                          @ExampleObject(value = """
-                                                                                          {
-                                                                                              "type": "SHORT_ANSWER"
-                                                                                          }
-                                                                                          """)
-                                                                                  }
-                                                                          )
-                                                                  ) GenerateFlashcardRequest request) {
+                                                                  @RequestBody GenerateFlashcardRequest request) {
 
         AbstractFlashcardDto flashcard = noteService.generateFlashcard(id, request);
 
