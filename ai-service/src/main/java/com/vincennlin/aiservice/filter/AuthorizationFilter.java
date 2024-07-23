@@ -1,6 +1,6 @@
 package com.vincennlin.aiservice.filter;
 
-import com.vincennlin.jwtparser.JwtClaimsParser;
+import com.vincennlin.aiservice.security.JwtClaimsParser;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

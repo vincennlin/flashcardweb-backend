@@ -1,6 +1,6 @@
 package com.vincennlin.noteservice.filter;
 
-import com.vincennlin.jwtparser.JwtClaimsParser;
+import com.vincennlin.noteservice.security.JwtClaimsParser;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
