@@ -340,12 +340,12 @@ public interface FlashcardControllerSwagger {
                                                                        ) List<AbstractFlashcardDto> flashcardDtoList);
 
     @Operation(
-            summary = "更新問答題字卡",
-            description = "根據 flashcard_id 更新問答題字卡"
+            summary = "更新字卡",
+            description = "根據 flashcard_id 更新字卡"
     )
     @ApiResponse(
             responseCode = "200",
-            description = "成功更新問答題字卡",
+            description = "成功更新字卡",
             content = @Content(
                     mediaType = "application/json",
                     examples = @ExampleObject(value = """
