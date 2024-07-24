@@ -1,6 +1,7 @@
-package com.vincennlin.flashcardservice.entity;
+package com.vincennlin.flashcardservice.entity.flashcard;
 
-import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.vincennlin.flashcardservice.entity.tag.Tag;
 import com.vincennlin.flashcardservice.payload.flashcard.type.FlashcardType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,13 +10,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.modelmapper.ModelMapper;
 
+import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 @Entity
 @Table(name = "flashcards")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -40,6 +40,18 @@ public abstract class AbstractFlashcard {
 
     @Column(name = "note_id", nullable = false, updatable = false)
     private Long noteId;
+
+    @ManyToMany(
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            fetch = FetchType.EAGER
+    )
+    @JoinTable(
+            name = "flashcards_tags",
+            joinColumns = @JoinColumn(name = "flashcard_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    @JsonManagedReference
+    private List<Tag> tags;
 
     @CreationTimestamp
     @Column(name = "date_created")

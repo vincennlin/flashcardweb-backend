@@ -2,7 +2,7 @@ package com.vincennlin.noteservice.payload.request;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vincennlin.noteservice.payload.note.NoteDto;
+import com.vincennlin.noteservice.payload.note.dto.NoteDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
