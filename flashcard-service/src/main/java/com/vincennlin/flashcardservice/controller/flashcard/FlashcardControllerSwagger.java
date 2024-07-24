@@ -1,4 +1,4 @@
-package com.vincennlin.flashcardservice.controller;
+package com.vincennlin.flashcardservice.controller.flashcard;
 
 import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
