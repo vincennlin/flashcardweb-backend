@@ -1,12 +1,8 @@
 package com.vincennlin.flashcardservice.controller.flashcard;
 
 import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
-import com.vincennlin.flashcardservice.payload.tag.TagDto;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -22,28 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Tag(
-        name = "字卡 API",
-        description = "字卡的 CRUD API"
-)
-@OpenAPIDefinition(
-        info = @Info(
-                title = "Flashcardweb flashcard-ws API",
-                version = "1.0",
-                description = "/api/v1 的前面要加上 flashcard-ws ，例如 http://localhost:8765/flashcard-ws/api/v1",
-                contact = @io.swagger.v3.oas.annotations.info.Contact(
-                        name = "vincennlin",
-                        email = "vincentagwa@gmail.com",
-                        url = "https://github.com/vincennlin"
-                ),
-                license = @License(
-                        name = "Apache 2.0",
-                        url = "http://www.apache.org/licenses/LICENSE-2.0"
-                )
-        ),
-        externalDocs = @io.swagger.v3.oas.annotations.ExternalDocumentation(
-                description = "Flashcard Web Backend API Documentation",
-                url = "https://github.com/vincennlin/flashcardweb-backend"
-        )
+        name = "Flashcard Controller",
+        description = "字卡相關的 API"
 )
 public interface FlashcardControllerSwagger {
 

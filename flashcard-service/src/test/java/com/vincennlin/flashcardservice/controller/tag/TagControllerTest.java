@@ -1,4 +1,4 @@
-package com.vincennlin.flashcardservice.controller;
+package com.vincennlin.flashcardservice.controller.tag;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vincennlin.flashcardservice.payload.tag.TagDto;
@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @SpringBootTest
-public class TagControllerTest {
+class TagControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -36,17 +36,17 @@ public class TagControllerTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private String getAllTagsUrl = "/api/v1/tags";
-    private String getTagsByFlashcardIdUrl = "/api/v1/flashcard/{flashcard_id}/tags";
-    private String getTagByIdUrl = "/api/v1/tag/{tag_id}";
+    private final String getAllTagsUrl = "/api/v1/tags";
+    private final String getTagsByFlashcardIdUrl = "/api/v1/flashcard/{flashcard_id}/tags";
+    private final String getTagByIdUrl = "/api/v1/tag/{tag_id}";
 
-    private String createTagUrl = "/api/v1/tag";
-    private String addTagToFlashcardUrl = "/api/v1/flashcard/{flashcard_id}/tag";
+    private final String createTagUrl = "/api/v1/tag";
+    private final String addTagToFlashcardUrl = "/api/v1/flashcard/{flashcard_id}/tag";
 
-    private String updateTagUrl = "/api/v1/tag/{tag_id}";
+    private final String updateTagUrl = "/api/v1/tag/{tag_id}";
 
-    private String deleteTagUrl = "/api/v1/tag/{tag_id}";
-    private String removeTagFromFlashcardUrl = "/api/v1/flashcard/{flashcard_id}/tag";
+    private final String deleteTagUrl = "/api/v1/tag/{tag_id}";
+    private final String removeTagFromFlashcardUrl = "/api/v1/flashcard/{flashcard_id}/tag";
 
     @Test
     public void getAllTags_success() throws Exception{
@@ -230,15 +230,15 @@ public class TagControllerTest {
         return tag;
     }
 
-    private String getAdminJwtToken() throws Exception {
+    private String getAdminJwtToken() {
         return adminJwtToken;
     }
 
-    private String getTest1UserJwtToken() throws Exception {
+    private String getTest1UserJwtToken() {
         return test1UserJwtToken;
     }
 
-    private String getTest2UserJwtToken() throws Exception {
+    private String getTest2UserJwtToken() {
         return test2UserJwtToken;
     }
 }
