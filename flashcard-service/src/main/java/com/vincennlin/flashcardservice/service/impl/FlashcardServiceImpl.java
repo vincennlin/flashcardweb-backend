@@ -11,7 +11,6 @@ import com.vincennlin.flashcardservice.exception.ResourceNotFoundException;
 import com.vincennlin.flashcardservice.exception.ResourceOwnershipException;
 import com.vincennlin.flashcardservice.exception.WebAPIException;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
-import com.vincennlin.flashcardservice.payload.tag.TagDto;
 import com.vincennlin.flashcardservice.repository.FlashcardRepository;
 import com.vincennlin.flashcardservice.repository.OptionRepository;
 import com.vincennlin.flashcardservice.repository.TagRepository;
@@ -66,11 +65,11 @@ public class FlashcardServiceImpl implements FlashcardService {
     }
 
     @Override
-    public List<AbstractFlashcardDto> getFlashcardsByTags(List<TagDto> tagDtoList) {
+    public List<AbstractFlashcardDto> getFlashcardsByTagNames(List<String> tagNames) {
 
-        List<Tag> tagEntities = tagDtoList.stream().map(tagDto ->
-                tagRepository.findByTagNameAndUserId(tagDto.getTagName(), getCurrentUserId()).orElseThrow(() ->
-                        new ResourceNotFoundException("Tag", "tagName", tagDto.getTagName()))).toList();
+        List<Tag> tagEntities = tagNames.stream().map(tagName ->
+                tagRepository.findByTagNameAndUserId(tagName, getCurrentUserId()).orElseThrow(() ->
+                        new ResourceNotFoundException("Tag", "tagName", tagName))).toList();
 
         return flashcardRepository.findByTags(tagEntities).stream().map(this::mapToDto).toList();
     }

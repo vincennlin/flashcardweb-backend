@@ -1,0 +1,244 @@
+package com.vincennlin.flashcardservice.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vincennlin.flashcardservice.payload.tag.TagDto;
+import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@ActiveProfiles("test")
+@AutoConfigureMockMvc
+@SpringBootTest
+public class TagControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Value("${admin.jwt.token}")
+    private String adminJwtToken;
+
+    @Value("${test1.jwt.token}")
+    private String test1UserJwtToken;
+
+    @Value("${test2.jwt.token}")
+    private String test2UserJwtToken;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private String getAllTagsUrl = "/api/v1/tags";
+    private String getTagsByFlashcardIdUrl = "/api/v1/flashcard/{flashcard_id}/tags";
+    private String getTagByIdUrl = "/api/v1/tag/{tag_id}";
+
+    private String createTagUrl = "/api/v1/tag";
+    private String addTagToFlashcardUrl = "/api/v1/flashcard/{flashcard_id}/tag";
+
+    private String updateTagUrl = "/api/v1/tag/{tag_id}";
+
+    private String deleteTagUrl = "/api/v1/tag/{tag_id}";
+    private String removeTagFromFlashcardUrl = "/api/v1/flashcard/{flashcard_id}/tag";
+
+    @Test
+    public void getAllTags_success() throws Exception{
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(getAllTagsUrl)
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(4)))
+                .andExpect(jsonPath("$[0].tag_name").value("Tag1"))
+                .andExpect(jsonPath("$[0].flashcard_count").value(2))
+                .andExpect(jsonPath("$[1].tag_name").value("Tag2"))
+                .andExpect(jsonPath("$[1].flashcard_count").value(1))
+                .andExpect(jsonPath("$[2].tag_name").value("Tag3"))
+                .andExpect(jsonPath("$[2].flashcard_count").value(1));
+    }
+
+    @Test
+    public void getTagsByFlashcardId_success() throws Exception{
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(getTagsByFlashcardIdUrl, 1)
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[0].tag_name").value("Tag1"))
+                .andExpect(jsonPath("$[0].flashcard_count").value(2))
+                .andExpect(jsonPath("$[1].tag_name").value("Tag2"))
+                .andExpect(jsonPath("$[1].flashcard_count").value(1))
+                .andExpect(jsonPath("$[2].tag_name").value("Tag3"))
+                .andExpect(jsonPath("$[2].flashcard_count").value(1));
+    }
+
+    @Test
+    public void getTagById_success() throws Exception{
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(getTagByIdUrl, 1)
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.tag_name").value("Tag1"))
+                .andExpect(jsonPath("$.flashcard_count").value(2));
+    }
+
+    @Transactional
+    @Test
+    public void createTag_success() throws Exception{
+
+        TagDto tag = getTagDtoExample();
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post(createTagUrl)
+                .header("Authorization", "Bearer " + getTest1UserJwtToken())
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(tag));
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.tag_name").value("New Tag"))
+                .andExpect(jsonPath("$.flashcard_count").value(0));
+    }
+
+    @Transactional
+    @Test
+    public void addTagToFlashcard_newTag_success() throws Exception{
+
+        TagDto tag = getTagDtoExample();
+        tag.setTagName("Tag5");
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post(addTagToFlashcardUrl, 1)
+                .header("Authorization", "Bearer " + getTest1UserJwtToken())
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(tag));
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.tag_name").value("Tag5"))
+                .andExpect(jsonPath("$.flashcard_count").value(1));
+    }
+
+    @Transactional
+    @Test
+    public void addTagToFlashcard_existingTag_success() throws Exception{
+
+        TagDto tag = getTagDtoExample();
+        tag.setTagName("Tag1");
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post(addTagToFlashcardUrl, 3)
+                .header("Authorization", "Bearer " + getTest1UserJwtToken())
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(tag));
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.tag_name").value("Tag1"))
+                .andExpect(jsonPath("$.flashcard_count").value(3));
+    }
+
+    @Transactional
+    @Test
+    public void addTagToFlashcard_existingTag_alreadyAddedToFlashcard() throws Exception{
+
+        TagDto tag = getTagDtoExample();
+        tag.setTagName("Tag1");
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post(addTagToFlashcardUrl, 1)
+                .header("Authorization", "Bearer " + getTest1UserJwtToken())
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(tag));
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(400));
+    }
+
+    @Transactional
+    @Test
+    public void updateTag_success() throws Exception{
+
+        TagDto tag = getTagDtoExample();
+        tag.setTagName("Updated Tag1");
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put(updateTagUrl, 1)
+                .header("Authorization", "Bearer " + getTest1UserJwtToken())
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(tag));
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.tag_name").value("Updated Tag1"))
+                .andExpect(jsonPath("$.flashcard_count").value(2));
+    }
+
+    @Transactional
+    @Test
+    public void deleteTagById_success() throws Exception{
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete(deleteTagUrl, 1)
+                .header("Authorization", "Bearer " + getTest1UserJwtToken());
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(204));
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(404));
+    }
+
+    @Transactional
+    @Test
+    public void removeTagFromFlashcard() throws Exception{
+
+        TagDto tag = getTagDtoExample();
+        tag.setTagName("Tag1");
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete(removeTagFromFlashcardUrl, 1)
+                .header("Authorization", "Bearer " + getTest1UserJwtToken())
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(tag));
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(204));
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(400));
+    }
+
+    private TagDto getTagDtoExample() {
+        TagDto tag = new TagDto();
+        tag.setTagName("New Tag");
+        return tag;
+    }
+
+    private String getAdminJwtToken() throws Exception {
+        return adminJwtToken;
+    }
+
+    private String getTest1UserJwtToken() throws Exception {
+        return test1UserJwtToken;
+    }
+
+    private String getTest2UserJwtToken() throws Exception {
+        return test2UserJwtToken;
+    }
+}

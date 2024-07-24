@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 
 @Tag(
-        name = "字卡標籤 API",
+        name = "[NEW] 字卡標籤 API",
         description = "字卡標籤的 CRUD API"
 )
 public interface TagControllerSwagger {

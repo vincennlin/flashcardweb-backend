@@ -1,7 +1,6 @@
 package com.vincennlin.flashcardservice.controller.flashcard;
 
 import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
-import com.vincennlin.flashcardservice.payload.tag.TagDto;
 import com.vincennlin.flashcardservice.service.FlashcardService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -49,22 +48,14 @@ public class FlashcardController implements FlashcardControllerSwagger {
     }
 
     @PreAuthorize("hasAuthority('READ')")
-    @GetMapping("/flashcards/tag")
-    public ResponseEntity<List<AbstractFlashcardDto>> getFlashcardsByTag(@Valid @RequestBody TagDto tagDto) {
-
-        List<AbstractFlashcardDto> flashcardsResponse = flashcardService.getFlashcardsByTags(List.of(tagDto));
-
-        return new ResponseEntity<>(flashcardsResponse, HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasAuthority('READ')")
     @GetMapping("/flashcards/tags")
-    public ResponseEntity<List<AbstractFlashcardDto>> getFlashcardsByTags(@RequestBody List<TagDto> tags) {
+    public ResponseEntity<List<AbstractFlashcardDto>> getFlashcardsByTagNames(@RequestParam(name = "tag") List<String> tagNames) {
 
-        List<AbstractFlashcardDto> flashcardsResponse = flashcardService.getFlashcardsByTags(tags);
+        List<AbstractFlashcardDto> flashcardsResponse = flashcardService.getFlashcardsByTagNames(tagNames);
 
         return new ResponseEntity<>(flashcardsResponse, HttpStatus.OK);
     }
+
 
     @PreAuthorize("hasAuthority('CREATE')")
     @PostMapping("/notes/{note_id}/flashcard")
