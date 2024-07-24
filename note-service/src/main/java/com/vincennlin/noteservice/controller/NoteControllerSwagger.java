@@ -31,7 +31,7 @@ import java.util.List;
         info = @Info(
                 title = "Flashcardweb note-ws API",
                 version = "1.0",
-                description = "Flashcardweb 筆記服務相關的 API",
+                description = "/api/v1 的前面要加上 note-ws ，例如 http://localhost:8765/note-ws/api/v1",
                 contact = @io.swagger.v3.oas.annotations.info.Contact(
                         name = "vincennlin",
                         email = "vincentagwa@gmail.com",

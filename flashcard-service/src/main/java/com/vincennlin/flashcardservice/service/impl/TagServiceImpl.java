@@ -87,9 +87,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public TagDto updateTag(TagDto tagDto) {
-
-        Long tagId = tagDto.getId();
+    public TagDto updateTag(Long tagId, TagDto tagDto) {
 
         Tag tag = tagRepository.findById(tagId).orElseThrow(() ->
                 new ResourceNotFoundException("Tag", "id", tagId.toString()));
@@ -157,6 +155,10 @@ public class TagServiceImpl implements TagService {
 
         AbstractFlashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
                 new ResourceNotFoundException("Flashcard", "id", flashcardId.toString()));
+
+        if (!flashcard.getTags().contains(tag)) {
+            throw new WebAPIException(HttpStatus.BAD_REQUEST, "Tag does not exist on the flashcard");
+        }
 
         flashcard.getTags().remove(tag);
         tag.getFlashcards().remove(flashcard);

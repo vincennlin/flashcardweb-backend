@@ -24,7 +24,7 @@ import java.util.List;
         info = @Info(
                 title = "Flashcardweb user-ws API",
                 version = "1.0",
-                description = "Flashcardweb 用戶服務相關的 API",
+                description = "/api/v1 的前面要加上 user-ws ，例如 http://localhost:8765/user-ws/api/v1",
                 contact = @io.swagger.v3.oas.annotations.info.Contact(
                         name = "vincennlin",
                         email = "vincentagwa@gmail.com",

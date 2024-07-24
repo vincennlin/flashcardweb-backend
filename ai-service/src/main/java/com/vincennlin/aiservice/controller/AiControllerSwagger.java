@@ -20,13 +20,13 @@ import java.util.List;
 
 @Tag(
         name = "ChatGPT 服務",
-        description = "ChatGPT 相關的 API，前端不會直接使用到"
+        description = "ChatGPT 相關的 API"
 )
 @OpenAPIDefinition(
         info = @Info(
                 title = "Flashcardweb ai-ws API",
                 version = "1.0",
-                description = "Flashcardweb ChatGPT 服務相關的 API",
+                description = "/api/v1 的前面要加上 ai-ws ，例如 http://localhost:8765/ai-ws/api/v1，前端不會直接使用到",
                 contact = @io.swagger.v3.oas.annotations.info.Contact(
                         name = "vincennlin",
                         email = "vincentagwa@gmail.com",
