@@ -1,4 +1,4 @@
-package com.vincennlin.flashcardservice.controller;
+package com.vincennlin.flashcardservice.controller.flashcard;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vincennlin.flashcardservice.client.NoteServiceClient;
@@ -1334,15 +1334,15 @@ class FlashcardControllerTest {
         return trueFalseFlashcardDto;
     }
 
-    private String getAdminJwtToken() throws Exception {
+    private String getAdminJwtToken() {
         return adminJwtToken;
     }
 
-    private String getTest1UserJwtToken() throws Exception {
+    private String getTest1UserJwtToken() {
         return test1UserJwtToken;
     }
 
-    private String getTest2UserJwtToken() throws Exception {
+    private String getTest2UserJwtToken() {
         return test2UserJwtToken;
     }
 

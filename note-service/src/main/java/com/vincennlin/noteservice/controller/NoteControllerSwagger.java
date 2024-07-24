@@ -6,10 +6,7 @@ import com.vincennlin.noteservice.payload.note.dto.NoteDto;
 import com.vincennlin.noteservice.payload.note.page.NotePageResponse;
 import com.vincennlin.noteservice.payload.request.GenerateFlashcardRequest;
 import com.vincennlin.noteservice.payload.request.GenerateFlashcardsRequest;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,28 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Tag(
-        name = "筆記服務",
+        name = "Note Controller",
         description = "筆記相關的 API"
-)
-@OpenAPIDefinition(
-        info = @Info(
-                title = "Flashcardweb note-ws API",
-                version = "1.0",
-                description = "/api/v1 的前面要加上 note-ws ，例如 http://localhost:8765/note-ws/api/v1",
-                contact = @io.swagger.v3.oas.annotations.info.Contact(
-                        name = "vincennlin",
-                        email = "vincentagwa@gmail.com",
-                        url = "https://github.com/vincennlin"
-                ),
-                license = @License(
-                        name = "Apache 2.0",
-                        url = "http://www.apache.org/licenses/LICENSE-2.0"
-                )
-        ),
-        externalDocs = @io.swagger.v3.oas.annotations.ExternalDocumentation(
-                description = "Flashcard Web Backend API Documentation",
-                url = "https://github.com/vincennlin/flashcardweb-backend"
-        )
 )
 public interface NoteControllerSwagger {
 
