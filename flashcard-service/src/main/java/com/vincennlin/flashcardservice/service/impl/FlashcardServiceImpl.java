@@ -1,10 +1,11 @@
 package com.vincennlin.flashcardservice.service.impl;
 
 import com.vincennlin.flashcardservice.client.NoteServiceClient;
+import com.vincennlin.flashcardservice.entity.tag.Tag;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.*;
 import com.vincennlin.flashcardservice.payload.flashcard.type.FlashcardType;
-import com.vincennlin.flashcardservice.entity.AbstractFlashcard;
-import com.vincennlin.flashcardservice.entity.impl.*;
+import com.vincennlin.flashcardservice.entity.flashcard.AbstractFlashcard;
+import com.vincennlin.flashcardservice.entity.flashcard.impl.*;
 import com.vincennlin.flashcardservice.exception.FlashcardTypeException;
 import com.vincennlin.flashcardservice.exception.ResourceNotFoundException;
 import com.vincennlin.flashcardservice.exception.ResourceOwnershipException;
@@ -57,12 +58,31 @@ public class FlashcardServiceImpl implements FlashcardService {
     @Override
     public AbstractFlashcardDto getFlashcardById(Long flashcardId) {
 
+        return mapToDto(getFlashcardEntityById(flashcardId));
+    }
+
+    @Override
+    public AbstractFlashcard getFlashcardEntityById(Long flashcardId) {
+
         AbstractFlashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
                 new ResourceNotFoundException("Flashcard", "id", flashcardId));
 
         authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
 
-        return mapToDto(flashcard);
+        return flashcard;
+    }
+
+
+    @Override
+    public List<AbstractFlashcardDto> getFlashcardsByTags(List<Tag> tags) {
+
+        return getFlashcardsEntitiesByTags(tags).stream().map(
+                this::mapToDto).toList();
+    }
+
+    @Override
+    public List<AbstractFlashcard> getFlashcardsEntitiesByTags(List<Tag> tags) {
+        return flashcardRepository.findByTags(tags);
     }
 
     @Transactional

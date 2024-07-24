@@ -1,6 +1,6 @@
-package com.vincennlin.flashcardservice.entity.impl;
+package com.vincennlin.flashcardservice.entity.flashcard.impl;
 
-import com.vincennlin.flashcardservice.entity.AbstractFlashcard;
+import com.vincennlin.flashcardservice.entity.flashcard.AbstractFlashcard;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
