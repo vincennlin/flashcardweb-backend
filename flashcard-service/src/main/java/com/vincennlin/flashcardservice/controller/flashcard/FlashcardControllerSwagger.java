@@ -4,6 +4,7 @@ import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDt
 import com.vincennlin.flashcardservice.payload.tag.TagDto;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -166,81 +167,16 @@ public interface FlashcardControllerSwagger {
     ResponseEntity<AbstractFlashcardDto> getFlashcardById(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId);
 
     @Operation(
-            summary = "取得特定標籤的所有字卡",
-            description = "根據標籤取得所有字卡"
-    )
-    @ApiResponse(
-            responseCode = "200",
-            description = "成功取得特定標籤的所有字卡",
-            content = @Content(
-                    mediaType = "application/json",
-                    examples = @ExampleObject(value = """
-                            [
-                                {
-                                    "id": 7,
-                                    "question": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這使它們在___應用中有價值。",
-                                    "type": "FILL_IN_THE_BLANK",
-                                    "tags": [
-                                        {
-                                            "id": 5,
-                                            "tag_name": "資料結構"
-                                        }
-                                    ],
-                                    "note_id": 1,
-                                    "user_id": 2,
-                                    "in_blank_answers": [
-                                        {
-                                            "id": 6,
-                                            "text": "時間敏感"
-                                        },
-                                        {
-                                            "id": 7,
-                                            "text": "即時"
-                                        }
-                                    ],
-                                    "full_answer": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這使它們在時間敏感應用中有價值。"
-                                },
-                                {
-                                    "id": 8,
-                                    "question": "紅黑樹的持久版本每次插入或刪除還需要___的空間。",
-                                    "type": "FILL_IN_THE_BLANK",
-                                    "tags": [
-                                        {
-                                            "id": 5,
-                                            "tag_name": "資料結構"
-                                        }
-                                    ],
-                                    "note_id": 1,
-                                    "user_id": 2,
-                                    "in_blank_answers": [
-                                        {
-                                            "id": 8,
-                                            "text": "O(log n)"
-                                        }
-                                    ],
-                                    "full_answer": "紅黑樹的持久版本每次插入或刪除還需要O(log n)的空間。"
-                                }
-                            ]
-                            """)
-            )
-    )
-    @SecurityRequirement(name = "Bear Authentication")
-    ResponseEntity<List<AbstractFlashcardDto>> getFlashcardsByTag(@Valid @RequestBody
-                                                                             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                                                                     content = @Content(
-                                                                                             mediaType = "application/json",
-                                                                                             examples = @ExampleObject(value = """
-                                                                                                     {
-                                                                                                         "tag_name": "資料結構"
-                                                                                                     }
-                                                                                                     """)
-                                                                                     )
-                                                                             ) TagDto tagDto);
-
-    @Operation(
-            summary = "取得多個標籤的所有字卡",
-            description = "根據標籤取得所有字卡"
-
+            summary = "[NEW] 利用標籤查詢字卡",
+            description = "根據多個標籤名稱取查詢字卡",
+            parameters = {
+                    @Parameter(
+                            name = "tag",
+                            description = "要查詢的標籤名稱，可以使用一個或多個此參數來查詢標籤，例如 api/v1/flashcards/tags?tag=台科大&tag=資料結構",
+                            required = true,
+                            example = "台科, 資料結構"
+                    )
+            }
     )
     @ApiResponse(
             responseCode = "200",
@@ -275,7 +211,7 @@ public interface FlashcardControllerSwagger {
                                 },
                                 {
                                     "id": 7,
-                                    "question": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這使它們在___應用中有價值。",
+                                    "question": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的___保證。這使它們在___應用中有價值。",
                                     "type": "FILL_IN_THE_BLANK",
                                     "tags": [
                                         {
@@ -296,11 +232,11 @@ public interface FlashcardControllerSwagger {
                                     "in_blank_answers": [
                                         {
                                             "id": 6,
-                                            "text": "時間敏感"
+                                            "text": "最壞情況"
                                         },
                                         {
                                             "id": 7,
-                                            "text": "即時"
+                                            "text": "時間敏感"
                                         }
                                     ],
                                     "full_answer": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這使它們在時間敏感應用中有價值。"
@@ -310,22 +246,7 @@ public interface FlashcardControllerSwagger {
             )
     )
     @SecurityRequirement(name = "Bear Authentication")
-    ResponseEntity<List<AbstractFlashcardDto>> getFlashcardsByTags(@RequestBody
-                                                                   @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                                                           content = @Content(
-                                                                                   mediaType = "application/json",
-                                                                                   examples = @ExampleObject(value = """
-                                                                                           [
-                                                                                               {
-                                                                                                   "tag_name": "資料結構"
-                                                                                               },
-                                                                                               {
-                                                                                                   "tag_name": "樹"
-                                                                                               }
-                                                                                           ]
-                                                                                           """)
-                                                                           )
-                                                                   ) List<TagDto> tags);
+    ResponseEntity<List<AbstractFlashcardDto>> getFlashcardsByTagNames(@RequestParam(name = "tag") List<String> tagNames);
 
     @Operation(
             summary = "新增字卡",
