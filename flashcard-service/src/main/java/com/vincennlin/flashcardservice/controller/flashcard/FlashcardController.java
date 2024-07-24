@@ -52,7 +52,16 @@ public class FlashcardController implements FlashcardControllerSwagger {
     @GetMapping("/flashcards/tag")
     public ResponseEntity<List<AbstractFlashcardDto>> getFlashcardsByTag(@Valid @RequestBody TagDto tagDto) {
 
-        List<AbstractFlashcardDto> flashcardsResponse = flashcardService.getFlashcardsByTag(tagDto);
+        List<AbstractFlashcardDto> flashcardsResponse = flashcardService.getFlashcardsByTags(List.of(tagDto));
+
+        return new ResponseEntity<>(flashcardsResponse, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('READ')")
+    @GetMapping("/flashcards/tags")
+    public ResponseEntity<List<AbstractFlashcardDto>> getFlashcardsByTags(@RequestBody List<TagDto> tags) {
+
+        List<AbstractFlashcardDto> flashcardsResponse = flashcardService.getFlashcardsByTags(tags);
 
         return new ResponseEntity<>(flashcardsResponse, HttpStatus.OK);
     }

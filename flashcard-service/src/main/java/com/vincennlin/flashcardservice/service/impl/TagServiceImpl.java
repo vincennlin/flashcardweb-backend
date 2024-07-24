@@ -148,6 +148,7 @@ public class TagServiceImpl implements TagService {
         return mapToDto(savedTag);
     }
 
+    @Transactional
     @Override
     public void removeTagFromFlashcard(Long flashcardId, String tagName) {
 
