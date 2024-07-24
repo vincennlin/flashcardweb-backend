@@ -111,6 +111,12 @@ public class TagServiceImpl implements TagService {
 
         authorizeOwnershipByTagOwnerId(tag.getUserId());
 
+        List<AbstractFlashcard> flashcards = flashcardRepository.findByTags(List.of(tag));
+
+        flashcards.forEach(flashcard -> flashcard.getTags().remove(tag));
+
+        flashcardRepository.saveAll(flashcards);
+
         tagRepository.deleteById(tagId);
     }
 

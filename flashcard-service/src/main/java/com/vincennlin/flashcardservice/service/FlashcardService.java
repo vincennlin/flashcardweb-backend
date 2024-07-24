@@ -3,6 +3,7 @@ package com.vincennlin.flashcardservice.service;
 import com.vincennlin.flashcardservice.entity.flashcard.AbstractFlashcard;
 import com.vincennlin.flashcardservice.entity.tag.Tag;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.flashcardservice.payload.tag.TagDto;
 
 import java.util.List;
 
@@ -14,9 +15,11 @@ public interface FlashcardService {
 
     AbstractFlashcard getFlashcardEntityById(Long flashcardId);
 
-    List<AbstractFlashcardDto> getFlashcardsByTags(List<Tag> tags);
+    List<AbstractFlashcardDto> getFlashcardsByTag(TagDto tagDto);
 
-    List<AbstractFlashcard> getFlashcardsEntitiesByTags(List<Tag> tags);
+    List<AbstractFlashcardDto> getFlashcardsByTagEntities(List<Tag> tags);
+
+    List<AbstractFlashcard> getFlashcardsEntitiesByTagsEntity(List<Tag> tags);
 
     AbstractFlashcardDto createFlashcard(Long noteId, AbstractFlashcardDto flashcardDto);
 

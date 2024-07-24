@@ -58,4 +58,21 @@ public class TagController {
 
         return new ResponseEntity<>(newTag, HttpStatus.CREATED);
     }
+
+    @DeleteMapping("/tag/{tag_id}")
+    public ResponseEntity<Void> deleteTagById(@PathVariable(name = "tag_id") Long tagId) {
+
+        tagService.deleteTagById(tagId);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("/flashcard/{flashcard_id}/tag")
+    public ResponseEntity<Void> removeTagFromFlashcard(@PathVariable(name = "flashcard_id") Long flashcardId,
+                                                      @RequestBody TagDto tagDto) {
+
+        tagService.removeTagFromFlashcard(flashcardId, tagDto.getTagName());
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
