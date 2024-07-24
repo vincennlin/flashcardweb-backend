@@ -2,9 +2,8 @@ package com.vincennlin.noteservice.service;
 
 
 import com.vincennlin.noteservice.payload.flashcard.dto.AbstractFlashcardDto;
-import com.vincennlin.noteservice.payload.flashcard.type.FlashcardType;
-import com.vincennlin.noteservice.payload.note.NoteDto;
-import com.vincennlin.noteservice.payload.note.NotePageResponse;
+import com.vincennlin.noteservice.payload.note.dto.NoteDto;
+import com.vincennlin.noteservice.payload.note.page.NotePageResponse;
 import com.vincennlin.noteservice.payload.request.GenerateFlashcardRequest;
 import com.vincennlin.noteservice.payload.request.GenerateFlashcardsRequest;
 import org.springframework.data.domain.Pageable;

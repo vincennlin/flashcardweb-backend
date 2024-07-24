@@ -1,4 +1,4 @@
-package com.vincennlin.noteservice.payload.note;
+package com.vincennlin.noteservice.payload.note.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vincennlin.noteservice.payload.flashcard.dto.AbstractFlashcardDto;

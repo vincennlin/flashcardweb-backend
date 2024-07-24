@@ -1,10 +1,11 @@
 package com.vincennlin.flashcardservice.service.impl;
 
 import com.vincennlin.flashcardservice.client.NoteServiceClient;
+import com.vincennlin.flashcardservice.entity.tag.Tag;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.*;
 import com.vincennlin.flashcardservice.payload.flashcard.type.FlashcardType;
-import com.vincennlin.flashcardservice.entity.AbstractFlashcard;
-import com.vincennlin.flashcardservice.entity.impl.*;
+import com.vincennlin.flashcardservice.entity.flashcard.AbstractFlashcard;
+import com.vincennlin.flashcardservice.entity.flashcard.impl.*;
 import com.vincennlin.flashcardservice.exception.FlashcardTypeException;
 import com.vincennlin.flashcardservice.exception.ResourceNotFoundException;
 import com.vincennlin.flashcardservice.exception.ResourceOwnershipException;
@@ -12,6 +13,7 @@ import com.vincennlin.flashcardservice.exception.WebAPIException;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
 import com.vincennlin.flashcardservice.repository.FlashcardRepository;
 import com.vincennlin.flashcardservice.repository.OptionRepository;
+import com.vincennlin.flashcardservice.repository.TagRepository;
 import com.vincennlin.flashcardservice.service.FlashcardService;
 import feign.FeignException;
 import lombok.AllArgsConstructor;
@@ -41,6 +43,8 @@ public class FlashcardServiceImpl implements FlashcardService {
 
     private NoteServiceClient noteServiceClient;
 
+    private TagRepository tagRepository;
+
     @Override
     public List<AbstractFlashcardDto> getFlashcardsByNoteId(Long noteId) {
 
@@ -57,12 +61,28 @@ public class FlashcardServiceImpl implements FlashcardService {
     @Override
     public AbstractFlashcardDto getFlashcardById(Long flashcardId) {
 
+        return mapToDto(getFlashcardEntityById(flashcardId));
+    }
+
+    @Override
+    public List<AbstractFlashcardDto> getFlashcardsByTagNames(List<String> tagNames) {
+
+        List<Tag> tagEntities = tagNames.stream().map(tagName ->
+                tagRepository.findByTagNameAndUserId(tagName, getCurrentUserId()).orElseThrow(() ->
+                        new ResourceNotFoundException("Tag", "tagName", tagName))).toList();
+
+        return flashcardRepository.findByTags(tagEntities).stream().map(this::mapToDto).toList();
+    }
+
+    @Override
+    public AbstractFlashcard getFlashcardEntityById(Long flashcardId) {
+
         AbstractFlashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
-                new ResourceNotFoundException("Flashcard", "id", flashcardId));
+                new ResourceNotFoundException("Flashcard", "id", flashcardId.toString()));
 
         authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
 
-        return mapToDto(flashcard);
+        return flashcard;
     }
 
     @Transactional
@@ -135,7 +155,7 @@ public class FlashcardServiceImpl implements FlashcardService {
     public AbstractFlashcardDto updateFlashcard(Long flashcardId, AbstractFlashcardDto flashcardDto) {
 
         AbstractFlashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
-                new ResourceNotFoundException("Flashcard", "id", flashcardId));
+                new ResourceNotFoundException("Flashcard", "id", flashcardId.toString()));
 
         authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
 
@@ -215,7 +235,7 @@ public class FlashcardServiceImpl implements FlashcardService {
     public void deleteFlashcardById(Long flashcardId) {
 
         AbstractFlashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
-                new ResourceNotFoundException("Flashcard", "id", flashcardId));
+                new ResourceNotFoundException("Flashcard", "id", flashcardId.toString()));
 
         authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
 
@@ -267,7 +287,7 @@ public class FlashcardServiceImpl implements FlashcardService {
         } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
             if (e instanceof FeignException && ((FeignException)e).status() == HttpStatus.NOT_FOUND.value())
-                throw new ResourceNotFoundException("Note", "id", noteId);
+                throw new ResourceNotFoundException("Note", "id", noteId.toString());
             else if (!(e instanceof ResourceNotFoundException))
                 throw new WebAPIException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
             throw e;

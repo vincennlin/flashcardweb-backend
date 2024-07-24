@@ -1,10 +1,8 @@
-package com.vincennlin.flashcardservice.controller;
+package com.vincennlin.flashcardservice.controller.flashcard;
 
 import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.info.License;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,34 +10,16 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Tag(
-        name = "字卡 API",
-        description = "字卡的 CRUD API"
-)
-@OpenAPIDefinition(
-        info = @Info(
-                title = "Flashcardweb flashcard-ws API",
-                version = "1.0",
-                description = "Flashcardweb 字卡服務相關的 API",
-                contact = @io.swagger.v3.oas.annotations.info.Contact(
-                        name = "vincennlin",
-                        email = "vincentagwa@gmail.com",
-                        url = "https://github.com/vincennlin"
-                ),
-                license = @License(
-                        name = "Apache 2.0",
-                        url = "http://www.apache.org/licenses/LICENSE-2.0"
-                )
-        ),
-        externalDocs = @io.swagger.v3.oas.annotations.ExternalDocumentation(
-                description = "Flashcard Web Backend API Documentation",
-                url = "https://github.com/vincennlin/flashcardweb-backend"
-        )
+        name = "Flashcard Controller",
+        description = "字卡相關的 API"
 )
 public interface FlashcardControllerSwagger {
 
@@ -162,7 +142,87 @@ public interface FlashcardControllerSwagger {
     @SecurityRequirement(name = "Bear Authentication")
     ResponseEntity<AbstractFlashcardDto> getFlashcardById(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId);
 
-
+    @Operation(
+            summary = "[NEW] 利用標籤查詢字卡",
+            description = "根據多個標籤名稱取查詢字卡",
+            parameters = {
+                    @Parameter(
+                            name = "tag",
+                            description = "要查詢的標籤名稱，可以使用一個或多個此參數來查詢標籤，例如 api/v1/flashcards/tags?tag=台科大&tag=資料結構",
+                            required = true,
+                            example = "台科, 資料結構"
+                    )
+            }
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "成功取得多個標籤的所有字卡",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            [
+                                {
+                                    "id": 8,
+                                    "question": "紅黑樹的持久版本每次插入或刪除還需要___的空間。",
+                                    "type": "FILL_IN_THE_BLANK",
+                                    "tags": [
+                                        {
+                                            "id": 5,
+                                            "tag_name": "資料結構"
+                                        },
+                                        {
+                                            "id": 7,
+                                            "tag_name": "樹"
+                                        }
+                                    ],
+                                    "note_id": 1,
+                                    "user_id": 2,
+                                    "in_blank_answers": [
+                                        {
+                                            "id": 8,
+                                            "text": "O(log n)"
+                                        }
+                                    ],
+                                    "full_answer": "紅黑樹的持久版本每次插入或刪除還需要O(log n)的空間。"
+                                },
+                                {
+                                    "id": 7,
+                                    "question": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的___保證。這使它們在___應用中有價值。",
+                                    "type": "FILL_IN_THE_BLANK",
+                                    "tags": [
+                                        {
+                                            "id": 5,
+                                            "tag_name": "資料結構"
+                                        },
+                                        {
+                                            "id": 7,
+                                            "tag_name": "樹"
+                                        },
+                                        {
+                                            "id": 8,
+                                            "tag_name": "台科"
+                                        }
+                                    ],
+                                    "note_id": 1,
+                                    "user_id": 2,
+                                    "in_blank_answers": [
+                                        {
+                                            "id": 6,
+                                            "text": "最壞情況"
+                                        },
+                                        {
+                                            "id": 7,
+                                            "text": "時間敏感"
+                                        }
+                                    ],
+                                    "full_answer": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這使它們在時間敏感應用中有價值。"
+                                }
+                            ]
+                            """)
+            )
+    )
+    @SecurityRequirement(name = "Bear Authentication")
+    ResponseEntity<List<AbstractFlashcardDto>> getFlashcardsByTagNames(@RequestParam(name = "tag") List<String> tagNames);
 
     @Operation(
             summary = "新增字卡",
@@ -340,12 +400,12 @@ public interface FlashcardControllerSwagger {
                                                                        ) List<AbstractFlashcardDto> flashcardDtoList);
 
     @Operation(
-            summary = "更新問答題字卡",
-            description = "根據 flashcard_id 更新問答題字卡"
+            summary = "更新字卡",
+            description = "根據 flashcard_id 更新字卡"
     )
     @ApiResponse(
             responseCode = "200",
-            description = "成功更新問答題字卡",
+            description = "成功更新字卡",
             content = @Content(
                     mediaType = "application/json",
                     examples = @ExampleObject(value = """

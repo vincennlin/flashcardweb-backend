@@ -3,12 +3,10 @@ package com.vincennlin.noteservice.controller;
 import com.vincennlin.noteservice.constant.AppConstants;
 import com.vincennlin.noteservice.payload.flashcard.dto.AbstractFlashcardDto;
 import com.vincennlin.noteservice.payload.request.GenerateFlashcardRequest;
-import com.vincennlin.noteservice.payload.note.NoteDto;
-import com.vincennlin.noteservice.payload.note.NotePageResponse;
+import com.vincennlin.noteservice.payload.note.dto.NoteDto;
+import com.vincennlin.noteservice.payload.note.page.NotePageResponse;
 import com.vincennlin.noteservice.payload.request.GenerateFlashcardsRequest;
 import com.vincennlin.noteservice.service.NoteService;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -120,18 +118,7 @@ public class NoteController implements NoteControllerSwagger {
 
     @PostMapping("/notes/{note_id}/generate/flashcard")
     public ResponseEntity<AbstractFlashcardDto> generateFlashcard(@PathVariable(name = "note_id") @Min(1) Long id,
-                                                                  @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                                                          content = @Content(
-                                                                                  mediaType = "application/json",
-                                                                                  examples = {
-                                                                                          @ExampleObject(value = """
-                                                                                          {
-                                                                                              "type": "SHORT_ANSWER"
-                                                                                          }
-                                                                                          """)
-                                                                                  }
-                                                                          )
-                                                                  ) GenerateFlashcardRequest request) {
+                                                                  @RequestBody GenerateFlashcardRequest request) {
 
         AbstractFlashcardDto flashcard = noteService.generateFlashcard(id, request);
 

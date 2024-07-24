@@ -22,7 +22,7 @@ sudo usermod -a -G docker ec2-user
 
 RabbitMQ
 
-docker run -d --rm -it -p 15672:15672 -p 5672:5672 rabbitmq:3.13.4-management
+docker run -d -it -p 15672:15672 -p 5672:5672 rabbitmq:3.13.4-management
 
 --------------------------------------------
 
@@ -72,6 +72,8 @@ docker exec -it c0acd75cfc58 bash
 Build User Service Docker Image
 
 docker build --tag=flashcardweb-user-service --force-rm=true --platform linux/amd64 .
+docker tag b9a6b0a69038 vincennlin/flashcardweb-user-service
+docker push vincennlin/flashcardweb-user-service
 
 
 Run User Service Docker Container
@@ -83,6 +85,8 @@ docker run -d -p 8081:8081 -e "spring.profiles.active=prod" -e "config.server.ip
 Build Note Service Docker Image
 
 docker build --tag=flashcardweb-note-service --force-rm=true --platform linux/amd64 .
+docker tag bd0413817f52 vincennlin/flashcardweb-note-service
+docker push vincennlin/flashcardweb-note-service
 
 
 Run Note Service Docker Container
@@ -94,6 +98,8 @@ docker run -d -p 8082:8082 -e "spring.profiles.active=prod" -e "config.server.ip
 Build Flashcard Service Docker Image
 
 docker build --tag=flashcardweb-flashcard-service --force-rm=true --platform linux/amd64 .
+docker tag ebcc9f4f183b vincennlin/flashcardweb-flashcard-service
+docker push vincennlin/flashcardweb-flashcard-service
 
 
 Run Flashcard Service Docker Container
@@ -105,6 +111,8 @@ docker run -d -p 8083:8083 -e "spring.profiles.active=prod" -e "config.server.ip
 Build AI Service Docker Image
 
 docker build --tag=flashcardweb-ai-service --force-rm=true --platform linux/amd64 .
+docker tag beb3f96d59b8 vincennlin/flashcardweb-ai-service
+docker push vincennlin/flashcardweb-ai-service
 
 
 Run AI Service Docker Container

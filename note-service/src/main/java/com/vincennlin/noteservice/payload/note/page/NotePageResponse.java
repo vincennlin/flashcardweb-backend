@@ -1,5 +1,6 @@
-package com.vincennlin.noteservice.payload.note;
+package com.vincennlin.noteservice.payload.note.page;
 
+import com.vincennlin.noteservice.payload.note.dto.NoteDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

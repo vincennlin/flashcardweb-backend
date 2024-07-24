@@ -1,23 +1,25 @@
 package com.vincennlin.flashcardservice.payload.flashcard.dto;
 
 import com.fasterxml.jackson.annotation.*;
-import com.vincennlin.flashcardservice.entity.AbstractFlashcard;
+import com.vincennlin.flashcardservice.entity.flashcard.AbstractFlashcard;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.FillInTheBlankFlashcardDto;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.MultipleChoiceFlashcardDto;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.ShortAnswerFlashcardDto;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.TrueFalseFlashcardDto;
 import com.vincennlin.flashcardservice.payload.flashcard.type.FlashcardType;
 import com.vincennlin.flashcardservice.operation.Operation;
+import com.vincennlin.flashcardservice.payload.tag.TagDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import org.modelmapper.ModelMapper;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         property = "type",
@@ -87,6 +89,13 @@ public abstract class AbstractFlashcardDto {
     )
     @JsonProperty(value = "user_id")
     private Long userId;
+
+    @Schema(
+            name = "tags",
+            description = "字卡標籤",
+            example = "[{\"id\":1,\"tag_name\":\"Data Structure\",\"flashcard_count\":1}]"
+    )
+    private List<TagDto> tags;
 
     @JsonIgnore
     private ModelMapper modelMapper = new ModelMapper();

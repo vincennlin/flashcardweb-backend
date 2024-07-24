@@ -1,10 +1,7 @@
 package com.vincennlin.userservice.controller;
 
 import com.vincennlin.userservice.payload.*;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,29 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @Tag(
-        name = "用戶相關 API",
-        description = "用戶註冊、登入、登出相關的 API"
-)
-@OpenAPIDefinition(
-        info = @Info(
-                title = "Flashcardweb user-ws API",
-                version = "1.0",
-                description = "Flashcardweb 用戶服務相關的 API",
-                contact = @io.swagger.v3.oas.annotations.info.Contact(
-                        name = "vincennlin",
-                        email = "vincentagwa@gmail.com",
-                        url = "https://github.com/vincennlin"
-                ),
-                license = @License(
-                        name = "Apache 2.0",
-                        url = "http://www.apache.org/licenses/LICENSE-2.0"
-                )
-        ),
-        externalDocs = @io.swagger.v3.oas.annotations.ExternalDocumentation(
-                description = "Flashcard Web Backend API Documentation",
-                url = "https://github.com/vincennlin/flashcardweb-backend"
-        )
+        name = "User Controller",
+        description = "用戶相關的 API"
 )
 public interface UserControllerSwagger {
 
