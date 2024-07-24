@@ -1,6 +1,7 @@
 package com.vincennlin.flashcardservice.controller.flashcard;
 
 import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.flashcardservice.payload.tag.TagDto;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -12,7 +13,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,7 +28,7 @@ import java.util.List;
         info = @Info(
                 title = "Flashcardweb flashcard-ws API",
                 version = "1.0",
-                description = "Flashcardweb 字卡服務相關的 API",
+                description = "/api/v1 的前面要加上 flashcard-ws ，例如 http://localhost:8765/flashcard-ws/api/v1",
                 contact = @io.swagger.v3.oas.annotations.info.Contact(
                         name = "vincennlin",
                         email = "vincentagwa@gmail.com",
@@ -162,7 +165,167 @@ public interface FlashcardControllerSwagger {
     @SecurityRequirement(name = "Bear Authentication")
     ResponseEntity<AbstractFlashcardDto> getFlashcardById(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId);
 
+    @Operation(
+            summary = "取得特定標籤的所有字卡",
+            description = "根據標籤取得所有字卡"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "成功取得特定標籤的所有字卡",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            [
+                                {
+                                    "id": 7,
+                                    "question": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這使它們在___應用中有價值。",
+                                    "type": "FILL_IN_THE_BLANK",
+                                    "tags": [
+                                        {
+                                            "id": 5,
+                                            "tag_name": "資料結構"
+                                        }
+                                    ],
+                                    "note_id": 1,
+                                    "user_id": 2,
+                                    "in_blank_answers": [
+                                        {
+                                            "id": 6,
+                                            "text": "時間敏感"
+                                        },
+                                        {
+                                            "id": 7,
+                                            "text": "即時"
+                                        }
+                                    ],
+                                    "full_answer": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這使它們在時間敏感應用中有價值。"
+                                },
+                                {
+                                    "id": 8,
+                                    "question": "紅黑樹的持久版本每次插入或刪除還需要___的空間。",
+                                    "type": "FILL_IN_THE_BLANK",
+                                    "tags": [
+                                        {
+                                            "id": 5,
+                                            "tag_name": "資料結構"
+                                        }
+                                    ],
+                                    "note_id": 1,
+                                    "user_id": 2,
+                                    "in_blank_answers": [
+                                        {
+                                            "id": 8,
+                                            "text": "O(log n)"
+                                        }
+                                    ],
+                                    "full_answer": "紅黑樹的持久版本每次插入或刪除還需要O(log n)的空間。"
+                                }
+                            ]
+                            """)
+            )
+    )
+    @SecurityRequirement(name = "Bear Authentication")
+    ResponseEntity<List<AbstractFlashcardDto>> getFlashcardsByTag(@Valid @RequestBody
+                                                                             @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                                                     content = @Content(
+                                                                                             mediaType = "application/json",
+                                                                                             examples = @ExampleObject(value = """
+                                                                                                     {
+                                                                                                         "tag_name": "資料結構"
+                                                                                                     }
+                                                                                                     """)
+                                                                                     )
+                                                                             ) TagDto tagDto);
 
+    @Operation(
+            summary = "取得多個標籤的所有字卡",
+            description = "根據標籤取得所有字卡"
+
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "成功取得多個標籤的所有字卡",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            [
+                                {
+                                    "id": 8,
+                                    "question": "紅黑樹的持久版本每次插入或刪除還需要___的空間。",
+                                    "type": "FILL_IN_THE_BLANK",
+                                    "tags": [
+                                        {
+                                            "id": 5,
+                                            "tag_name": "資料結構"
+                                        },
+                                        {
+                                            "id": 7,
+                                            "tag_name": "樹"
+                                        }
+                                    ],
+                                    "note_id": 1,
+                                    "user_id": 2,
+                                    "in_blank_answers": [
+                                        {
+                                            "id": 8,
+                                            "text": "O(log n)"
+                                        }
+                                    ],
+                                    "full_answer": "紅黑樹的持久版本每次插入或刪除還需要O(log n)的空間。"
+                                },
+                                {
+                                    "id": 7,
+                                    "question": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這使它們在___應用中有價值。",
+                                    "type": "FILL_IN_THE_BLANK",
+                                    "tags": [
+                                        {
+                                            "id": 5,
+                                            "tag_name": "資料結構"
+                                        },
+                                        {
+                                            "id": 7,
+                                            "tag_name": "樹"
+                                        },
+                                        {
+                                            "id": 8,
+                                            "tag_name": "台科"
+                                        }
+                                    ],
+                                    "note_id": 1,
+                                    "user_id": 2,
+                                    "in_blank_answers": [
+                                        {
+                                            "id": 6,
+                                            "text": "時間敏感"
+                                        },
+                                        {
+                                            "id": 7,
+                                            "text": "即時"
+                                        }
+                                    ],
+                                    "full_answer": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這使它們在時間敏感應用中有價值。"
+                                }
+                            ]
+                            """)
+            )
+    )
+    @SecurityRequirement(name = "Bear Authentication")
+    ResponseEntity<List<AbstractFlashcardDto>> getFlashcardsByTags(@RequestBody
+                                                                   @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                                           content = @Content(
+                                                                                   mediaType = "application/json",
+                                                                                   examples = @ExampleObject(value = """
+                                                                                           [
+                                                                                               {
+                                                                                                   "tag_name": "資料結構"
+                                                                                               },
+                                                                                               {
+                                                                                                   "tag_name": "樹"
+                                                                                               }
+                                                                                           ]
+                                                                                           """)
+                                                                           )
+                                                                   ) List<TagDto> tags);
 
     @Operation(
             summary = "新增字卡",
