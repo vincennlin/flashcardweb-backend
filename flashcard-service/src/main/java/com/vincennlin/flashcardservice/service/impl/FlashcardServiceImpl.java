@@ -66,19 +66,13 @@ public class FlashcardServiceImpl implements FlashcardService {
     }
 
     @Override
-    public List<AbstractFlashcardDto> getFlashcardsByTag(TagDto tagDto) {
+    public List<AbstractFlashcardDto> getFlashcardsByTags(List<TagDto> tagDtoList) {
 
-        Tag tag = tagRepository.findByTagNameAndUserId(tagDto.getTagName(), getCurrentUserId()).orElseThrow(() ->
-                new ResourceNotFoundException("Tag", "tagName", tagDto.getTagName()));
+        List<Tag> tagEntities = tagDtoList.stream().map(tagDto ->
+                tagRepository.findByTagNameAndUserId(tagDto.getTagName(), getCurrentUserId()).orElseThrow(() ->
+                        new ResourceNotFoundException("Tag", "tagName", tagDto.getTagName()))).toList();
 
-        List<AbstractFlashcard> flashcards = flashcardRepository.findByTags(List.of(tag));
-
-        return flashcards.stream().map(this::mapToDto).toList();
-    }
-
-    @Override
-    public List<AbstractFlashcard> getFlashcardsEntitiesByTagsEntity(List<Tag> tags) {
-        return List.of();
+        return flashcardRepository.findByTags(tagEntities).stream().map(this::mapToDto).toList();
     }
 
     @Override
@@ -90,18 +84,6 @@ public class FlashcardServiceImpl implements FlashcardService {
         authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
 
         return flashcard;
-    }
-
-
-    @Override
-    public List<AbstractFlashcardDto> getFlashcardsByTagEntities(List<Tag> tags) {
-
-        return getFlashcardsEntitiesByTagsEntity(tags).stream().map(
-                this::mapToDto).toList();
-    }
-
-    public List<AbstractFlashcard> getFlashcardEntitiesByTagsEntities(List<Tag> tagEntities) {
-        return flashcardRepository.findByTags(tagEntities);
     }
 
     @Transactional

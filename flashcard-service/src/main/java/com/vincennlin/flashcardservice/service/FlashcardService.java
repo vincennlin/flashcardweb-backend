@@ -15,11 +15,7 @@ public interface FlashcardService {
 
     AbstractFlashcard getFlashcardEntityById(Long flashcardId);
 
-    List<AbstractFlashcardDto> getFlashcardsByTag(TagDto tagDto);
-
-    List<AbstractFlashcardDto> getFlashcardsByTagEntities(List<Tag> tags);
-
-    List<AbstractFlashcard> getFlashcardsEntitiesByTagsEntity(List<Tag> tags);
+    List<AbstractFlashcardDto> getFlashcardsByTags(List<TagDto> tagDtoList);
 
     AbstractFlashcardDto createFlashcard(Long noteId, AbstractFlashcardDto flashcardDto);
 
