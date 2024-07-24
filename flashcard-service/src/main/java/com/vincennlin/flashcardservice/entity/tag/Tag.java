@@ -16,7 +16,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tags")
+@Table(
+        name = "tags",
+        uniqueConstraints = @UniqueConstraint(
+                columnNames = {"tag_name", "user_id"}
+        )
+)
 public class Tag {
 
     @Id

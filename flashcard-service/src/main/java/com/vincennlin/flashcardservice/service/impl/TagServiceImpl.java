@@ -4,15 +4,18 @@ import com.vincennlin.flashcardservice.entity.flashcard.AbstractFlashcard;
 import com.vincennlin.flashcardservice.entity.tag.Tag;
 import com.vincennlin.flashcardservice.exception.ResourceNotFoundException;
 import com.vincennlin.flashcardservice.exception.ResourceOwnershipException;
+import com.vincennlin.flashcardservice.exception.WebAPIException;
 import com.vincennlin.flashcardservice.payload.tag.TagDto;
+import com.vincennlin.flashcardservice.repository.FlashcardRepository;
 import com.vincennlin.flashcardservice.repository.TagRepository;
-import com.vincennlin.flashcardservice.service.FlashcardService;
 import com.vincennlin.flashcardservice.service.TagService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,7 +25,7 @@ public class TagServiceImpl implements TagService {
 
     private final TagRepository tagRepository;
 
-    private final FlashcardService flashcardService;
+    private final FlashcardRepository flashcardRepository;
 
     private ModelMapper modelMapper;
 
@@ -31,8 +34,7 @@ public class TagServiceImpl implements TagService {
 
         List<Tag> tags = tagRepository.findByUserId(getCurrentUserId());
 
-        return tags.stream().map(
-                tag -> modelMapper.map(tag, TagDto.class)).toList();
+        return tags.stream().map(this::mapToDto).toList();
     }
 
     @Override
@@ -40,26 +42,18 @@ public class TagServiceImpl implements TagService {
 
         List<Tag> tags = tagRepository.findByFlashcardsIdAndUserId(flashcardId, getCurrentUserId());
 
-        List<TagDto> tagDtoList = tags.stream().map(tag ->
-                modelMapper.map(tag, TagDto.class)).toList();
-
-        return tagDtoList.stream().peek(tagDto ->
-                tagDto.setFlashcardCount(getFlashcardCountByTagId(tagDto.getId()))).toList();
+        return tags.stream().map(this::mapToDto).toList();
     }
 
     @Override
     public TagDto getTagById(Long tagId) {
 
         Tag tag = tagRepository.findById(tagId).orElseThrow(() ->
-                new ResourceNotFoundException("Tag", "id", tagId));
+                new ResourceNotFoundException("Tag", "id", tagId.toString()));
 
         authorizeOwnershipByTagOwnerId(tag.getUserId());
 
-        TagDto tagDto = modelMapper.map(tag, TagDto.class);
-
-        tagDto.setFlashcardCount(getFlashcardCountByTagId(tagId));
-
-        return tagDto;
+        return mapToDto(tag);
     }
 
     @Override
@@ -73,13 +67,13 @@ public class TagServiceImpl implements TagService {
 
         Tag tag = tagRepository.findByTagNameAndUserId(tagDto.getTagName(), getCurrentUserId()).orElse(null);
 
-        if (tag == null) {
-            TagDto newTag = mapToDto(createTagAndGetEntity(tagDto.getTagName()));
-            newTag.setFlashcardCount(0);
-            return newTag;
-        } else {
-            return mapToDto(tag);
+        if (tag != null) {
+            throw new WebAPIException(HttpStatus.BAD_REQUEST, "Tag already exists");
         }
+
+        Tag createdTag = createTagAndGetEntity(tagDto.getTagName());
+
+        return mapToDto(createdTag);
     }
 
     private Tag createTagAndGetEntity(String tagName) {
@@ -98,7 +92,7 @@ public class TagServiceImpl implements TagService {
         Long tagId = tagDto.getId();
 
         Tag tag = tagRepository.findById(tagId).orElseThrow(() ->
-                new ResourceNotFoundException("Tag", "id", tagId));
+                new ResourceNotFoundException("Tag", "id", tagId.toString()));
 
         authorizeOwnershipByTagOwnerId(tag.getUserId());
 
@@ -106,65 +100,73 @@ public class TagServiceImpl implements TagService {
 
         Tag updatedTag = tagRepository.save(tag);
 
-        TagDto updatedTagDto = mapToDto(updatedTag);
-
-        updatedTagDto.setFlashcardCount(getFlashcardCountByTagId(tagId));
-
-        return updatedTagDto;
+        return mapToDto(updatedTag);
     }
 
     @Override
     public void deleteTagById(Long tagId) {
 
         Tag tag = tagRepository.findById(tagId).orElseThrow(() ->
-                new ResourceNotFoundException("Tag", "id", tagId));
+                new ResourceNotFoundException("Tag", "id", tagId.toString()));
 
         authorizeOwnershipByTagOwnerId(tag.getUserId());
 
         tagRepository.deleteById(tagId);
     }
 
+    @Transactional
     @Override
-    public void addTagToFlashcard(Long flashcardId, String tagName) {
+    public TagDto addTagToFlashcard(Long flashcardId, String tagName) {
 
-        Tag tag = tagRepository.findByTagNameAndUserId(tagName, getCurrentUserId()).orElse(
-                createTagAndGetEntity(tagName));
+        Tag tag = tagRepository.findByTagNameAndUserId(tagName, getCurrentUserId()).orElse(null);
 
-        authorizeOwnershipByTagOwnerId(tag.getUserId());
+        if (tag == null) {
+            tag = createTagAndGetEntity(tagName);
+        }
 
-        List<AbstractFlashcard> flashcards = flashcardService.getFlashcardsEntitiesByTags(List.of(tag));
+        AbstractFlashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
+                new ResourceNotFoundException("Flashcard", "id", flashcardId.toString()));
 
-        AbstractFlashcard flashcard = flashcardService.getFlashcardEntityById(flashcardId);
+        authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
 
-        flashcards.add(flashcard);
+        if (flashcard.getTags().contains(tag)) {
+            throw new WebAPIException(HttpStatus.BAD_REQUEST, "Tag already exists on the flashcard.");
+        }
 
-        tag.setFlashcards(flashcards);
+        flashcard.getTags().add(tag);
+        tag.getFlashcards().add(flashcard);
 
-        tagRepository.save(tag);
+        flashcardRepository.save(flashcard);
+        Tag savedTag = tagRepository.save(tag);
+
+        return mapToDto(savedTag);
     }
 
     @Override
     public void removeTagFromFlashcard(Long flashcardId, String tagName) {
 
-        Tag tag = tagRepository.findByTagNameAndUserId(tagName, getCurrentUserId()).orElse(
-                createTagAndGetEntity(tagName));
+        Tag tag = tagRepository.findByTagNameAndUserId(tagName, getCurrentUserId()).orElseThrow(
+                () -> new ResourceNotFoundException("Tag", "tagName", tagName));
 
-        authorizeOwnershipByTagOwnerId(tag.getUserId());
+        AbstractFlashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
+                new ResourceNotFoundException("Flashcard", "id", flashcardId.toString()));
 
-        List<AbstractFlashcard> flashcards = flashcardService.getFlashcardsEntitiesByTags(List.of(tag));
+        flashcard.getTags().remove(tag);
+        tag.getFlashcards().remove(flashcard);
 
-        AbstractFlashcard flashcard = flashcardService.getFlashcardEntityById(flashcardId);
-
-        flashcards.remove(flashcard);
-
-        tag.setFlashcards(flashcards);
-
+        flashcardRepository.save(flashcard);
         tagRepository.save(tag);
     }
 
     private void authorizeOwnershipByTagOwnerId(Long tagOwnerId) {
         if (tagOwnerId != getCurrentUserId() && !containsAuthority("ADVANCED")) {
             throw new ResourceOwnershipException(getCurrentUserId(), "Tag");
+        }
+    }
+
+    private void authorizeOwnershipByFlashcardOwnerId(Long flashcardOwnerId) {
+        if (flashcardOwnerId != getCurrentUserId() && !containsAuthority("ADVANCED")) {
+            throw new ResourceOwnershipException(getCurrentUserId(), "Flashcard");
         }
     }
 
@@ -182,6 +184,8 @@ public class TagServiceImpl implements TagService {
     }
 
     private TagDto mapToDto(Tag tag) {
-        return modelMapper.map(tag, TagDto.class);
+        TagDto tagDto = modelMapper.map(tag, TagDto.class);
+        tagDto.setFlashcardCount(getFlashcardCountByTagId(tagDto.getId()));
+        return tagDto;
     }
 }
