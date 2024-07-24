@@ -1,20 +1,7 @@
-package com.vincennlin.flashcardservice.controller;
+package com.vincennlin.flashcardservice.controller.flashcard;
 
 import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
-import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.FillInTheBlankFlashcardDto;
-import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.MultipleChoiceFlashcardDto;
-import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.ShortAnswerFlashcardDto;
-import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.TrueFalseFlashcardDto;
 import com.vincennlin.flashcardservice.service.FlashcardService;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.info.License;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -31,7 +18,7 @@ import java.util.List;
 @RestController
 @Validated
 @RequestMapping("/api/v1")
-public class FlashcardController implements FlashcardControllerSwagger{
+public class FlashcardController implements FlashcardControllerSwagger {
 
     private Environment env;
 
