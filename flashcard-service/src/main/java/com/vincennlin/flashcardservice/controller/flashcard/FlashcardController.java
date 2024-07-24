@@ -1,6 +1,7 @@
 package com.vincennlin.flashcardservice.controller.flashcard;
 
 import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.flashcardservice.payload.tag.TagDto;
 import com.vincennlin.flashcardservice.service.FlashcardService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -45,6 +46,15 @@ public class FlashcardController implements FlashcardControllerSwagger {
         AbstractFlashcardDto flashcardResponse = flashcardService.getFlashcardById(flashcardId);
 
         return new ResponseEntity<>(flashcardResponse, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('READ')")
+    @GetMapping("/flashcards/tag")
+    public ResponseEntity<List<AbstractFlashcardDto>> getFlashcardsByTag(@Valid @RequestBody TagDto tagDto) {
+
+        List<AbstractFlashcardDto> flashcardsResponse = flashcardService.getFlashcardsByTag(tagDto);
+
+        return new ResponseEntity<>(flashcardsResponse, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('CREATE')")

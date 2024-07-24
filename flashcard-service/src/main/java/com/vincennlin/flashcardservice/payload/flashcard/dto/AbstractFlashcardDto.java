@@ -20,7 +20,6 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         property = "type",
@@ -96,7 +95,6 @@ public abstract class AbstractFlashcardDto {
             description = "字卡標籤",
             example = "[{\"id\":1,\"tag_name\":\"Data Structure\",\"flashcard_count\":1}]"
     )
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<TagDto> tags;
 
     @JsonIgnore

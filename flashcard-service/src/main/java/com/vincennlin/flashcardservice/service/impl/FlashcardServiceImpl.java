@@ -11,8 +11,10 @@ import com.vincennlin.flashcardservice.exception.ResourceNotFoundException;
 import com.vincennlin.flashcardservice.exception.ResourceOwnershipException;
 import com.vincennlin.flashcardservice.exception.WebAPIException;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.flashcardservice.payload.tag.TagDto;
 import com.vincennlin.flashcardservice.repository.FlashcardRepository;
 import com.vincennlin.flashcardservice.repository.OptionRepository;
+import com.vincennlin.flashcardservice.repository.TagRepository;
 import com.vincennlin.flashcardservice.service.FlashcardService;
 import feign.FeignException;
 import lombok.AllArgsConstructor;
@@ -42,6 +44,8 @@ public class FlashcardServiceImpl implements FlashcardService {
 
     private NoteServiceClient noteServiceClient;
 
+    private TagRepository tagRepository;
+
     @Override
     public List<AbstractFlashcardDto> getFlashcardsByNoteId(Long noteId) {
 
@@ -62,6 +66,22 @@ public class FlashcardServiceImpl implements FlashcardService {
     }
 
     @Override
+    public List<AbstractFlashcardDto> getFlashcardsByTag(TagDto tagDto) {
+
+        Tag tag = tagRepository.findByTagNameAndUserId(tagDto.getTagName(), getCurrentUserId()).orElseThrow(() ->
+                new ResourceNotFoundException("Tag", "tagName", tagDto.getTagName()));
+
+        List<AbstractFlashcard> flashcards = flashcardRepository.findByTags(List.of(tag));
+
+        return flashcards.stream().map(this::mapToDto).toList();
+    }
+
+    @Override
+    public List<AbstractFlashcard> getFlashcardsEntitiesByTagsEntity(List<Tag> tags) {
+        return List.of();
+    }
+
+    @Override
     public AbstractFlashcard getFlashcardEntityById(Long flashcardId) {
 
         AbstractFlashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
@@ -74,15 +94,14 @@ public class FlashcardServiceImpl implements FlashcardService {
 
 
     @Override
-    public List<AbstractFlashcardDto> getFlashcardsByTags(List<Tag> tags) {
+    public List<AbstractFlashcardDto> getFlashcardsByTagEntities(List<Tag> tags) {
 
-        return getFlashcardsEntitiesByTags(tags).stream().map(
+        return getFlashcardsEntitiesByTagsEntity(tags).stream().map(
                 this::mapToDto).toList();
     }
 
-    @Override
-    public List<AbstractFlashcard> getFlashcardsEntitiesByTags(List<Tag> tags) {
-        return flashcardRepository.findByTags(tags);
+    public List<AbstractFlashcard> getFlashcardEntitiesByTagsEntities(List<Tag> tagEntities) {
+        return flashcardRepository.findByTags(tagEntities);
     }
 
     @Transactional
