@@ -65,7 +65,7 @@ public class FlashcardServiceImpl implements FlashcardService {
     public AbstractFlashcard getFlashcardEntityById(Long flashcardId) {
 
         AbstractFlashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
-                new ResourceNotFoundException("Flashcard", "id", flashcardId));
+                new ResourceNotFoundException("Flashcard", "id", flashcardId.toString()));
 
         authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
 
@@ -155,7 +155,7 @@ public class FlashcardServiceImpl implements FlashcardService {
     public AbstractFlashcardDto updateFlashcard(Long flashcardId, AbstractFlashcardDto flashcardDto) {
 
         AbstractFlashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
-                new ResourceNotFoundException("Flashcard", "id", flashcardId));
+                new ResourceNotFoundException("Flashcard", "id", flashcardId.toString()));
 
         authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
 
@@ -235,7 +235,7 @@ public class FlashcardServiceImpl implements FlashcardService {
     public void deleteFlashcardById(Long flashcardId) {
 
         AbstractFlashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
-                new ResourceNotFoundException("Flashcard", "id", flashcardId));
+                new ResourceNotFoundException("Flashcard", "id", flashcardId.toString()));
 
         authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
 
@@ -287,7 +287,7 @@ public class FlashcardServiceImpl implements FlashcardService {
         } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
             if (e instanceof FeignException && ((FeignException)e).status() == HttpStatus.NOT_FOUND.value())
-                throw new ResourceNotFoundException("Note", "id", noteId);
+                throw new ResourceNotFoundException("Note", "id", noteId.toString());
             else if (!(e instanceof ResourceNotFoundException))
                 throw new WebAPIException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
             throw e;

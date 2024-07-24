@@ -20,7 +20,7 @@ public interface TagService {
 
     void deleteTagById(Long tagId);
 
-    void addTagToFlashcard(Long flashcardId, String tagName);
+    TagDto addTagToFlashcard(Long flashcardId, String tagName);
 
     void removeTagFromFlashcard(Long flashcardId, String tagName);
 }
