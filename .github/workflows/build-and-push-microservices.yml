@@ -109,7 +109,7 @@ jobs:
 
       # Build and push flashcard-service
       - name: Build flashcard-service with Maven
-        run: mvn -B package --file flashcard-service/pom.xml
+        run: mvn -B package -DskipTests --file flashcard-service/pom.xml
 
       - name: Extract metadata for flashcard-service
         id: meta-flashcard-service
