@@ -44,7 +44,7 @@ jobs:
         with:
           context: config-server
           push: true
-          tags: ${{ steps.meta-config-server.outputs.tags }}
+          tags: vincennlin/flashcardweb-config-server:latest
           labels: ${{ steps.meta-config-server.outputs.labels }}
 
       # Build and push discovery-service
@@ -64,7 +64,7 @@ jobs:
         with:
           context: discovery-service
           push: true
-          tags: ${{ steps.meta-discovery-service.outputs.tags }}
+          tags: vincennlin/flashcardweb-discovery-service:latest
           labels: ${{ steps.meta-discovery-service.outputs.labels }}
 
       # Build and push user-service
@@ -84,7 +84,7 @@ jobs:
         with:
           context: user-service
           push: true
-          tags: ${{ steps.meta-user-service.outputs.tags }}
+          tags: vincennlin/flashcardweb-user-service:latest
           labels: ${{ steps.meta-user-service.outputs.labels }}
 
       # Build and push note-service
@@ -104,7 +104,7 @@ jobs:
         with:
           context: note-service
           push: true
-          tags: ${{ steps.meta-note-service.outputs.tags }}
+          tags: vincennlin/flashcardweb-note-service:latest
           labels: ${{ steps.meta-note-service.outputs.labels }}
 
       # Build and push flashcard-service
@@ -124,7 +124,7 @@ jobs:
         with:
           context: flashcard-service
           push: true
-          tags: ${{ steps.meta-flashcard-service.outputs.tags }}
+          tags: vincennlin/flashcardweb-flashcard-service:latest
           labels: ${{ steps.meta-flashcard-service.outputs.labels }}
 
       # Build and push ai-service
@@ -144,7 +144,7 @@ jobs:
         with:
           context: ai-service
           push: true
-          tags: ${{ steps.meta-ai-service.outputs.tags }}
+          tags: vincennlin/flashcardweb-ai-service:latest
           labels: ${{ steps.meta-ai-service.outputs.labels }}
 
       # Build and push api-gateway
@@ -164,5 +164,5 @@ jobs:
         with:
           context: api-gateway
           push: true
-          tags: ${{ steps.meta-api-gateway.outputs.tags }}
+          tags: vincennlin/flashcardweb-api-gateway:latest
           labels: ${{ steps.meta-api-gateway.outputs.labels }}
