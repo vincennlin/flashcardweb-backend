@@ -3,6 +3,7 @@ package com.vincennlin.aiservice.config;
 import com.vincennlin.aiservice.filter.AuthorizationFilter;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 @SecurityScheme(
         name = "Bear Authentication",
@@ -37,6 +43,18 @@ public class WebSecurity {
                                             AuthenticationManager authenticationManager) throws Exception{
 
         http.csrf(AbstractHttpConfigurer::disable);
+
+        http.cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
+            @Override
+            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+                // Allow all origins
+                CorsConfiguration config = new CorsConfiguration();
+                config.setAllowedOrigins(Collections.singletonList("*"));
+                config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+                config.setAllowedHeaders(Collections.singletonList("*"));
+                return config;
+            }
+        }));
 
         String webExpressionString =
                 "hasIpAddress('" + environment.getProperty("gateway.ip1") + "') " +
