@@ -94,6 +94,12 @@ public class TagServiceImpl implements TagService {
 
         authorizeOwnershipByTagOwnerId(tag.getUserId());
 
+        Tag queriedTag = tagRepository.findByTagNameAndUserId(tagDto.getTagName(), getCurrentUserId()).orElse(null);
+
+        if (queriedTag != null) {
+            throw new WebAPIException(HttpStatus.BAD_REQUEST, "Tag already exists");
+        }
+
         tag.setTagName(tagDto.getTagName());
 
         Tag updatedTag = tagRepository.save(tag);
