@@ -45,16 +45,13 @@ public class WebSecurity {
 
         http.csrf(AbstractHttpConfigurer::disable);
 
-        http.cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
-            @Override
-            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-                // Allow all origins
-                CorsConfiguration config = new CorsConfiguration();
-                config.setAllowedOrigins(Collections.singletonList("*"));
-                config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-                config.setAllowedHeaders(Collections.singletonList("*"));
-                return config;
-            }
+        http.cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
+            // Allow all origins
+            CorsConfiguration config = new CorsConfiguration();
+            config.setAllowedOrigins(Collections.singletonList("*"));
+            config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+            config.setAllowedHeaders(Collections.singletonList("*"));
+            return config;
         }));
 
         String webExpressionString =
