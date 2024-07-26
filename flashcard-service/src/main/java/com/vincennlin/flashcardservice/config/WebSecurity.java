@@ -45,14 +45,15 @@ public class WebSecurity {
 
         http.csrf(AbstractHttpConfigurer::disable);
 
-        http.cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
-            // Allow all origins
-            CorsConfiguration config = new CorsConfiguration();
-            config.setAllowedOrigins(Collections.singletonList("*"));
-            config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-            config.setAllowedHeaders(Collections.singletonList("*"));
-            return config;
-        }));
+        http.cors(corsCustomizer -> corsCustomizer.disable());
+//        http.cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
+//            // Allow all origins
+//            CorsConfiguration config = new CorsConfiguration();
+//            config.setAllowedOrigins(Collections.singletonList("*"));
+//            config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+//            config.setAllowedHeaders(Collections.singletonList("*"));
+//            return config;
+//        }));
 
         String webExpressionString =
                 "hasIpAddress('" + environment.getProperty("gateway.ip1") + "') " +
