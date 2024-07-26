@@ -129,10 +129,15 @@ Run API Gateway Docker Container
 docker run -d -p 8765:8765 -e "spring.profiles.active=prod" -e "config.server.ip=172.31.7.182" vincennlin/flashcardweb-api-gateway
 ````
 --------------------------------------------
-
 將 docker-compose.yml 檔案上傳至 AWS EC2
 ````sh
-scp -i /Users/vincennlin/Repository/flashcardweb-backend/misc/flashcardweb-key-pair.pem /Users/vincennlin/Repository/flashcardweb-backend/docker-compose.yml ec2-user@3.106.14.156:/home/ec2-user/
+scp -i /Users/vincennlin/Repository/flashcardweb-backend/misc/flashcardweb-key-pair.pem /Users/vincennlin/Repository/flashcardweb-backend/docker-compose.yml ec2-user@54.180.176.32:/home/ec2-user/
+````
+在 AWS EC2 上安裝 Docker Compose
+````sh
+sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+docker-compose version
 ````
 ````sh
 docker-compose up -d
