@@ -27,6 +27,7 @@ public class UserController implements UserControllerSwagger{
                 + " with token " + env.getProperty("token.secret"), HttpStatus.OK);
     }
 
+    @CrossOrigin
     @PostMapping(value = {"/auth/register"})
     public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterDto registerDto) {
 
@@ -34,6 +35,7 @@ public class UserController implements UserControllerSwagger{
         return new ResponseEntity<>(registerResponse, HttpStatus.CREATED);
     }
 
+    @CrossOrigin
     @PostMapping(value = {"/auth/login"})
     public ResponseEntity<Void> login(@Valid @RequestBody LoginDto loginDto) {
         return new ResponseEntity<>(null, HttpStatus.OK);
