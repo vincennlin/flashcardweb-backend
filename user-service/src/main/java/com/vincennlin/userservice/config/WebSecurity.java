@@ -18,10 +18,11 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -54,9 +55,32 @@ public class WebSecurity {
         return authenticationManagerBuilder.build();
     }
 
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        String apiGatewayIp = environment.getProperty("api-gateway.ip");
+//
+//        CorsConfiguration config = new CorsConfiguration();
+////        config.setAllowedOrigins(Collections.singletonList("http://localhost:5173"));
+////        config.setAllowedOrigins(Collections.singletonList("http://" + apiGatewayIp + ":8765"));
+////        config.setAllowedOrigins(Collections.singletonList("*"));
+//        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+//        config.setAllowedHeaders(Collections.singletonList("*"));
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", config);
+//        return source;
+//    }
+//
+//    @Bean
+//    public CorsFilter corsFilter(CorsConfigurationSource corsConfigurationSource) {
+//        return new CorsFilter(corsConfigurationSource);
+//    }
+
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http,
+//                                            CorsConfigurationSource corsConfigurationSource,
                                             AuthenticationManager authenticationManager) throws Exception{
+
 
         AuthenticationFilter authenticationFilter =
                 new AuthenticationFilter(userService, environment, authenticationManager);
@@ -64,17 +88,8 @@ public class WebSecurity {
 
         http.csrf(AbstractHttpConfigurer::disable);
 
-        http.cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
-            @Override
-            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-                // Allow all origins
-                CorsConfiguration config = new CorsConfiguration();
-                config.setAllowedOrigins(Collections.singletonList("*"));
-                config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-                config.setAllowedHeaders(Collections.singletonList("*"));
-                return config;
-            }
-        }));
+        http.cors(corsCustomizer -> corsCustomizer.disable());
+//        http.cors(corsCustomizer -> corsCustomizer.configurationSource(corsConfigurationSource));
 
         String webExpressionString =
                 "hasIpAddress('" + environment.getProperty("gateway.ip1") + "') " +
