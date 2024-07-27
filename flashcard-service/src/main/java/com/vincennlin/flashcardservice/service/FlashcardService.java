@@ -24,4 +24,6 @@ public interface FlashcardService {
     void deleteFlashcardById(Long flashcardId);
 
     void deleteFlashcardsByNoteId(Long noteId);
+
+    AbstractFlashcardDto mapToDto(AbstractFlashcard flashcard);
 }

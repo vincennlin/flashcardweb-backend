@@ -1,7 +1,9 @@
 package com.vincennlin.flashcardservice.entity.flashcard;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.vincennlin.flashcardservice.entity.review.Review;
 import com.vincennlin.flashcardservice.entity.tag.Tag;
+import com.vincennlin.flashcardservice.payload.review.option.ReviewOption;
 import com.vincennlin.flashcardservice.payload.flashcard.type.FlashcardType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -41,6 +43,14 @@ public abstract class AbstractFlashcard {
     @Column(name = "note_id", nullable = false, updatable = false)
     private Long noteId;
 
+    @CreationTimestamp
+    @Column(name = "date_created")
+    private String dateCreated;
+
+    @UpdateTimestamp
+    @Column(name = "last_updated")
+    private String lastUpdated;
+
     @ManyToMany(
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             fetch = FetchType.EAGER
@@ -53,11 +63,13 @@ public abstract class AbstractFlashcard {
     @JsonManagedReference
     private List<Tag> tags;
 
-    @CreationTimestamp
-    @Column(name = "date_created")
-    private String dateCreated;
+    @OneToOne(
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL
+    )
+    private Review review;
 
-    @UpdateTimestamp
-    @Column(name = "last_updated")
-    private String lastUpdated;
+    public void review(ReviewOption option) {
+        this.review.review(option);
+    }
 }

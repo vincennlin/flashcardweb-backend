@@ -1,7 +1,9 @@
 package com.vincennlin.flashcardservice.service.impl;
 
 import com.vincennlin.flashcardservice.client.NoteServiceClient;
+import com.vincennlin.flashcardservice.entity.review.Review;
 import com.vincennlin.flashcardservice.entity.tag.Tag;
+import com.vincennlin.flashcardservice.mapper.FlashcardMapper;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.*;
 import com.vincennlin.flashcardservice.payload.flashcard.type.FlashcardType;
 import com.vincennlin.flashcardservice.entity.flashcard.AbstractFlashcard;
@@ -11,6 +13,7 @@ import com.vincennlin.flashcardservice.exception.ResourceNotFoundException;
 import com.vincennlin.flashcardservice.exception.ResourceOwnershipException;
 import com.vincennlin.flashcardservice.exception.WebAPIException;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.flashcardservice.payload.review.dto.ReviewDto;
 import com.vincennlin.flashcardservice.repository.FlashcardRepository;
 import com.vincennlin.flashcardservice.repository.OptionRepository;
 import com.vincennlin.flashcardservice.repository.TagRepository;
@@ -38,6 +41,8 @@ public class FlashcardServiceImpl implements FlashcardService {
     private FlashcardRepository flashcardRepository;
 
     private ModelMapper modelMapper;
+
+    private FlashcardMapper flashcardMapper;
 
     private OptionRepository optionRepository;
 
@@ -100,7 +105,8 @@ public class FlashcardServiceImpl implements FlashcardService {
             return createMultipleChoiceFlashcard((MultipleChoiceFlashcardDto) flashcardDto);
         } else {
 
-            AbstractFlashcard flashcard = flashcardDto.mapToEntity();
+//            AbstractFlashcard flashcard = flashcardDto.mapToEntity();
+            AbstractFlashcard flashcard = flashcardMapper.mapToEntity(flashcardDto);
 
             AbstractFlashcard newFlashcard = flashcardRepository.save(flashcard);
 
@@ -295,7 +301,14 @@ public class FlashcardServiceImpl implements FlashcardService {
         return response.getBody();
     }
 
-    private AbstractFlashcardDto mapToDto(AbstractFlashcard flashcard) {
+    public AbstractFlashcardDto mapToDto(AbstractFlashcard flashcard) {
+
+        AbstractFlashcardDto flashcardDto = modelMapper.map(flashcard, flashcard.getType().getFlashcardDtoClass());
+
+        ReviewDto reviewDto = flashcard.getReview() != null ? modelMapper.map(flashcard.getReview(), ReviewDto.class) : null;
+
+        flashcardDto.setReview(reviewDto);
+
         return modelMapper.map(flashcard, flashcard.getType().getFlashcardDtoClass());
     }
 }

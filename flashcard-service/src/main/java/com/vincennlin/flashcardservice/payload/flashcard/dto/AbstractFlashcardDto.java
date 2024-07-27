@@ -2,24 +2,29 @@ package com.vincennlin.flashcardservice.payload.flashcard.dto;
 
 import com.fasterxml.jackson.annotation.*;
 import com.vincennlin.flashcardservice.entity.flashcard.AbstractFlashcard;
+import com.vincennlin.flashcardservice.mapper.FlashcardMapper;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.FillInTheBlankFlashcardDto;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.MultipleChoiceFlashcardDto;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.ShortAnswerFlashcardDto;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.TrueFalseFlashcardDto;
 import com.vincennlin.flashcardservice.payload.flashcard.type.FlashcardType;
 import com.vincennlin.flashcardservice.operation.Operation;
+import com.vincennlin.flashcardservice.payload.review.dto.ReviewDto;
 import com.vincennlin.flashcardservice.payload.tag.TagDto;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import org.modelmapper.ModelMapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         property = "type",
@@ -40,6 +45,7 @@ public abstract class AbstractFlashcardDto {
 
     protected AbstractFlashcardDto(FlashcardType type) {
         this.type = type;
+        this.review = new ReviewDto();
     }
 
     @Schema(
@@ -97,11 +103,16 @@ public abstract class AbstractFlashcardDto {
     )
     private List<TagDto> tags;
 
+    @JsonProperty(
+            value = "review_info"
+    )
+    private ReviewDto review;
+
     @JsonIgnore
-    private ModelMapper modelMapper = new ModelMapper();
+    private FlashcardMapper flashcardMapper = new FlashcardMapper();
 
     public AbstractFlashcard mapToEntity() {
-        return modelMapper.map(this, getType().getFlashcardEntityClass());
+        return flashcardMapper.mapToEntity(this);
     }
 
     public abstract void execute(Operation operation);
