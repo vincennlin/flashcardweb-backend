@@ -1,7 +1,7 @@
 package com.vincennlin.aiservice.payload.flashcard.type;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vincennlin.aiservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.aiservice.payload.flashcard.dto.FlashcardDto;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.prompt.ChatOptions;
@@ -9,9 +9,9 @@ import org.springframework.ai.openai.OpenAiChatOptions;
 
 public interface AbstractFlashcardType {
 
-    Class<? extends AbstractFlashcardDto> getFlashcardDtoClass();
+    Class<? extends FlashcardDto> getFlashcardDtoClass();
 
-    AbstractFlashcardDto getFlashcardExampleDto();
+    FlashcardDto getFlashcardExampleDto();
 
     String getFormatExampleString();
 

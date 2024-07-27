@@ -1,14 +1,12 @@
 package com.vincennlin.flashcardservice.entity.review;
 
-import com.vincennlin.flashcardservice.entity.flashcard.AbstractFlashcard;
-import com.vincennlin.flashcardservice.payload.review.dto.ReviewDto;
+import com.vincennlin.flashcardservice.entity.flashcard.Flashcard;
 import com.vincennlin.flashcardservice.payload.review.option.ReviewOption;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.modelmapper.ModelMapper;
 
 import java.time.LocalDateTime;
 
@@ -40,7 +38,7 @@ public class Review {
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL
     )
-    private AbstractFlashcard flashcard;
+    private Flashcard flashcard;
 
     public void review(ReviewOption option) {
         this.reviewInterval += option.getInterval(this.reviewLevel);

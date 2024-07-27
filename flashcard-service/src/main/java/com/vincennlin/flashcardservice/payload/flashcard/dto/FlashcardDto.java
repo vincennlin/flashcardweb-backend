@@ -1,7 +1,7 @@
 package com.vincennlin.flashcardservice.payload.flashcard.dto;
 
 import com.fasterxml.jackson.annotation.*;
-import com.vincennlin.flashcardservice.entity.flashcard.AbstractFlashcard;
+import com.vincennlin.flashcardservice.entity.flashcard.Flashcard;
 import com.vincennlin.flashcardservice.mapper.FlashcardMapper;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.FillInTheBlankFlashcardDto;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.MultipleChoiceFlashcardDto;
@@ -12,12 +12,9 @@ import com.vincennlin.flashcardservice.operation.Operation;
 import com.vincennlin.flashcardservice.payload.review.dto.ReviewDto;
 import com.vincennlin.flashcardservice.payload.tag.TagDto;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
-import org.modelmapper.ModelMapper;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -38,12 +35,12 @@ import java.util.List;
         @JsonSubTypes.Type(value = TrueFalseFlashcardDto.class, name = "TRUE_FALSE")
 })
 @Schema(
-        name = "AbstractFlashcardDto",
+        name = "FlashcardDto",
         description = "不會用到，只是拿來給其他字卡繼承用的 Data Transfer Object"
 )
-public abstract class AbstractFlashcardDto {
+public abstract class FlashcardDto {
 
-    protected AbstractFlashcardDto(FlashcardType type) {
+    protected FlashcardDto(FlashcardType type) {
         this.type = type;
         this.review = new ReviewDto();
     }
@@ -111,7 +108,7 @@ public abstract class AbstractFlashcardDto {
     @JsonIgnore
     private FlashcardMapper flashcardMapper = new FlashcardMapper();
 
-    public AbstractFlashcard mapToEntity() {
+    public Flashcard mapToEntity() {
         return flashcardMapper.mapToEntity(this);
     }
 

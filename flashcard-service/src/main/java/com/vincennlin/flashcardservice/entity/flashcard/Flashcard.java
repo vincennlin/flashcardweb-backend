@@ -21,7 +21,7 @@ import java.util.List;
 @Entity
 @Table(name = "flashcards")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class AbstractFlashcard {
+public abstract class Flashcard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

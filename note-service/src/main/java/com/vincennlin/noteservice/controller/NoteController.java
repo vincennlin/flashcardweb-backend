@@ -1,7 +1,7 @@
 package com.vincennlin.noteservice.controller;
 
 import com.vincennlin.noteservice.constant.AppConstants;
-import com.vincennlin.noteservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.noteservice.payload.request.GenerateFlashcardRequest;
 import com.vincennlin.noteservice.payload.note.dto.NoteDto;
 import com.vincennlin.noteservice.payload.note.page.NotePageResponse;
@@ -117,19 +117,19 @@ public class NoteController implements NoteControllerSwagger {
     }
 
     @PostMapping("/notes/{note_id}/generate/flashcard")
-    public ResponseEntity<AbstractFlashcardDto> generateFlashcard(@PathVariable(name = "note_id") @Min(1) Long id,
-                                                                  @RequestBody GenerateFlashcardRequest request) {
+    public ResponseEntity<FlashcardDto> generateFlashcard(@PathVariable(name = "note_id") @Min(1) Long id,
+                                                          @RequestBody GenerateFlashcardRequest request) {
 
-        AbstractFlashcardDto flashcard = noteService.generateFlashcard(id, request);
+        FlashcardDto flashcard = noteService.generateFlashcard(id, request);
 
         return new ResponseEntity<>(flashcard, HttpStatus.OK);
     }
 
     @PostMapping("/notes/{note_id}/generate/flashcards")
-    public ResponseEntity<List<AbstractFlashcardDto>> generateFlashcards(@PathVariable(name = "note_id") @Min(1) Long id,
-                                                                  @RequestBody GenerateFlashcardsRequest request) {
+    public ResponseEntity<List<FlashcardDto>> generateFlashcards(@PathVariable(name = "note_id") @Min(1) Long id,
+                                                                 @RequestBody GenerateFlashcardsRequest request) {
 
-        List<AbstractFlashcardDto> flashcards = noteService.generateFlashcards(id, request);
+        List<FlashcardDto> flashcards = noteService.generateFlashcards(id, request);
 
         return new ResponseEntity<>(flashcards, HttpStatus.OK);
     }

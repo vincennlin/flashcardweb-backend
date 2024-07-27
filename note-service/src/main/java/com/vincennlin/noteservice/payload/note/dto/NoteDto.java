@@ -1,7 +1,7 @@
 package com.vincennlin.noteservice.payload.note.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vincennlin.noteservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -81,5 +81,5 @@ public class NoteDto {
             value = "flashcards",
             access = JsonProperty.Access.READ_ONLY
     )
-    private List<? extends AbstractFlashcardDto> flashcards;
+    private List<? extends FlashcardDto> flashcards;
 }

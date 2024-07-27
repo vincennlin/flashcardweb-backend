@@ -1,8 +1,8 @@
 package com.vincennlin.flashcardservice.mapper;
 
-import com.vincennlin.flashcardservice.entity.flashcard.AbstractFlashcard;
+import com.vincennlin.flashcardservice.entity.flashcard.Flashcard;
 import com.vincennlin.flashcardservice.entity.review.Review;
-import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.flashcardservice.payload.review.dto.ReviewDto;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -24,11 +24,11 @@ public class FlashcardMapper {
         modelMapper.addConverter(reviewConverter);
     }
 
-    public AbstractFlashcardDto mapToDto(AbstractFlashcard flashcard) {
+    public FlashcardDto mapToDto(Flashcard flashcard) {
         return modelMapper.map(flashcard, flashcard.getType().getFlashcardDtoClass());
     }
 
-    public AbstractFlashcard mapToEntity(AbstractFlashcardDto flashcardDto) {
+    public Flashcard mapToEntity(FlashcardDto flashcardDto) {
         return modelMapper.map(flashcardDto, flashcardDto.getType().getFlashcardEntityClass());
     }
 }

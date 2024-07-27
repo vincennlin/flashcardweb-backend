@@ -1,6 +1,6 @@
 package com.vincennlin.flashcardservice.service.impl;
 
-import com.vincennlin.flashcardservice.entity.flashcard.AbstractFlashcard;
+import com.vincennlin.flashcardservice.entity.flashcard.Flashcard;
 import com.vincennlin.flashcardservice.entity.tag.Tag;
 import com.vincennlin.flashcardservice.exception.ResourceNotFoundException;
 import com.vincennlin.flashcardservice.exception.ResourceOwnershipException;
@@ -115,7 +115,7 @@ public class TagServiceImpl implements TagService {
 
         authorizeOwnershipByTagOwnerId(tag.getUserId());
 
-        List<AbstractFlashcard> flashcards = flashcardRepository.findByTags(List.of(tag));
+        List<Flashcard> flashcards = flashcardRepository.findByTags(List.of(tag));
 
         flashcards.forEach(flashcard -> flashcard.getTags().remove(tag));
 
@@ -134,7 +134,7 @@ public class TagServiceImpl implements TagService {
             tag = createTagAndGetEntity(tagName);
         }
 
-        AbstractFlashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
+        Flashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
                 new ResourceNotFoundException("Flashcard", "id", flashcardId.toString()));
 
         authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
@@ -159,7 +159,7 @@ public class TagServiceImpl implements TagService {
         Tag tag = tagRepository.findByTagNameAndUserId(tagName, getCurrentUserId()).orElseThrow(
                 () -> new ResourceNotFoundException("Tag", "tagName", tagName));
 
-        AbstractFlashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
+        Flashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
                 new ResourceNotFoundException("Flashcard", "id", flashcardId.toString()));
 
         if (!flashcard.getTags().contains(tag)) {

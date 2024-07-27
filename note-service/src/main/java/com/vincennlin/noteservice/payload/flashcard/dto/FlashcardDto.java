@@ -32,12 +32,12 @@ import org.modelmapper.ModelMapper;
         @JsonSubTypes.Type(value = TrueFalseFlashcardDto.class, name = "TRUE_FALSE")
 })
 @Schema(
-        name = "AbstractFlashcardDto",
+        name = "FlashcardDto",
         description = "不會用到，只是拿來給其他字卡繼承用的 Data Transfer Object"
 )
-public abstract class AbstractFlashcardDto {
+public abstract class FlashcardDto {
 
-    protected AbstractFlashcardDto(FlashcardType type) {
+    protected FlashcardDto(FlashcardType type) {
         this.type = type;
     }
 
