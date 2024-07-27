@@ -63,8 +63,15 @@ public class ReviewInfo {
     }
 
     public ReviewState createState(ReviewOption option) {
-        return new ReviewState(null, option, this.reviewLevel,
-                this.reviewInterval, this.lastReviewed, this.nextReview);
+        return new ReviewState(
+                null,
+                this.reviewLevel,
+                this.reviewInterval,
+                option,
+                this.lastReviewed,
+                this.nextReview,
+                LocalDateTime.now()
+        );
     }
 
     public void restoreState(ReviewState state) {

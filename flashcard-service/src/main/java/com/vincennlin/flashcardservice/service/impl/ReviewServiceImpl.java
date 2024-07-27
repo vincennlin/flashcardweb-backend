@@ -6,6 +6,7 @@ import com.vincennlin.flashcardservice.entity.review.ReviewState;
 import com.vincennlin.flashcardservice.exception.WebAPIException;
 import com.vincennlin.flashcardservice.mapper.FlashcardMapper;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
+import com.vincennlin.flashcardservice.payload.review.dto.ReviewStateDto;
 import com.vincennlin.flashcardservice.payload.review.request.ReviewRequest;
 import com.vincennlin.flashcardservice.repository.FlashcardRepository;
 import com.vincennlin.flashcardservice.repository.ReviewInfoRepository;
@@ -36,6 +37,20 @@ public class ReviewServiceImpl implements ReviewService {
         List<Flashcard> dueFlashcards = reviewInfoRepository.findDueFlashcardsByUserId(userId);
 
         return dueFlashcards.stream().map(flashcardMapper::mapToDto).toList();
+    }
+
+    @Override
+    public List<ReviewStateDto> getReviewStatesByFlashcardId(Long flashcardId) {
+
+        Flashcard flashcard = flashcardService.getFlashcardEntityById(flashcardId);
+
+        List<ReviewState> reviewStates = flashcard.getReviewInfo().getReviewStates();
+
+        if (reviewStates.isEmpty()) {
+            throw new WebAPIException(HttpStatus.NOT_FOUND, "No review states found for flashcard with id " + flashcardId);
+        }
+
+        return reviewStates.stream().map(flashcardMapper::mapReviewStateToDto).toList();
     }
 
     @Override
