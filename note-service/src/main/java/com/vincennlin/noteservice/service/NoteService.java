@@ -1,7 +1,7 @@
 package com.vincennlin.noteservice.service;
 
 
-import com.vincennlin.noteservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.noteservice.payload.note.dto.NoteDto;
 import com.vincennlin.noteservice.payload.note.page.NotePageResponse;
 import com.vincennlin.noteservice.payload.request.GenerateFlashcardRequest;
@@ -26,7 +26,7 @@ public interface NoteService {
 
     Boolean isNoteOwner(Long noteId);
 
-    AbstractFlashcardDto generateFlashcard(Long noteId, GenerateFlashcardRequest request);
+    FlashcardDto generateFlashcard(Long noteId, GenerateFlashcardRequest request);
 
-    List<AbstractFlashcardDto> generateFlashcards(Long noteId, GenerateFlashcardsRequest request);
+    List<FlashcardDto> generateFlashcards(Long noteId, GenerateFlashcardsRequest request);
 }

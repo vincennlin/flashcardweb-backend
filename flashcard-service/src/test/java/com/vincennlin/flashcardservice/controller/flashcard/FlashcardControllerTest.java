@@ -3,7 +3,7 @@ package com.vincennlin.flashcardservice.controller.flashcard;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vincennlin.flashcardservice.client.NoteServiceClient;
 import com.vincennlin.flashcardservice.exception.ResourceNotFoundException;
-import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.*;
 import com.vincennlin.flashcardservice.payload.tag.TagDto;
 import jakarta.transaction.Transactional;
@@ -639,7 +639,7 @@ class FlashcardControllerTest {
 
         mockNoteServiceIsOwnerResponse(true);
 
-        List<AbstractFlashcardDto> flashcards = List.of(
+        List<FlashcardDto> flashcards = List.of(
                 getShortAnswerFlashcardDtoTemplate(),
                 getFillInTheBlankFlashcardDtoTemplate(),
                 getMultipleChoiceFlashcardDtoTemplate(),
@@ -684,7 +684,7 @@ class FlashcardControllerTest {
 
         mockNoteServiceIsOwnerResponse(null);
 
-        List<AbstractFlashcardDto> flashcards = List.of(
+        List<FlashcardDto> flashcards = List.of(
                 getShortAnswerFlashcardDtoTemplate(),
                 getFillInTheBlankFlashcardDtoTemplate(),
                 getMultipleChoiceFlashcardDtoTemplate(),
@@ -707,7 +707,7 @@ class FlashcardControllerTest {
 
         mockNoteServiceIsOwnerResponse(false);
 
-        List<AbstractFlashcardDto> flashcards = List.of(
+        List<FlashcardDto> flashcards = List.of(
                 getShortAnswerFlashcardDtoTemplate(),
                 getFillInTheBlankFlashcardDtoTemplate(),
                 getMultipleChoiceFlashcardDtoTemplate(),

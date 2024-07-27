@@ -56,14 +56,21 @@ docker run -d -p 8761:8761 -e "spring.profiles.active=prod" -e "config.server.ip
 docker run -d -p 8761:8761 -e
 ````
 --------------------------------------------
-
+Create Network for MySQL Docker Container
+````sh
+docker network create flashcardweb-network
+````
 Run MySQL Docker Container
 ````sh
 docker run -d -p 3306:3306 --name flashcardweb-mysql -e MYSQL_ROOT_PASSWORD=FlashcardwebRootPassw0rd -e MYSQL_DATABASE=flashcardweb -e MYSQL_USER=FlashcardwebUser -e MYSQL_PASSWORD=FlashcardwebUserPassw0rd mysql:latest
 ````
+Connect MySQL Docker Container to Network
+````sh
+docker network connect flashcardweb-network flashcardweb-mysql
+````
 Run Bash in MySQL Docker Container
 ````sh
-docker exec -it c0acd75cfc58 bash
+docker exec -it c9825f078097 bash
 ````
 --------------------------------------------
 
@@ -141,4 +148,11 @@ docker-compose version
 ````
 ````sh
 docker-compose up -d
+````
+---------------------------------------------
+在 AWS EC2 上運行前端
+````sh
+docker pull vincennlin/flashcardweb-frontend
+docker run -d -p 3000:3000 --name flashcardweb-frontend vincennlin/flashcardweb-frontend
+docker network connect flashcardweb-network flashcardweb-frontend
 ````

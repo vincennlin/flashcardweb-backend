@@ -3,7 +3,7 @@ package com.vincennlin.aiservice.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vincennlin.aiservice.exception.JsonFormatException;
 import com.vincennlin.aiservice.payload.flashcard.type.FlashcardType;
-import com.vincennlin.aiservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.aiservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.aiservice.payload.request.GenerateFlashcardRequest;
 import com.vincennlin.aiservice.payload.request.GenerateFlashcardsRequest;
 import com.vincennlin.aiservice.service.AiService;
@@ -35,7 +35,7 @@ public class AiServiceImpl implements AiService {
     }
 
     @Override
-    public AbstractFlashcardDto generateFlashcard(GenerateFlashcardRequest request) {
+    public FlashcardDto generateFlashcard(GenerateFlashcardRequest request) {
 
         List<Message> messages = List.of(
                 request.getType().getSystemMessage(),
@@ -54,7 +54,7 @@ public class AiServiceImpl implements AiService {
     }
 
     @Override
-    public List<AbstractFlashcardDto> generateFlashcards(GenerateFlashcardsRequest request) {
+    public List<FlashcardDto> generateFlashcards(GenerateFlashcardsRequest request) {
 
         List<Message> messages = List.of(
                 request.getInitialSystemMessage(),
@@ -68,12 +68,12 @@ public class AiServiceImpl implements AiService {
 
         String responseContent = response.getResults().get(0).getOutput().getContent();
 
-        List<AbstractFlashcardDto> generatedFlashcards = parseGeneratedFlashcardsJson(responseContent);
+        List<FlashcardDto> generatedFlashcards = parseGeneratedFlashcardsJson(responseContent);
 
         return generatedFlashcards;
     }
 
-    private AbstractFlashcardDto parseGeneratedFlashcardJson(String responseContent, FlashcardType flashcardType) {
+    private FlashcardDto parseGeneratedFlashcardJson(String responseContent, FlashcardType flashcardType) {
         responseContent = preProcessJson(responseContent);
         try {
             return objectMapper.readValue(preProcessJson(responseContent), flashcardType.getFlashcardDtoClass());
@@ -82,10 +82,10 @@ public class AiServiceImpl implements AiService {
         }
     }
 
-    private List<AbstractFlashcardDto> parseGeneratedFlashcardsJson(String responseContent) {
+    private List<FlashcardDto> parseGeneratedFlashcardsJson(String responseContent) {
         responseContent = preProcessJson(responseContent);
         try {
-            return objectMapper.readValue(preProcessJson(responseContent), objectMapper.getTypeFactory().constructCollectionType(List.class, AbstractFlashcardDto.class));
+            return objectMapper.readValue(preProcessJson(responseContent), objectMapper.getTypeFactory().constructCollectionType(List.class, FlashcardDto.class));
         } catch (Exception e) {
             throw new JsonFormatException("Failed to parse response content to FlashcardDto", e.getMessage());
         }
