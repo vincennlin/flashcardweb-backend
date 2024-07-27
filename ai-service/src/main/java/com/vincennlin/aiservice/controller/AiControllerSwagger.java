@@ -1,6 +1,6 @@
 package com.vincennlin.aiservice.controller;
 
-import com.vincennlin.aiservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.aiservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.aiservice.payload.request.GenerateFlashcardRequest;
 import com.vincennlin.aiservice.payload.request.GenerateFlashcardsRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -57,7 +57,7 @@ public interface AiControllerSwagger {
             )
     )
     @SecurityRequirement(name = "Bear Authentication")
-    ResponseEntity<AbstractFlashcardDto> generateFlashcard(@RequestBody
+    ResponseEntity<FlashcardDto> generateFlashcard(@RequestBody
                                                                    @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                                            content = @Content(
                                                                                    mediaType = "application/json",
@@ -125,7 +125,7 @@ public interface AiControllerSwagger {
             )
     )
     @SecurityRequirement(name = "Bear Authentication")
-    ResponseEntity<List<AbstractFlashcardDto>> generateFlashcards(@RequestBody
+    ResponseEntity<List<FlashcardDto>> generateFlashcards(@RequestBody
                                                                          @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                                                  content = @Content(
                                                                                          mediaType = "application/json",

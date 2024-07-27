@@ -1,25 +1,24 @@
-package com.vincennlin.flashcardservice.payload.flashcard.dto;
+package com.vincennlin.noteservice.payload.flashcard.dto;
 
 import com.fasterxml.jackson.annotation.*;
-import com.vincennlin.flashcardservice.entity.flashcard.AbstractFlashcard;
-import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.FillInTheBlankFlashcardDto;
-import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.MultipleChoiceFlashcardDto;
-import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.ShortAnswerFlashcardDto;
-import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.TrueFalseFlashcardDto;
-import com.vincennlin.flashcardservice.payload.flashcard.type.FlashcardType;
-import com.vincennlin.flashcardservice.operation.Operation;
-import com.vincennlin.flashcardservice.payload.tag.TagDto;
+import com.vincennlin.noteservice.payload.flashcard.dto.impl.FillInTheBlankFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.dto.impl.MultipleChoiceFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.dto.impl.ShortAnswerFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.dto.impl.TrueFalseFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.type.FlashcardType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.modelmapper.ModelMapper;
-
-import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         property = "type",
@@ -33,12 +32,12 @@ import java.util.List;
         @JsonSubTypes.Type(value = TrueFalseFlashcardDto.class, name = "TRUE_FALSE")
 })
 @Schema(
-        name = "AbstractFlashcardDto",
+        name = "FlashcardDto",
         description = "不會用到，只是拿來給其他字卡繼承用的 Data Transfer Object"
 )
-public abstract class AbstractFlashcardDto {
+public abstract class FlashcardDto {
 
-    protected AbstractFlashcardDto(FlashcardType type) {
+    protected FlashcardDto(FlashcardType type) {
         this.type = type;
     }
 
@@ -47,7 +46,6 @@ public abstract class AbstractFlashcardDto {
             description = "字卡 id",
             example = "1"
     )
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @Schema(
@@ -90,19 +88,6 @@ public abstract class AbstractFlashcardDto {
     @JsonProperty(value = "user_id")
     private Long userId;
 
-    @Schema(
-            name = "tags",
-            description = "字卡標籤",
-            example = "[{\"id\":1,\"tag_name\":\"Data Structure\",\"flashcard_count\":1}]"
-    )
-    private List<TagDto> tags;
-
     @JsonIgnore
     private ModelMapper modelMapper = new ModelMapper();
-
-    public AbstractFlashcard mapToEntity() {
-        return modelMapper.map(this, getType().getFlashcardEntityClass());
-    }
-
-    public abstract void execute(Operation operation);
 }

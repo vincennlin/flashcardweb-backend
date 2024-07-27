@@ -1,7 +1,9 @@
 package com.vincennlin.flashcardservice.entity.flashcard;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.vincennlin.flashcardservice.entity.review.ReviewInfo;
 import com.vincennlin.flashcardservice.entity.tag.Tag;
+import com.vincennlin.flashcardservice.payload.review.option.ReviewOption;
 import com.vincennlin.flashcardservice.payload.flashcard.type.FlashcardType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,6 +13,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.List;
 @Getter
 @Setter
@@ -19,7 +22,7 @@ import java.util.List;
 @Entity
 @Table(name = "flashcards")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class AbstractFlashcard {
+public abstract class Flashcard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +44,14 @@ public abstract class AbstractFlashcard {
     @Column(name = "note_id", nullable = false, updatable = false)
     private Long noteId;
 
+    @CreationTimestamp
+    @Column(name = "date_created")
+    private LocalDateTime dateCreated;
+
+    @UpdateTimestamp
+    @Column(name = "last_updated")
+    private LocalDateTime lastUpdated;
+
     @ManyToMany(
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             fetch = FetchType.EAGER
@@ -53,11 +64,13 @@ public abstract class AbstractFlashcard {
     @JsonManagedReference
     private List<Tag> tags;
 
-    @CreationTimestamp
-    @Column(name = "date_created")
-    private String dateCreated;
+    @OneToOne(
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL
+    )
+    private ReviewInfo reviewInfo;
 
-    @UpdateTimestamp
-    @Column(name = "last_updated")
-    private String lastUpdated;
+    public void review(ReviewOption option) {
+        this.reviewInfo.review(option);
+    }
 }

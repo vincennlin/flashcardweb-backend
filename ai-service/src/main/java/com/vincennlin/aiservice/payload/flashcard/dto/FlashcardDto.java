@@ -35,11 +35,11 @@ import lombok.Setter;
         @JsonSubTypes.Type(value = TrueFalseFlashcardDto.class, name = "TRUE_FALSE")
 })
 @Schema(
-        name = "AbstractFlashcardDto"
+        name = "FlashcardDto"
 )
-public abstract class AbstractFlashcardDto {
+public abstract class FlashcardDto {
 
-    protected AbstractFlashcardDto(FlashcardType type) {
+    protected FlashcardDto(FlashcardType type) {
         this.type = type;
     }
 

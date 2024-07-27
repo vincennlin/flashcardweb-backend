@@ -1,7 +1,7 @@
 package com.vincennlin.noteservice.controller;
 
 import com.vincennlin.noteservice.constant.AppConstants;
-import com.vincennlin.noteservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.noteservice.payload.note.dto.NoteDto;
 import com.vincennlin.noteservice.payload.note.page.NotePageResponse;
 import com.vincennlin.noteservice.payload.request.GenerateFlashcardRequest;
@@ -531,8 +531,8 @@ public interface NoteControllerSwagger {
             )
     )
     @SecurityRequirement(name = "Bear Authentication")
-    ResponseEntity<AbstractFlashcardDto> generateFlashcard(@PathVariable(name = "note_id") @Min(1) Long id,
-                                                           @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+    ResponseEntity<FlashcardDto> generateFlashcard(@PathVariable(name = "note_id") @Min(1) Long id,
+                                                   @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                                    content = @Content(
                                                                            mediaType = "application/json",
                                                                            examples = {
@@ -620,8 +620,8 @@ public interface NoteControllerSwagger {
             )
     )
     @SecurityRequirement(name = "Bear Authentication")
-    ResponseEntity<List<AbstractFlashcardDto>> generateFlashcards(@PathVariable(name = "note_id") @Min(1) Long id,
-                                                                  @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+    ResponseEntity<List<FlashcardDto>> generateFlashcards(@PathVariable(name = "note_id") @Min(1) Long id,
+                                                          @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                                           content = @Content(
                                                                                   mediaType = "application/json",
                                                                                   examples = @ExampleObject(value = """

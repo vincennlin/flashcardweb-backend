@@ -7,7 +7,7 @@ import com.vincennlin.noteservice.payload.flashcard.dto.impl.FillInTheBlankFlash
 import com.vincennlin.noteservice.payload.flashcard.dto.impl.MultipleChoiceFlashcardDto;
 import com.vincennlin.noteservice.payload.flashcard.type.FlashcardType;
 import com.vincennlin.noteservice.payload.note.dto.NoteDto;
-import com.vincennlin.noteservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.noteservice.payload.flashcard.dto.impl.ShortAnswerFlashcardDto;
 import com.vincennlin.noteservice.payload.flashcard.dto.impl.TrueFalseFlashcardDto;
 import com.vincennlin.noteservice.payload.request.GenerateFlashcardRequest;
@@ -454,7 +454,7 @@ class NoteServiceApplicationTests {
 				.andExpect(jsonPath("$", hasSize(4)));
 	}
 
-	private ResponseEntity<AbstractFlashcardDto> getMockFlashcardServiceFlashcardResponse() {
+	private ResponseEntity<FlashcardDto> getMockFlashcardServiceFlashcardResponse() {
 
 		ShortAnswerFlashcardDto flashcardDto = (ShortAnswerFlashcardDto) FlashcardType.SHORT_ANSWER.getFlashcardExampleDto();
 		flashcardDto.setId(1L);
@@ -464,7 +464,7 @@ class NoteServiceApplicationTests {
 		return new ResponseEntity<>(flashcardDto, HttpStatus.OK);
 	}
 
-	private ResponseEntity<List<AbstractFlashcardDto>> getMockFlashcardServiceFlashcardsResponse() {
+	private ResponseEntity<List<FlashcardDto>> getMockFlashcardServiceFlashcardsResponse() {
 
 		ShortAnswerFlashcardDto flashcardDto1 = (ShortAnswerFlashcardDto) FlashcardType.SHORT_ANSWER.getFlashcardExampleDto();
 		flashcardDto1.setId(1L);
@@ -486,7 +486,7 @@ class NoteServiceApplicationTests {
 		flashcardDto4.setNoteId(1L);
 		flashcardDto4.setUserId(2L);
 
-		List<AbstractFlashcardDto> abstractFlashcardList = List.of(flashcardDto1, flashcardDto2, flashcardDto3, flashcardDto4);
+		List<FlashcardDto> abstractFlashcardList = List.of(flashcardDto1, flashcardDto2, flashcardDto3, flashcardDto4);
 
 		return new ResponseEntity<>(abstractFlashcardList, HttpStatus.OK);
 	}
@@ -502,12 +502,12 @@ class NoteServiceApplicationTests {
 				.thenReturn(getMockFlashcardServiceFlashcardsResponse());
 	}
 
-	private ResponseEntity<AbstractFlashcardDto> getMockAiGenerateFlashcardResponse() {
+	private ResponseEntity<FlashcardDto> getMockAiGenerateFlashcardResponse() {
 		return new ResponseEntity<>(FlashcardType.SHORT_ANSWER.getFlashcardExampleDto(), HttpStatus.OK);
 	}
 
-	private ResponseEntity<List<AbstractFlashcardDto>> getMockAiGenerateFlashcardsResponse() {
-		List<AbstractFlashcardDto> generatedFlashcard = List.of(
+	private ResponseEntity<List<FlashcardDto>> getMockAiGenerateFlashcardsResponse() {
+		List<FlashcardDto> generatedFlashcard = List.of(
 				FlashcardType.SHORT_ANSWER.getFlashcardExampleDto(),
 				FlashcardType.FILL_IN_THE_BLANK.getFlashcardExampleDto(),
 				FlashcardType.MULTIPLE_CHOICE.getFlashcardExampleDto(),

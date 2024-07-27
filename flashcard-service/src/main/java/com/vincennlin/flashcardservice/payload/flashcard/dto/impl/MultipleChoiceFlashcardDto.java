@@ -3,7 +3,7 @@ package com.vincennlin.flashcardservice.payload.flashcard.dto.impl;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vincennlin.flashcardservice.operation.Operation;
-import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.flashcardservice.payload.flashcard.type.FlashcardType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
@@ -21,7 +21,7 @@ import java.util.List;
         name = "MultipleChoiceFlashcardDto",
         description = "選擇題的 Data Transfer Object"
 )
-public class MultipleChoiceFlashcardDto extends AbstractFlashcardDto {
+public class MultipleChoiceFlashcardDto extends FlashcardDto {
 
     public MultipleChoiceFlashcardDto() {
         super(FlashcardType.MULTIPLE_CHOICE);

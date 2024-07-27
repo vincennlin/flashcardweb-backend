@@ -1,7 +1,7 @@
 package com.vincennlin.noteservice.payload.flashcard.dto.impl;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vincennlin.noteservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.noteservice.payload.flashcard.type.FlashcardType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
@@ -18,7 +18,7 @@ import lombok.Setter;
         name = "TrueFalseFlashcardDto",
         description = "是非題的 Data Transfer Object"
 )
-public class TrueFalseFlashcardDto extends AbstractFlashcardDto {
+public class TrueFalseFlashcardDto extends FlashcardDto {
 
     public TrueFalseFlashcardDto() {
         super(FlashcardType.TRUE_FALSE);

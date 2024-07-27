@@ -1,6 +1,6 @@
 package com.vincennlin.flashcardservice.controller.flashcard;
 
-import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -10,9 +10,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -117,7 +115,7 @@ public interface FlashcardControllerSwagger {
             )
     )
     @SecurityRequirement(name = "Bear Authentication")
-    ResponseEntity<List<AbstractFlashcardDto>> getFlashcardsByNoteId(@PathVariable(name = "note_id") @Min(1) Long noteId);
+    ResponseEntity<List<FlashcardDto>> getFlashcardsByNoteId(@PathVariable(name = "note_id") @Min(1) Long noteId);
 
     @Operation(
             summary = "取得特定字卡",
@@ -140,7 +138,7 @@ public interface FlashcardControllerSwagger {
             )
     )
     @SecurityRequirement(name = "Bear Authentication")
-    ResponseEntity<AbstractFlashcardDto> getFlashcardById(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId);
+    ResponseEntity<FlashcardDto> getFlashcardById(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId);
 
     @Operation(
             summary = "[NEW] 利用標籤查詢字卡",
@@ -222,7 +220,7 @@ public interface FlashcardControllerSwagger {
             )
     )
     @SecurityRequirement(name = "Bear Authentication")
-    ResponseEntity<List<AbstractFlashcardDto>> getFlashcardsByTagNames(@RequestParam(name = "tag") List<String> tagNames);
+    ResponseEntity<List<FlashcardDto>> getFlashcardsByTagNames(@RequestParam(name = "tag") List<String> tagNames);
 
     @Operation(
             summary = "新增字卡",
@@ -246,8 +244,8 @@ public interface FlashcardControllerSwagger {
             )
     )
     @SecurityRequirement(name = "Bear Authentication")
-    ResponseEntity<AbstractFlashcardDto> createFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
-                                                                @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+    ResponseEntity<FlashcardDto> createFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
+                                                 @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                                         content = @Content(
                                                                                 mediaType = "application/json",
                                                                                 examples = @ExampleObject(value = """
@@ -258,7 +256,7 @@ public interface FlashcardControllerSwagger {
                                                                                 }
                                                                                 """)
                                                                         )
-                                                                ) AbstractFlashcardDto flashcardDto);
+                                                                ) FlashcardDto flashcardDto);
 
     @Operation(
             summary = "新增多張字卡",
@@ -343,8 +341,8 @@ public interface FlashcardControllerSwagger {
             )
     )
     @SecurityRequirement(name = "Bear Authentication")
-    ResponseEntity<List<AbstractFlashcardDto>> createFlashcards(@PathVariable(name = "note_id") @Min(1) Long noteId,
-                                                                       @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+    ResponseEntity<List<FlashcardDto>> createFlashcards(@PathVariable(name = "note_id") @Min(1) Long noteId,
+                                                        @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                                                content = @Content(
                                                                                        mediaType = "application/json",
                                                                                        examples = @ExampleObject(value = """
@@ -397,7 +395,7 @@ public interface FlashcardControllerSwagger {
                                                                                                ]
                                                                                                """)
                                                                                )
-                                                                       ) List<AbstractFlashcardDto> flashcardDtoList);
+                                                                       ) List<FlashcardDto> flashcardDtoList);
 
     @Operation(
             summary = "更新字卡",
@@ -421,8 +419,8 @@ public interface FlashcardControllerSwagger {
             )
     )
     @SecurityRequirement(name = "Bear Authentication")
-    ResponseEntity<AbstractFlashcardDto> updateFlashcard(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
-                                                                @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+    ResponseEntity<FlashcardDto> updateFlashcard(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
+                                                 @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                                         content = @Content(
                                                                                 mediaType = "application/json",
                                                                                 examples = @ExampleObject(value = """
@@ -433,7 +431,7 @@ public interface FlashcardControllerSwagger {
                                                                                 }
                                                                                 """)
                                                                         )
-                                                                ) AbstractFlashcardDto flashcardDto);
+                                                                ) FlashcardDto flashcardDto);
 
     @Operation(
             summary = "刪除字卡",

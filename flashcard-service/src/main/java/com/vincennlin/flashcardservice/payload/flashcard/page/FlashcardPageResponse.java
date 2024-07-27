@@ -1,6 +1,6 @@
 package com.vincennlin.flashcardservice.payload.flashcard.page;
 
-import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -17,7 +17,7 @@ public class FlashcardPageResponse {
             name = "content",
             description = "字卡內容"
     )
-    List<AbstractFlashcardDto> content;
+    List<FlashcardDto> content;
 
     @Schema(
             name = "pageNo",

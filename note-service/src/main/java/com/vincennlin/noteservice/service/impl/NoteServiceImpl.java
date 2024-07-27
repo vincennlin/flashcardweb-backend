@@ -8,7 +8,7 @@ import com.vincennlin.noteservice.entity.Note;
 import com.vincennlin.noteservice.exception.ResourceNotFoundException;
 import com.vincennlin.noteservice.payload.note.dto.NoteDto;
 import com.vincennlin.noteservice.payload.note.page.NotePageResponse;
-import com.vincennlin.noteservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.noteservice.payload.request.GenerateFlashcardRequest;
 import com.vincennlin.noteservice.payload.request.GenerateFlashcardsRequest;
 import com.vincennlin.noteservice.repository.NoteRepository;
@@ -62,11 +62,11 @@ public class NoteServiceImpl implements NoteService {
         Note note = noteRepository.findById(noteId).orElseThrow(() ->
                 new ResourceNotFoundException("Note", "id", noteId));
 
-        List<AbstractFlashcardDto> abstractFlashcardDtoList = getFlashcardsByNoteId(noteId);
+        List<FlashcardDto> flashcardDtoList = getFlashcardsByNoteId(noteId);
 
         NoteDto noteDto = modelMapper.map(note, NoteDto.class);
 
-        noteDto.setFlashcards(abstractFlashcardDtoList);
+        noteDto.setFlashcards(flashcardDtoList);
 
         return noteDto;
     }
@@ -127,7 +127,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public AbstractFlashcardDto generateFlashcard(Long noteId, GenerateFlashcardRequest request) {
+    public FlashcardDto generateFlashcard(Long noteId, GenerateFlashcardRequest request) {
 
         Note note = noteRepository.findById(noteId).orElseThrow(() ->
                 new ResourceNotFoundException("Note", "id", noteId));
@@ -136,13 +136,13 @@ public class NoteServiceImpl implements NoteService {
 
         request.setContent(note.getContent());
 
-        AbstractFlashcardDto generatedFlashcard = aiServiceClient.generateFlashcard(request, getAuthorization()).getBody();
+        FlashcardDto generatedFlashcard = aiServiceClient.generateFlashcard(request, getAuthorization()).getBody();
 
         return flashcardServiceClient.createFlashcard(noteId, generatedFlashcard, getAuthorization()).getBody();
     }
 
     @Override
-    public List<AbstractFlashcardDto> generateFlashcards(Long noteId, GenerateFlashcardsRequest request) {
+    public List<FlashcardDto> generateFlashcards(Long noteId, GenerateFlashcardsRequest request) {
 
         Note note = noteRepository.findById(noteId).orElseThrow(() ->
                 new ResourceNotFoundException("Note", "id", noteId));
@@ -151,7 +151,7 @@ public class NoteServiceImpl implements NoteService {
 
         request.setNote(mapToDto(note));
 
-        List<AbstractFlashcardDto> generatedFlashcards = aiServiceClient.generateFlashcards(request, getAuthorization()).getBody();
+        List<FlashcardDto> generatedFlashcards = aiServiceClient.generateFlashcards(request, getAuthorization()).getBody();
 
         return flashcardServiceClient.createFlashcards(noteId, generatedFlashcards, getAuthorization()).getBody();
     }
@@ -164,7 +164,7 @@ public class NoteServiceImpl implements NoteService {
         return getAuthentication().getCredentials().toString();
     }
 
-    private List<AbstractFlashcardDto> getFlashcardsByNoteId(Long noteId) {
+    private List<FlashcardDto> getFlashcardsByNoteId(Long noteId) {
         try{
             return flashcardServiceClient.getFlashcardsByNoteId(noteId, getAuthorization()).getBody();
         } catch (FeignException e) {
@@ -201,8 +201,8 @@ public class NoteServiceImpl implements NoteService {
                 modelMapper.map(note, NoteDto.class)).toList();
 
         for (NoteDto noteDto : content) {
-            List<AbstractFlashcardDto> abstractFlashcardDtoList = getFlashcardsByNoteId(noteDto.getId());
-            noteDto.setFlashcards(abstractFlashcardDtoList);
+            List<FlashcardDto> flashcardDtoList = getFlashcardsByNoteId(noteDto.getId());
+            noteDto.setFlashcards(flashcardDtoList);
         }
 
         NotePageResponse notePageResponse = new NotePageResponse();
