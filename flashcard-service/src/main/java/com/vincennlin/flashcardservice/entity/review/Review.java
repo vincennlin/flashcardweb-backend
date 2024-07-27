@@ -29,10 +29,10 @@ public class Review {
     private Integer reviewInterval;
 
     @Column(name = "last_reviewed")
-    private String lastReviewed;
+    private LocalDateTime lastReviewed;
 
     @Column(name = "next_review")
-    private String nextReview;
+    private LocalDateTime nextReview;
 
     @OneToOne(
             fetch = FetchType.LAZY,
@@ -45,7 +45,7 @@ public class Review {
         this.reviewLevel += 1;
 
         LocalDateTime now = LocalDateTime.now();
-        this.lastReviewed = now.toString();
-        this.nextReview = now.plusDays(this.reviewInterval).toString();
+        this.lastReviewed = now;
+        this.nextReview = now.plusDays(this.reviewInterval);
     }
 }
