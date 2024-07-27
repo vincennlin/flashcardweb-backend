@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -16,6 +18,7 @@ public class ReviewDto {
     public ReviewDto() {
         this.reviewLevel = 0;
         this.reviewInterval = 1;
+        this.nextReview = LocalDateTime.now();
     }
 
     @JsonProperty("review_level")
@@ -25,8 +28,8 @@ public class ReviewDto {
     private Integer reviewInterval;
 
     @JsonProperty("last_reviewed")
-    private String lastReviewed;
+    private LocalDateTime lastReviewed;
 
     @JsonProperty("next_review")
-    private String nextReview;
+    private LocalDateTime nextReview;
 }

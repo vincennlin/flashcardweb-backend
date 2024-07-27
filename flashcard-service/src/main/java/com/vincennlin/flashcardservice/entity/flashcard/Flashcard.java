@@ -13,6 +13,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.List;
 @Getter
 @Setter
@@ -45,11 +46,11 @@ public abstract class Flashcard {
 
     @CreationTimestamp
     @Column(name = "date_created")
-    private String dateCreated;
+    private LocalDateTime dateCreated;
 
     @UpdateTimestamp
     @Column(name = "last_updated")
-    private String lastUpdated;
+    private LocalDateTime lastUpdated;
 
     @ManyToMany(
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},

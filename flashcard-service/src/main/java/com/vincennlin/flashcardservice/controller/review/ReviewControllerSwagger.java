@@ -5,5 +5,5 @@ import com.vincennlin.flashcardservice.payload.review.option.AbstractReviewOptio
 
 public interface ReviewControllerSwagger {
 
-    FlashcardDto reviewFlashcard(Long flashcardId, AbstractReviewOption abstractReviewOption);
+//    FlashcardDto reviewFlashcard(Long flashcardId, AbstractReviewOption abstractReviewOption);
 }

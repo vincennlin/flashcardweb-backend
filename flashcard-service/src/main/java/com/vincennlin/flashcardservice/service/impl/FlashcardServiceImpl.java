@@ -256,8 +256,21 @@ public class FlashcardServiceImpl implements FlashcardService {
         flashcardRepository.deleteByNoteId(noteId);
     }
 
-    private Long getCurrentUserId() {
+    @Override
+    public Long getCurrentUserId() {
         return Long.parseLong(getAuthentication().getPrincipal().toString());
+    }
+
+    @Override
+    public FlashcardDto mapToDto(Flashcard flashcard) {
+
+        FlashcardDto flashcardDto = modelMapper.map(flashcard, flashcard.getType().getFlashcardDtoClass());
+
+        ReviewDto reviewDto = flashcard.getReview() != null ? modelMapper.map(flashcard.getReview(), ReviewDto.class) : null;
+
+        flashcardDto.setReview(reviewDto);
+
+        return modelMapper.map(flashcard, flashcard.getType().getFlashcardDtoClass());
     }
 
     private String getAuthorization() {
@@ -298,16 +311,5 @@ public class FlashcardServiceImpl implements FlashcardService {
             throw e;
         }
         return response.getBody();
-    }
-
-    public FlashcardDto mapToDto(Flashcard flashcard) {
-
-        FlashcardDto flashcardDto = modelMapper.map(flashcard, flashcard.getType().getFlashcardDtoClass());
-
-        ReviewDto reviewDto = flashcard.getReview() != null ? modelMapper.map(flashcard.getReview(), ReviewDto.class) : null;
-
-        flashcardDto.setReview(reviewDto);
-
-        return modelMapper.map(flashcard, flashcard.getType().getFlashcardDtoClass());
     }
 }

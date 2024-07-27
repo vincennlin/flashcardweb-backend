@@ -10,17 +10,26 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @AllArgsConstructor
 @RestController
 @Validated
 @RequestMapping("/api/v1")
-public class ReviewController {
+public class ReviewController implements ReviewControllerSwagger{
 
     private Environment env;
 
     private ReviewService reviewService;
 
-    @PostMapping("flashcard/{flashcard_id}/review")
+    @GetMapping("/flashcards/review")
+    public ResponseEntity<List<FlashcardDto>> getFlashcardsToReview() {
+        List<FlashcardDto> flashcardsResponse = reviewService.getFlashcardsToReview();
+
+        return new ResponseEntity<>(flashcardsResponse, HttpStatus.OK);
+    }
+
+    @PostMapping("/flashcard/{flashcard_id}/review")
     public ResponseEntity<FlashcardDto> reviewFlashcard(@PathVariable(name = "flashcard_id") Long flashcardId,
                                                         @RequestBody ReviewRequest request) {
 
