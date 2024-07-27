@@ -37,4 +37,12 @@ public class ReviewController implements ReviewControllerSwagger{
 
         return new ResponseEntity<>(updatedFlashcard, HttpStatus.OK);
     }
+
+    @PutMapping("/flashcard/{flashcard_id}/undo-review")
+    public ResponseEntity<FlashcardDto> undoReviewFlashcard(@PathVariable(name = "flashcard_id") Long flashcardId) {
+
+        FlashcardDto updatedFlashcard = reviewService.undoReviewFlashcard(flashcardId);
+
+        return new ResponseEntity<>(updatedFlashcard, HttpStatus.OK);
+    }
 }

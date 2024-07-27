@@ -27,6 +27,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -101,6 +102,7 @@ public class FlashcardServiceImpl implements FlashcardService {
             Flashcard flashcard = flashcardMapper.mapToEntity(flashcardDto);
 
             flashcard.getReviewInfo().setFlashcard(flashcard);
+            flashcard.getReviewInfo().setReviewStates(new ArrayList<>());
 
             Flashcard newFlashcard = flashcardRepository.save(flashcard);
 
