@@ -1,6 +1,7 @@
 package com.vincennlin.flashcardservice.controller.review;
 
 import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
+import com.vincennlin.flashcardservice.payload.review.dto.ReviewStateDto;
 import com.vincennlin.flashcardservice.payload.review.request.ReviewRequest;
 import com.vincennlin.flashcardservice.service.ReviewService;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,13 @@ public class ReviewController implements ReviewControllerSwagger{
         List<FlashcardDto> flashcardsResponse = reviewService.getFlashcardsToReview();
 
         return new ResponseEntity<>(flashcardsResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/flashcard/{flashcard_id}/review-history")
+    public ResponseEntity<List<ReviewStateDto>> getReviewHistoryByFlashcardId(@PathVariable(name = "flashcard_id") Long flashcardId) {
+        List<ReviewStateDto> reviewHistory = reviewService.getReviewStatesByFlashcardId(flashcardId);
+
+        return new ResponseEntity<>(reviewHistory, HttpStatus.OK);
     }
 
     @PostMapping("/flashcard/{flashcard_id}/review")
