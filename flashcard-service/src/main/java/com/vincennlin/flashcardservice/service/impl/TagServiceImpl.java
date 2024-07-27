@@ -23,9 +23,8 @@ import java.util.List;
 @Service
 public class TagServiceImpl implements TagService {
 
-    private final TagRepository tagRepository;
-
     private final FlashcardRepository flashcardRepository;
+    private final TagRepository tagRepository;
 
     private ModelMapper modelMapper;
 

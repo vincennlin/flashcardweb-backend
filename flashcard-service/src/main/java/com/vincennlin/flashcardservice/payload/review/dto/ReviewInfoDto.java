@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -13,9 +12,9 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ReviewDto {
+public class ReviewInfoDto {
 
-    public ReviewDto() {
+    public ReviewInfoDto() {
         this.reviewLevel = 0;
         this.reviewInterval = 1;
         this.nextReview = LocalDateTime.now();

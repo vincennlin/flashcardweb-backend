@@ -17,13 +17,12 @@ import java.util.List;
 @Service
 public class ReviewServiceImpl implements ReviewService {
 
-    private final ReviewRepository reviewRepository;
+    private final FlashcardMapper flashcardMapper;
 
     private final FlashcardService flashcardService;
 
     private final FlashcardRepository flashcardRepository;
-
-    private final FlashcardMapper flashcardMapper;
+    private final ReviewRepository reviewRepository;
 
     @Override
     public List<FlashcardDto> getFlashcardsToReview() {
