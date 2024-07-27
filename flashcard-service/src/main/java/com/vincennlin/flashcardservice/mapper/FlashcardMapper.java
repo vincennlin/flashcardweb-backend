@@ -1,9 +1,9 @@
 package com.vincennlin.flashcardservice.mapper;
 
 import com.vincennlin.flashcardservice.entity.flashcard.Flashcard;
-import com.vincennlin.flashcardservice.entity.review.Review;
+import com.vincennlin.flashcardservice.entity.review.ReviewInfo;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
-import com.vincennlin.flashcardservice.payload.review.dto.ReviewDto;
+import com.vincennlin.flashcardservice.payload.review.dto.ReviewInfoDto;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -18,8 +18,8 @@ public class FlashcardMapper {
         this.modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-        Converter<Review, ReviewDto> reviewConverter = context ->
-                context.getSource() == null ? null : modelMapper.map(context.getSource(), ReviewDto.class);
+        Converter<ReviewInfo, ReviewInfoDto> reviewConverter = context ->
+                context.getSource() == null ? null : modelMapper.map(context.getSource(), ReviewInfoDto.class);
 
         modelMapper.addConverter(reviewConverter);
     }

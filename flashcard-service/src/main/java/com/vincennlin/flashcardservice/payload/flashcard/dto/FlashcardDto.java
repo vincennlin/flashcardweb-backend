@@ -9,7 +9,7 @@ import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.ShortAnswerFla
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.TrueFalseFlashcardDto;
 import com.vincennlin.flashcardservice.payload.flashcard.type.FlashcardType;
 import com.vincennlin.flashcardservice.operation.Operation;
-import com.vincennlin.flashcardservice.payload.review.dto.ReviewDto;
+import com.vincennlin.flashcardservice.payload.review.dto.ReviewInfoDto;
 import com.vincennlin.flashcardservice.payload.tag.TagDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
@@ -42,7 +42,7 @@ public abstract class FlashcardDto {
 
     protected FlashcardDto(FlashcardType type) {
         this.type = type;
-        this.review = new ReviewDto();
+        this.reviewInfo = new ReviewInfoDto();
     }
 
     @Schema(
@@ -103,7 +103,7 @@ public abstract class FlashcardDto {
     @JsonProperty(
             value = "review_info"
     )
-    private ReviewDto review;
+    private ReviewInfoDto reviewInfo;
 
     @JsonIgnore
     private FlashcardMapper flashcardMapper = new FlashcardMapper();

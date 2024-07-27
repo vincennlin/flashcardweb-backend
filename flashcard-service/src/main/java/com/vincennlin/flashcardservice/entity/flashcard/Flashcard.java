@@ -1,7 +1,7 @@
 package com.vincennlin.flashcardservice.entity.flashcard;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.vincennlin.flashcardservice.entity.review.Review;
+import com.vincennlin.flashcardservice.entity.review.ReviewInfo;
 import com.vincennlin.flashcardservice.entity.tag.Tag;
 import com.vincennlin.flashcardservice.payload.review.option.ReviewOption;
 import com.vincennlin.flashcardservice.payload.flashcard.type.FlashcardType;
@@ -68,9 +68,9 @@ public abstract class Flashcard {
             fetch = FetchType.EAGER,
             cascade = CascadeType.ALL
     )
-    private Review review;
+    private ReviewInfo reviewInfo;
 
     public void review(ReviewOption option) {
-        this.review.review(option);
+        this.reviewInfo.review(option);
     }
 }
