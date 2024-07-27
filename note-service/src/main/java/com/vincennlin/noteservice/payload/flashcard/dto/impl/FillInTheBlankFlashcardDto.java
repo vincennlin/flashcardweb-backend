@@ -1,7 +1,7 @@
 package com.vincennlin.noteservice.payload.flashcard.dto.impl;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vincennlin.noteservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.noteservice.payload.flashcard.type.FlashcardType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -21,7 +21,7 @@ import java.util.List;
         name = "FillInTheBlankFlashcardDto",
         description = "填空題的 Data Transfer Object"
 )
-public class FillInTheBlankFlashcardDto extends AbstractFlashcardDto {
+public class FillInTheBlankFlashcardDto extends FlashcardDto {
 
     public FillInTheBlankFlashcardDto() {
         super(FlashcardType.FILL_IN_THE_BLANK);

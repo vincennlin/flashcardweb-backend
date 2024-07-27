@@ -1,13 +1,13 @@
 package com.vincennlin.flashcardservice.payload.flashcard.type;
 
-import com.vincennlin.flashcardservice.entity.flashcard.AbstractFlashcard;
-import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.flashcardservice.entity.flashcard.Flashcard;
+import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
 
 public interface AbstractFlashcardType {
 
-    AbstractFlashcardDto getFlashcardExampleDto();
+    FlashcardDto getFlashcardExampleDto();
 
-    Class<? extends AbstractFlashcardDto> getFlashcardDtoClass();
+    Class<? extends FlashcardDto> getFlashcardDtoClass();
 
-    Class<? extends AbstractFlashcard> getFlashcardEntityClass();
+    Class<? extends Flashcard> getFlashcardEntityClass();
 }

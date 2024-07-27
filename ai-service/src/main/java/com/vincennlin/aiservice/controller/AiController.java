@@ -1,6 +1,6 @@
 package com.vincennlin.aiservice.controller;
 
-import com.vincennlin.aiservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.aiservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.aiservice.payload.request.GenerateFlashcardRequest;
 import com.vincennlin.aiservice.payload.request.GenerateFlashcardsRequest;
 import com.vincennlin.aiservice.service.AiService;
@@ -27,17 +27,17 @@ public class AiController implements AiControllerSwagger{
     }
 
     @PostMapping("/ai/generate/flashcard")
-    public  ResponseEntity<AbstractFlashcardDto> generateFlashcard(@RequestBody GenerateFlashcardRequest request) {
+    public  ResponseEntity<FlashcardDto> generateFlashcard(@RequestBody GenerateFlashcardRequest request) {
 
-        AbstractFlashcardDto generatedFlashcard = aiService.generateFlashcard(request);
+        FlashcardDto generatedFlashcard = aiService.generateFlashcard(request);
 
         return new ResponseEntity<>(generatedFlashcard, HttpStatus.OK);
     }
 
     @PostMapping("/ai/generate/flashcards")
-    public ResponseEntity<List<AbstractFlashcardDto>> generateFlashcards(@RequestBody GenerateFlashcardsRequest request) {
+    public ResponseEntity<List<FlashcardDto>> generateFlashcards(@RequestBody GenerateFlashcardsRequest request) {
 
-        List<AbstractFlashcardDto> generatedFlashcards = aiService.generateFlashcards(request);
+        List<FlashcardDto> generatedFlashcards = aiService.generateFlashcards(request);
 
         return new ResponseEntity<>(generatedFlashcards, HttpStatus.OK);
     }

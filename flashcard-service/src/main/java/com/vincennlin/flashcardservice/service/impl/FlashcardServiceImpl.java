@@ -1,18 +1,17 @@
 package com.vincennlin.flashcardservice.service.impl;
 
 import com.vincennlin.flashcardservice.client.NoteServiceClient;
-import com.vincennlin.flashcardservice.entity.review.Review;
 import com.vincennlin.flashcardservice.entity.tag.Tag;
 import com.vincennlin.flashcardservice.mapper.FlashcardMapper;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.*;
 import com.vincennlin.flashcardservice.payload.flashcard.type.FlashcardType;
-import com.vincennlin.flashcardservice.entity.flashcard.AbstractFlashcard;
+import com.vincennlin.flashcardservice.entity.flashcard.Flashcard;
 import com.vincennlin.flashcardservice.entity.flashcard.impl.*;
 import com.vincennlin.flashcardservice.exception.FlashcardTypeException;
 import com.vincennlin.flashcardservice.exception.ResourceNotFoundException;
 import com.vincennlin.flashcardservice.exception.ResourceOwnershipException;
 import com.vincennlin.flashcardservice.exception.WebAPIException;
-import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.flashcardservice.payload.review.dto.ReviewDto;
 import com.vincennlin.flashcardservice.repository.FlashcardRepository;
 import com.vincennlin.flashcardservice.repository.OptionRepository;
@@ -51,11 +50,11 @@ public class FlashcardServiceImpl implements FlashcardService {
     private TagRepository tagRepository;
 
     @Override
-    public List<AbstractFlashcardDto> getFlashcardsByNoteId(Long noteId) {
+    public List<FlashcardDto> getFlashcardsByNoteId(Long noteId) {
 
         authorizeOwnershipByNoteId(noteId);
 
-        List<AbstractFlashcard> flashcards = flashcardRepository.findByNoteId(noteId);
+        List<Flashcard> flashcards = flashcardRepository.findByNoteId(noteId);
 
         return flashcards.stream().map(flashcard -> {
             authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
@@ -64,13 +63,13 @@ public class FlashcardServiceImpl implements FlashcardService {
     }
 
     @Override
-    public AbstractFlashcardDto getFlashcardById(Long flashcardId) {
+    public FlashcardDto getFlashcardById(Long flashcardId) {
 
         return mapToDto(getFlashcardEntityById(flashcardId));
     }
 
     @Override
-    public List<AbstractFlashcardDto> getFlashcardsByTagNames(List<String> tagNames) {
+    public List<FlashcardDto> getFlashcardsByTagNames(List<String> tagNames) {
 
         List<Tag> tagEntities = tagNames.stream().map(tagName ->
                 tagRepository.findByTagNameAndUserId(tagName, getCurrentUserId()).orElseThrow(() ->
@@ -80,9 +79,9 @@ public class FlashcardServiceImpl implements FlashcardService {
     }
 
     @Override
-    public AbstractFlashcard getFlashcardEntityById(Long flashcardId) {
+    public Flashcard getFlashcardEntityById(Long flashcardId) {
 
-        AbstractFlashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
+        Flashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
                 new ResourceNotFoundException("Flashcard", "id", flashcardId.toString()));
 
         authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
@@ -92,7 +91,7 @@ public class FlashcardServiceImpl implements FlashcardService {
 
     @Transactional
     @Override
-    public AbstractFlashcardDto createFlashcard(Long noteId, AbstractFlashcardDto flashcardDto) {
+    public FlashcardDto createFlashcard(Long noteId, FlashcardDto flashcardDto) {
 
         authorizeOwnershipByNoteId(noteId);
 
@@ -106,29 +105,29 @@ public class FlashcardServiceImpl implements FlashcardService {
         } else {
 
 //            AbstractFlashcard flashcard = flashcardDto.mapToEntity();
-            AbstractFlashcard flashcard = flashcardMapper.mapToEntity(flashcardDto);
+            Flashcard flashcard = flashcardMapper.mapToEntity(flashcardDto);
 
-            AbstractFlashcard newFlashcard = flashcardRepository.save(flashcard);
+            Flashcard newFlashcard = flashcardRepository.save(flashcard);
 
             return mapToDto(newFlashcard);
         }
     }
 
     @Transactional
-    public AbstractFlashcardDto createFillInTheBlankFlashcard(FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto) {
+    public FlashcardDto createFillInTheBlankFlashcard(FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto) {
 
         FillInTheBlankFlashcard fillInTheBlankFlashcard = modelMapper.map(fillInTheBlankFlashcardDto, FillInTheBlankFlashcard.class);
 
         fillInTheBlankFlashcard.getInBlankAnswers().forEach(
                 inBlankAnswers -> inBlankAnswers.setFlashcard(fillInTheBlankFlashcard));
 
-        AbstractFlashcard newFlashcard = flashcardRepository.save(fillInTheBlankFlashcard);
+        Flashcard newFlashcard = flashcardRepository.save(fillInTheBlankFlashcard);
 
         return mapToDto(newFlashcard);
     }
 
     @Transactional
-    public AbstractFlashcardDto createMultipleChoiceFlashcard(MultipleChoiceFlashcardDto multipleChoiceFlashcardDto) {
+    public FlashcardDto createMultipleChoiceFlashcard(MultipleChoiceFlashcardDto multipleChoiceFlashcardDto) {
 
         if (multipleChoiceFlashcardDto.getAnswerIndex() > multipleChoiceFlashcardDto.getOptions().size()) {
             throw new IllegalArgumentException("Answer index is out of range of options");
@@ -151,16 +150,16 @@ public class FlashcardServiceImpl implements FlashcardService {
 
     @Transactional
     @Override
-    public List<AbstractFlashcardDto> createFlashcards(Long noteId, List<AbstractFlashcardDto> flashcardDtoList) {
+    public List<FlashcardDto> createFlashcards(Long noteId, List<FlashcardDto> flashcardDtoList) {
 
         return flashcardDtoList.stream().map(flashcardDto ->
                 createFlashcard(noteId, flashcardDto)).toList();
     }
 
     @Override
-    public AbstractFlashcardDto updateFlashcard(Long flashcardId, AbstractFlashcardDto flashcardDto) {
+    public FlashcardDto updateFlashcard(Long flashcardId, FlashcardDto flashcardDto) {
 
-        AbstractFlashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
+        Flashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
                 new ResourceNotFoundException("Flashcard", "id", flashcardId.toString()));
 
         authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
@@ -173,7 +172,7 @@ public class FlashcardServiceImpl implements FlashcardService {
         flashcardDto.setUserId(flashcard.getUserId());
         flashcardDto.setNoteId(flashcard.getNoteId());
 
-        AbstractFlashcard newFlashcard = null;
+        Flashcard newFlashcard = null;
 
         if (flashcardDto.getType() == FlashcardType.FILL_IN_THE_BLANK) {
             newFlashcard = updateFillInTheBlankFlashcard((FillInTheBlankFlashcard) flashcard,
@@ -185,13 +184,13 @@ public class FlashcardServiceImpl implements FlashcardService {
             newFlashcard = flashcardDto.mapToEntity();
         }
 
-        AbstractFlashcard updatedFlashcard = flashcardRepository.save(newFlashcard);
+        Flashcard updatedFlashcard = flashcardRepository.save(newFlashcard);
 
         return mapToDto(updatedFlashcard);
     }
 
-    public AbstractFlashcard updateFillInTheBlankFlashcard(FillInTheBlankFlashcard flashcard,
-                                                           FillInTheBlankFlashcard newFlashcard) {
+    public Flashcard updateFillInTheBlankFlashcard(FillInTheBlankFlashcard flashcard,
+                                                   FillInTheBlankFlashcard newFlashcard) {
 
         List<InBlankAnswer> inBlankAnswers = flashcard.getInBlankAnswers();
         int blankAnswerSize = inBlankAnswers.size();
@@ -210,8 +209,8 @@ public class FlashcardServiceImpl implements FlashcardService {
         return newFlashcard;
     }
 
-    public AbstractFlashcard updateMultipleChoiceFlashcard(MultipleChoiceFlashcard flashcard,
-                                                              MultipleChoiceFlashcardDto flashcardDto) {
+    public Flashcard updateMultipleChoiceFlashcard(MultipleChoiceFlashcard flashcard,
+                                                   MultipleChoiceFlashcardDto flashcardDto) {
 
         List<Option> options = flashcard.getOptions();
         int optionSize = options.size();
@@ -240,7 +239,7 @@ public class FlashcardServiceImpl implements FlashcardService {
     @Override
     public void deleteFlashcardById(Long flashcardId) {
 
-        AbstractFlashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
+        Flashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow(() ->
                 new ResourceNotFoundException("Flashcard", "id", flashcardId.toString()));
 
         authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
@@ -301,9 +300,9 @@ public class FlashcardServiceImpl implements FlashcardService {
         return response.getBody();
     }
 
-    public AbstractFlashcardDto mapToDto(AbstractFlashcard flashcard) {
+    public FlashcardDto mapToDto(Flashcard flashcard) {
 
-        AbstractFlashcardDto flashcardDto = modelMapper.map(flashcard, flashcard.getType().getFlashcardDtoClass());
+        FlashcardDto flashcardDto = modelMapper.map(flashcard, flashcard.getType().getFlashcardDtoClass());
 
         ReviewDto reviewDto = flashcard.getReview() != null ? modelMapper.map(flashcard.getReview(), ReviewDto.class) : null;
 

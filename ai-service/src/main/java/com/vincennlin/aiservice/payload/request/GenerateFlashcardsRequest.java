@@ -2,7 +2,7 @@ package com.vincennlin.aiservice.payload.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vincennlin.aiservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.aiservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.aiservice.payload.flashcard.type.FlashcardType;
 import com.vincennlin.aiservice.payload.note.NoteDto;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -63,7 +63,7 @@ public class GenerateFlashcardsRequest {
     }
 
     private String getResponseExampleString() {
-        List<AbstractFlashcardDto> exampleFlashcards = new ArrayList<>();
+        List<FlashcardDto> exampleFlashcards = new ArrayList<>();
         for (int i = 0; i < getQuantityFor(FlashcardType.SHORT_ANSWER); i++) {
             exampleFlashcards.add(FlashcardType.SHORT_ANSWER.getFlashcardExampleDto());
         }

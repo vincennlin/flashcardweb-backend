@@ -1,12 +1,12 @@
 package com.vincennlin.flashcardservice.payload.flashcard.type;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vincennlin.flashcardservice.entity.flashcard.AbstractFlashcard;
+import com.vincennlin.flashcardservice.entity.flashcard.Flashcard;
 import com.vincennlin.flashcardservice.entity.flashcard.impl.FillInTheBlankFlashcard;
 import com.vincennlin.flashcardservice.entity.flashcard.impl.MultipleChoiceFlashcard;
 import com.vincennlin.flashcardservice.entity.flashcard.impl.ShortAnswerFlashcard;
 import com.vincennlin.flashcardservice.entity.flashcard.impl.TrueFalseFlashcard;
-import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.*;
 import lombok.Getter;
 
@@ -18,7 +18,7 @@ public enum FlashcardType implements AbstractFlashcardType {
     MULTIPLE_CHOICE{
 
         @Override
-        public AbstractFlashcardDto getFlashcardExampleDto() {
+        public FlashcardDto getFlashcardExampleDto() {
 
             MultipleChoiceFlashcardDto multipleChoiceFlashcardDto = new MultipleChoiceFlashcardDto();
             multipleChoiceFlashcardDto.setQuestion("哪一個不是物件導向程式語言的特性？");
@@ -42,12 +42,12 @@ public enum FlashcardType implements AbstractFlashcardType {
         }
 
         @Override
-        public Class<? extends AbstractFlashcardDto> getFlashcardDtoClass() {
+        public Class<? extends FlashcardDto> getFlashcardDtoClass() {
             return MultipleChoiceFlashcardDto.class;
         }
 
         @Override
-        public Class<? extends AbstractFlashcard> getFlashcardEntityClass() {
+        public Class<? extends Flashcard> getFlashcardEntityClass() {
             return MultipleChoiceFlashcard.class;
         }
 
@@ -60,7 +60,7 @@ public enum FlashcardType implements AbstractFlashcardType {
     TRUE_FALSE{
 
         @Override
-        public AbstractFlashcardDto getFlashcardExampleDto() {
+        public FlashcardDto getFlashcardExampleDto() {
 
             TrueFalseFlashcardDto trueFalseFlashcardDto = new TrueFalseFlashcardDto();
             trueFalseFlashcardDto.setQuestion("Java 是一種物件導向程式語言。");
@@ -71,12 +71,12 @@ public enum FlashcardType implements AbstractFlashcardType {
         }
 
         @Override
-        public Class<? extends AbstractFlashcardDto> getFlashcardDtoClass() {
+        public Class<? extends FlashcardDto> getFlashcardDtoClass() {
             return TrueFalseFlashcardDto.class;
         }
 
         @Override
-        public Class<? extends AbstractFlashcard> getFlashcardEntityClass() {
+        public Class<? extends Flashcard> getFlashcardEntityClass() {
             return TrueFalseFlashcard.class;
         }
 
@@ -89,7 +89,7 @@ public enum FlashcardType implements AbstractFlashcardType {
     FILL_IN_THE_BLANK{
 
         @Override
-        public AbstractFlashcardDto getFlashcardExampleDto() {
+        public FlashcardDto getFlashcardExampleDto() {
 
             FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto = new FillInTheBlankFlashcardDto();
             fillInTheBlankFlashcardDto.setQuestion("物件導向的四大特性是：封裝、___、___、___。");
@@ -110,12 +110,12 @@ public enum FlashcardType implements AbstractFlashcardType {
         }
 
         @Override
-        public Class<? extends AbstractFlashcardDto> getFlashcardDtoClass() {
+        public Class<? extends FlashcardDto> getFlashcardDtoClass() {
             return FillInTheBlankFlashcardDto.class;
         }
 
         @Override
-        public Class<? extends AbstractFlashcard> getFlashcardEntityClass() {
+        public Class<? extends Flashcard> getFlashcardEntityClass() {
             return FillInTheBlankFlashcard.class;
         }
 
@@ -128,7 +128,7 @@ public enum FlashcardType implements AbstractFlashcardType {
     SHORT_ANSWER {
 
         @Override
-        public AbstractFlashcardDto getFlashcardExampleDto() {
+        public FlashcardDto getFlashcardExampleDto() {
 
             ShortAnswerFlashcardDto shortAnswerFlashcardDto = new ShortAnswerFlashcardDto();
             shortAnswerFlashcardDto.setQuestion("什麼是 Java ？");
@@ -139,12 +139,12 @@ public enum FlashcardType implements AbstractFlashcardType {
         }
 
         @Override
-        public Class<? extends AbstractFlashcardDto> getFlashcardDtoClass() {
+        public Class<? extends FlashcardDto> getFlashcardDtoClass() {
             return ShortAnswerFlashcardDto.class;
         }
 
         @Override
-        public Class<? extends AbstractFlashcard> getFlashcardEntityClass() {
+        public Class<? extends Flashcard> getFlashcardEntityClass() {
             return ShortAnswerFlashcard.class;
         }
 

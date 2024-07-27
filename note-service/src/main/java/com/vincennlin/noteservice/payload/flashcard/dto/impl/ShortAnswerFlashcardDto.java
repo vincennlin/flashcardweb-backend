@@ -1,7 +1,7 @@
 package com.vincennlin.noteservice.payload.flashcard.dto.impl;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vincennlin.noteservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.noteservice.payload.flashcard.type.FlashcardType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
@@ -18,7 +18,7 @@ import lombok.Setter;
         name = "ShortAnswerFlashcardDto",
         description = "問答題的 Data Transfer Object"
 )
-public class ShortAnswerFlashcardDto extends AbstractFlashcardDto {
+public class ShortAnswerFlashcardDto extends FlashcardDto {
 
     public ShortAnswerFlashcardDto() {
         super(FlashcardType.SHORT_ANSWER);

@@ -1,8 +1,6 @@
 package com.vincennlin.aiservice.service;
 
-import com.vincennlin.aiservice.payload.flashcard.type.FlashcardType;
-import com.vincennlin.aiservice.payload.note.NoteDto;
-import com.vincennlin.aiservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.aiservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.aiservice.payload.request.GenerateFlashcardRequest;
 import com.vincennlin.aiservice.payload.request.GenerateFlashcardsRequest;
 
@@ -12,7 +10,7 @@ public interface AiService {
 
     String generate(String message);
 
-    AbstractFlashcardDto generateFlashcard(GenerateFlashcardRequest request);
+    FlashcardDto generateFlashcard(GenerateFlashcardRequest request);
 
-    List<AbstractFlashcardDto> generateFlashcards(GenerateFlashcardsRequest request);
+    List<FlashcardDto> generateFlashcards(GenerateFlashcardsRequest request);
 }

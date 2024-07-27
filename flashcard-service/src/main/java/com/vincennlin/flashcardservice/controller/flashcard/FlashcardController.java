@@ -1,6 +1,6 @@
 package com.vincennlin.flashcardservice.controller.flashcard;
 
-import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.flashcardservice.service.FlashcardService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -31,27 +31,27 @@ public class FlashcardController implements FlashcardControllerSwagger {
 
     @PreAuthorize("hasAuthority('READ')")
     @GetMapping("/notes/{note_id}/flashcards")
-    public ResponseEntity<List<AbstractFlashcardDto>> getFlashcardsByNoteId(@PathVariable(name = "note_id") @Min(1) Long noteId) {
+    public ResponseEntity<List<FlashcardDto>> getFlashcardsByNoteId(@PathVariable(name = "note_id") @Min(1) Long noteId) {
 
-        List<AbstractFlashcardDto> flashcardsResponse = flashcardService.getFlashcardsByNoteId(noteId);
+        List<FlashcardDto> flashcardsResponse = flashcardService.getFlashcardsByNoteId(noteId);
 
         return new ResponseEntity<>(flashcardsResponse, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('READ')")
     @GetMapping("/flashcards/{flashcard_id}")
-    public ResponseEntity<AbstractFlashcardDto> getFlashcardById(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId) {
+    public ResponseEntity<FlashcardDto> getFlashcardById(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId) {
 
-        AbstractFlashcardDto flashcardResponse = flashcardService.getFlashcardById(flashcardId);
+        FlashcardDto flashcardResponse = flashcardService.getFlashcardById(flashcardId);
 
         return new ResponseEntity<>(flashcardResponse, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('READ')")
     @GetMapping("/flashcards/tags")
-    public ResponseEntity<List<AbstractFlashcardDto>> getFlashcardsByTagNames(@RequestParam(name = "tag") List<String> tagNames) {
+    public ResponseEntity<List<FlashcardDto>> getFlashcardsByTagNames(@RequestParam(name = "tag") List<String> tagNames) {
 
-        List<AbstractFlashcardDto> flashcardsResponse = flashcardService.getFlashcardsByTagNames(tagNames);
+        List<FlashcardDto> flashcardsResponse = flashcardService.getFlashcardsByTagNames(tagNames);
 
         return new ResponseEntity<>(flashcardsResponse, HttpStatus.OK);
     }
@@ -59,30 +59,30 @@ public class FlashcardController implements FlashcardControllerSwagger {
 
     @PreAuthorize("hasAuthority('CREATE')")
     @PostMapping("/notes/{note_id}/flashcard")
-    public ResponseEntity<AbstractFlashcardDto> createFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
-                                                                           @Valid @RequestBody AbstractFlashcardDto flashcardDto){
+    public ResponseEntity<FlashcardDto> createFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
+                                                        @Valid @RequestBody FlashcardDto flashcardDto){
 
-        AbstractFlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, flashcardDto);
+        FlashcardDto flashcardResponse = flashcardService.createFlashcard(noteId, flashcardDto);
 
         return new ResponseEntity<>(flashcardResponse, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasAuthority('CREATE')")
     @PostMapping("/notes/{note_id}/flashcards")
-    public ResponseEntity<List<AbstractFlashcardDto>> createFlashcards(@PathVariable(name = "note_id") @Min(1) Long noteId,
-                                                                       @RequestBody List<AbstractFlashcardDto> flashcardDtoList) {
+    public ResponseEntity<List<FlashcardDto>> createFlashcards(@PathVariable(name = "note_id") @Min(1) Long noteId,
+                                                               @RequestBody List<FlashcardDto> flashcardDtoList) {
 
-        List<AbstractFlashcardDto> createdFlashcards = flashcardService.createFlashcards(noteId, flashcardDtoList);
+        List<FlashcardDto> createdFlashcards = flashcardService.createFlashcards(noteId, flashcardDtoList);
 
         return new ResponseEntity<>(createdFlashcards, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasAuthority('UPDATE')")
     @PutMapping("/flashcard/{flashcard_id}")
-    public ResponseEntity<AbstractFlashcardDto> updateFlashcard(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
-                                                                           @Valid @RequestBody AbstractFlashcardDto flashcardDto) {
+    public ResponseEntity<FlashcardDto> updateFlashcard(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
+                                                        @Valid @RequestBody FlashcardDto flashcardDto) {
 
-        AbstractFlashcardDto flashcardResponse = flashcardService.updateFlashcard(flashcardId, flashcardDto);
+        FlashcardDto flashcardResponse = flashcardService.updateFlashcard(flashcardId, flashcardDto);
 
         return new ResponseEntity<>(flashcardResponse, HttpStatus.OK);
     }

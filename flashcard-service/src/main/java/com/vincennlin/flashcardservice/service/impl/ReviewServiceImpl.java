@@ -1,9 +1,8 @@
 package com.vincennlin.flashcardservice.service.impl;
 
-import com.vincennlin.flashcardservice.entity.flashcard.AbstractFlashcard;
-import com.vincennlin.flashcardservice.entity.review.Review;
+import com.vincennlin.flashcardservice.entity.flashcard.Flashcard;
 import com.vincennlin.flashcardservice.mapper.FlashcardMapper;
-import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.flashcardservice.payload.review.request.ReviewRequest;
 import com.vincennlin.flashcardservice.repository.FlashcardRepository;
 import com.vincennlin.flashcardservice.service.FlashcardService;
@@ -21,13 +20,13 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final FlashcardMapper flashcardMapper;
 
-    public AbstractFlashcardDto reviewFlashcard(Long flashcardId, ReviewRequest request) {
+    public FlashcardDto reviewFlashcard(Long flashcardId, ReviewRequest request) {
 
-        AbstractFlashcard flashcard = flashcardService.getFlashcardEntityById(flashcardId);
+        Flashcard flashcard = flashcardService.getFlashcardEntityById(flashcardId);
 
         flashcard.review(request.getReviewOption());
 
-        AbstractFlashcard updatedFlashcard = flashcardRepository.save(flashcard);
+        Flashcard updatedFlashcard = flashcardRepository.save(flashcard);
 
         return flashcardMapper.mapToDto(updatedFlashcard);
     }

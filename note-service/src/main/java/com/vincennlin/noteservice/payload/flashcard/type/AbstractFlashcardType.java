@@ -1,10 +1,10 @@
 package com.vincennlin.noteservice.payload.flashcard.type;
 
-import com.vincennlin.noteservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
 
 public interface AbstractFlashcardType {
 
-    AbstractFlashcardDto getFlashcardExampleDto();
+    FlashcardDto getFlashcardExampleDto();
 
-    Class<? extends AbstractFlashcardDto> getFlashcardDtoClass();
+    Class<? extends FlashcardDto> getFlashcardDtoClass();
 }

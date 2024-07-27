@@ -1,29 +1,29 @@
 package com.vincennlin.flashcardservice.service;
 
-import com.vincennlin.flashcardservice.entity.flashcard.AbstractFlashcard;
-import com.vincennlin.flashcardservice.payload.flashcard.dto.AbstractFlashcardDto;
+import com.vincennlin.flashcardservice.entity.flashcard.Flashcard;
+import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
 
 import java.util.List;
 
 public interface FlashcardService {
 
-    List<AbstractFlashcardDto> getFlashcardsByNoteId(Long noteId);
+    List<FlashcardDto> getFlashcardsByNoteId(Long noteId);
 
-    AbstractFlashcardDto getFlashcardById(Long flashcardId);
+    FlashcardDto getFlashcardById(Long flashcardId);
 
-    AbstractFlashcard getFlashcardEntityById(Long flashcardId);
+    Flashcard getFlashcardEntityById(Long flashcardId);
 
-    List<AbstractFlashcardDto> getFlashcardsByTagNames(List<String> tagNames);
+    List<FlashcardDto> getFlashcardsByTagNames(List<String> tagNames);
 
-    AbstractFlashcardDto createFlashcard(Long noteId, AbstractFlashcardDto flashcardDto);
+    FlashcardDto createFlashcard(Long noteId, FlashcardDto flashcardDto);
 
-    List<AbstractFlashcardDto> createFlashcards(Long noteId, List<AbstractFlashcardDto> flashcardDtoList);
+    List<FlashcardDto> createFlashcards(Long noteId, List<FlashcardDto> flashcardDtoList);
 
-    AbstractFlashcardDto updateFlashcard(Long flashcardId, AbstractFlashcardDto flashcardDto);
+    FlashcardDto updateFlashcard(Long flashcardId, FlashcardDto flashcardDto);
 
     void deleteFlashcardById(Long flashcardId);
 
     void deleteFlashcardsByNoteId(Long noteId);
 
-    AbstractFlashcardDto mapToDto(AbstractFlashcard flashcard);
+    FlashcardDto mapToDto(Flashcard flashcard);
 }

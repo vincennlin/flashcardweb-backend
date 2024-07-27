@@ -1,7 +1,7 @@
 package com.vincennlin.flashcardservice.entity.tag;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.vincennlin.flashcardservice.entity.flashcard.AbstractFlashcard;
+import com.vincennlin.flashcardservice.entity.flashcard.Flashcard;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,7 +37,7 @@ public class Tag {
             fetch = FetchType.LAZY
     )
     @JsonBackReference
-    private List<AbstractFlashcard> flashcards = new ArrayList<>();
+    private List<Flashcard> flashcards = new ArrayList<>();
 
     @Column(name = "user_id", nullable = false, updatable = false)
     private Long userId;
