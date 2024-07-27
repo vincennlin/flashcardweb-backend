@@ -10,4 +10,6 @@ public interface ReviewService {
     List<FlashcardDto> getFlashcardsToReview();
 
     FlashcardDto reviewFlashcard(Long flashcardId, ReviewRequest request);
+
+    FlashcardDto undoReviewFlashcard(Long flashcardId);
 }
