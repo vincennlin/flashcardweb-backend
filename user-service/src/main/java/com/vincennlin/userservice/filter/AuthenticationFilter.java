@@ -75,8 +75,8 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 .signWith(secretKey)
                 .compact();
 
-        response.addHeader("token_type", "Bearer");
-        response.addHeader("access_token", token);
-        response.addHeader("user_id", userDto.getId().toString());
+        response.addHeader("Token-Type", "Bearer");
+        response.addHeader("Access-Token", token);
+        response.addHeader("User-Id", userDto.getId().toString());
     }
 }

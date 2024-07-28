@@ -93,3 +93,11 @@ VALUES ((SELECT id FROM flashcards WHERE question = 'Test question 1'), (SELECT 
        ((SELECT id FROM flashcards WHERE question = 'Test question 1'), (SELECT id FROM tags WHERE tag_name = 'Tag2')),
        ((SELECT id FROM flashcards WHERE question = 'Test question 1'), (SELECT id FROM tags WHERE tag_name = 'Tag3')),
        ((SELECT id FROM flashcards WHERE question = 'Test question 2'), (SELECT id FROM tags WHERE tag_name = 'Tag1'));
+
+INSERT INTO review_infos (last_reviewed, next_review, review_interval, review_level, flashcard_id)
+VALUES (current_timestamp() - INTERVAL '2' DAY, current_timestamp() - INTERVAL '1' DAY, 1, 2, (SELECT id FROM flashcards WHERE question = 'Test question 1'));
+
+---- Review States
+INSERT INTO review_states (date_reviewed, last_reviewed, next_review, review_interval, review_level, review_option, review_info_id)
+VALUES (current_timestamp() - INTERVAL '3' DAY, null, current_timestamp() - INTERVAL '2' DAY, 1, 1, 'HARD', 1),
+       (current_timestamp() - INTERVAL '2' DAY, current_timestamp() - INTERVAL '3' DAY, current_timestamp() - INTERVAL '1' DAY, 1, 2, 'GOOD', 1);
