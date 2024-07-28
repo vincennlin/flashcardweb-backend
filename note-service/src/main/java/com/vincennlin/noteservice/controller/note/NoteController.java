@@ -1,4 +1,4 @@
-package com.vincennlin.noteservice.controller;
+package com.vincennlin.noteservice.controller.note;
 
 import com.vincennlin.noteservice.constant.AppConstants;
 import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
@@ -68,6 +68,23 @@ public class NoteController implements NoteControllerSwagger {
                 sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending());
 
         NotePageResponse notePageResponse = noteService.getNotesByUserId(userId, pageable);
+
+        return new ResponseEntity<>(notePageResponse, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('READ')")
+    @GetMapping("/deck/{deck_id}/notes")
+    public ResponseEntity<NotePageResponse> getNotesByDeckId(
+            @PathVariable(name = "deck_id") @Min(1) Long deckId,
+            @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) @Min(0) Integer pageNo,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) @Max(100) @Min(1) Integer pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir) {
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize,
+                sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending());
+
+        NotePageResponse notePageResponse = noteService.getNotesByDeckId(deckId, pageable);
 
         return new ResponseEntity<>(notePageResponse, HttpStatus.OK);
     }

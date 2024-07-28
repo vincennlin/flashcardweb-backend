@@ -16,6 +16,8 @@ public interface NoteService {
 
     NotePageResponse getNotesByUserId(Long userId, Pageable pageable);
 
+    NotePageResponse getNotesByDeckId(Long deckId, Pageable pageable);
+
     NoteDto getNoteById(Long noteId);
 
     NoteDto createNote(NoteDto noteDto);
@@ -29,4 +31,8 @@ public interface NoteService {
     FlashcardDto generateFlashcard(Long noteId, GenerateFlashcardRequest request);
 
     List<FlashcardDto> generateFlashcards(Long noteId, GenerateFlashcardsRequest request);
+
+    Long getCurrentUserId();
+
+    Boolean containsAuthority(String authority);
 }

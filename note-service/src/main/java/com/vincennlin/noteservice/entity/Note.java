@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 @Entity
 @Table(name = "notes")
 public class Note {
@@ -36,4 +35,9 @@ public class Note {
     @UpdateTimestamp
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
+
+    @ManyToOne(
+            fetch = FetchType.LAZY
+    )
+    private Deck deck;
 }
