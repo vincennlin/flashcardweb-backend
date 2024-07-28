@@ -13,9 +13,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ReviewRequest {
 
-    @JsonProperty("flashcard_id")
-    private Long flashcardId;
-
     @JsonProperty("review_option")
     private ReviewOption reviewOption;
 }

@@ -34,6 +34,17 @@ public class UserController implements UserControllerSwagger{
         return new ResponseEntity<>(registerResponse, HttpStatus.CREATED);
     }
 
+    @CrossOrigin(
+            exposedHeaders = {
+                    "Access-Control-Allow-Origin",
+                    "Token-Type",
+                    "Access-Token",
+                    "User-Id"
+            },
+            origins = {
+                    "http://localhost:3000"
+            }
+    )
     @PostMapping(value = {"/auth/login"})
     public ResponseEntity<Void> login(@Valid @RequestBody LoginDto loginDto) {
         return new ResponseEntity<>(null, HttpStatus.OK);
