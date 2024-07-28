@@ -1,4 +1,4 @@
-package com.vincennlin.noteservice.controller;
+package com.vincennlin.noteservice.controller.note;
 
 import com.vincennlin.noteservice.constant.AppConstants;
 import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
