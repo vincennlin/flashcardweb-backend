@@ -198,8 +198,8 @@ class UserServiceApplicationTests {
 
 		MvcResult adminResult = mockMvc.perform(requestBuilder)
 				.andExpect(status().is(200))
-				.andExpect(header().exists("access_token"))
-				.andExpect(header().string("token_type", "Bearer"))
+				.andExpect(header().exists("Access-Token"))
+				.andExpect(header().string("Token-Type", "Bearer"))
 				.andReturn();
 
 		loginDto.setUsernameOrEmail("test1");
@@ -212,8 +212,8 @@ class UserServiceApplicationTests {
 
 		MvcResult test1Result = mockMvc.perform(requestBuilder)
 				.andExpect(status().is(200))
-				.andExpect(header().exists("access_token"))
-				.andExpect(header().string("token_type", "Bearer"))
+				.andExpect(header().exists("Access-Token"))
+				.andExpect(header().string("Token-Type", "Bearer"))
 				.andReturn();
 
 		loginDto.setUsernameOrEmail("test2");
@@ -226,13 +226,13 @@ class UserServiceApplicationTests {
 
 		MvcResult test2Result = mockMvc.perform(requestBuilder)
 				.andExpect(status().is(200))
-				.andExpect(header().exists("access_token"))
-				.andExpect(header().string("token_type", "Bearer"))
+				.andExpect(header().exists("Access-Token"))
+				.andExpect(header().string("Token-Type", "Bearer"))
 				.andReturn();
 
-		logger.info("Admin token: " + adminResult.getResponse().getHeader("access_token"));
-		logger.info("Test1 token: " + test1Result.getResponse().getHeader("access_token"));
-		logger.info("Test2 token: " + test2Result.getResponse().getHeader("access_token"));
+		logger.info("Admin token: " + adminResult.getResponse().getHeader("Access-Token"));
+		logger.info("Test1 token: " + test1Result.getResponse().getHeader("Access-Token"));
+		logger.info("Test2 token: " + test2Result.getResponse().getHeader("Access-Token"));
 	}
 
 	@Test
