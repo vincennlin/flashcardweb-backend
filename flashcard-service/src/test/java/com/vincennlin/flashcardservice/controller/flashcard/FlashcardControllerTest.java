@@ -5,7 +5,7 @@ import com.vincennlin.flashcardservice.client.NoteServiceClient;
 import com.vincennlin.flashcardservice.exception.ResourceNotFoundException;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.*;
-import com.vincennlin.flashcardservice.payload.tag.TagDto;
+import com.vincennlin.flashcardservice.payload.tag.dto.TagDto;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

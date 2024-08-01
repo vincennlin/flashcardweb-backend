@@ -1,4 +1,4 @@
-package com.vincennlin.flashcardservice.payload.tag;
+package com.vincennlin.flashcardservice.payload.tag.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;

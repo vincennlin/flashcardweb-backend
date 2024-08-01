@@ -1,6 +1,8 @@
 package com.vincennlin.flashcardservice.controller.tag;
 
-import com.vincennlin.flashcardservice.payload.tag.TagDto;
+import com.vincennlin.flashcardservice.payload.tag.dto.TagDto;
+import com.vincennlin.flashcardservice.payload.tag.request.EditFlashcardTagsRequest;
+import com.vincennlin.flashcardservice.payload.tag.response.EditFlashcardTagsResponse;
 import com.vincennlin.flashcardservice.service.TagService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -54,6 +56,16 @@ public class TagController implements TagControllerSwagger{
         TagDto addedTag = tagService.addTagToFlashcard(flashcardId, tagDto.getTagName());
 
         return new ResponseEntity<>(addedTag, HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasAuthority('CREATE')")
+    @PostMapping("/flashcard/{flashcard_id}/tags/edit")
+    public ResponseEntity<EditFlashcardTagsResponse> editFlashcardTags(@PathVariable(name = "flashcard_id") Long flashcardId,
+                                                                       @RequestBody EditFlashcardTagsRequest request) {
+
+        EditFlashcardTagsResponse response = tagService.editFlashcardTags(flashcardId, request);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('CREATE')")
