@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 
 @Tag(
-        name = "[NEW] Tag Controller",
+        name = "Tag Controller",
         description = "字卡標籤相關的 API"
 )
 public interface TagControllerSwagger {

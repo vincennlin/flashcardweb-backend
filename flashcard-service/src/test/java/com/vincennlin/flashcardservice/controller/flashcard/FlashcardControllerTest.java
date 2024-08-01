@@ -52,12 +52,12 @@ class FlashcardControllerTest {
     private final String getFlashcardsByIdUrl = "/api/v1/flashcards/{flashcardId}";
     private final String getFlashcardsByTagsUrl = "/api/v1/flashcards/tags";
 
-    private final String createFlashcardUrl = "/api/v1/notes/{noteId}/flashcard";
-    private final String createFlashcardsUrl = "/api/v1/notes/{noteId}/flashcards";
+    private final String createFlashcardUrl = "/api/v1/notes/{noteId}/flashcards";
+    private final String createFlashcardsUrl = "/api/v1/notes/{noteId}/flashcards/bulk";
 
-    private final String updateFlashcardUrl = "/api/v1/flashcard/{flashcardId}";
+    private final String updateFlashcardUrl = "/api/v1/flashcards/{flashcardId}";
 
-    private final String deleteFlashcardUrl = "/api/v1/flashcard/{flashcardId}";
+    private final String deleteFlashcardUrl = "/api/v1/flashcards/{flashcardId}";
 
     @MockBean
     private NoteServiceClient noteServiceClient;
