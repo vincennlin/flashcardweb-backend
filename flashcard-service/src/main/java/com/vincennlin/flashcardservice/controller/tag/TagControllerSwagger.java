@@ -1,6 +1,8 @@
 package com.vincennlin.flashcardservice.controller.tag;
 
-import com.vincennlin.flashcardservice.payload.tag.TagDto;
+import com.vincennlin.flashcardservice.payload.tag.dto.TagDto;
+import com.vincennlin.flashcardservice.payload.tag.request.EditFlashcardTagsRequest;
+import com.vincennlin.flashcardservice.payload.tag.response.EditFlashcardTagsResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -129,6 +131,55 @@ public interface TagControllerSwagger {
                                                                      """)
                                                      )
                                              ) TagDto tagDto);
+
+    @Operation(
+            summary = "[NEW] 編輯特定字卡的標籤",
+            description = "根據 flashcard_id 編輯特定字卡的標籤"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "成功編輯特定字卡的標籤",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                "flashcard_id": 1,
+                                "tags": [
+                                    {
+                                        "tag_name": "資料結構"
+                                    },
+                                    {
+                                        "tag_name": "樹"
+                                    },
+                                    {
+                                        "tag_name": "台科"
+                                    }
+                                ]
+                            }
+                            """)
+            )
+    )
+    ResponseEntity<EditFlashcardTagsResponse> editFlashcardTags(@PathVariable(name = "flashcard_id") Long flashcardId,
+                                                                       @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                                               content = @Content(
+                                                                                       mediaType = "application/json",
+                                                                                       examples = @ExampleObject(value = """
+                                                                                               {
+                                                                                                   "tags": [
+                                                                                                       {
+                                                                                                           "tag_name": "資料結構"
+                                                                                                       },
+                                                                                                       {
+                                                                                                           "tag_name": "樹"
+                                                                                                       },
+                                                                                                       {
+                                                                                                           "tag_name": "台科"
+                                                                                                       }
+                                                                                                   ]
+                                                                                               }
+                                                                                               """)
+                                                                               )
+                                                                       ) EditFlashcardTagsRequest request);
 
     @Operation(
             summary = "新增標籤",
