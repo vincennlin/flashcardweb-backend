@@ -73,8 +73,8 @@ class NoteServiceApplicationTests {
 
 	private final String deleteNoteUrl = "/api/v1/notes/{id}";
 
-	private final String generateFlashcardUrl = "/api/v1/notes/{noteId}/generate/flashcard";
-	private final String generateFlashcardsUrl = "/api/v1/notes/{noteId}/generate/flashcards";
+	private final String generateFlashcardUrl = "/api/v1/notes/{noteId}/generate/flashcards";
+	private final String generateFlashcardsUrl = "/api/v1/notes/{noteId}/generate/flashcards/bulk";
 
 	@BeforeEach
 	public void beforeEach() {

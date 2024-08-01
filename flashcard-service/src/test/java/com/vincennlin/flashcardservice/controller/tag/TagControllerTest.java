@@ -1,7 +1,7 @@
 package com.vincennlin.flashcardservice.controller.tag;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vincennlin.flashcardservice.payload.tag.TagDto;
+import com.vincennlin.flashcardservice.payload.tag.dto.TagDto;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

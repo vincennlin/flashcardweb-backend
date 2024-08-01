@@ -1,6 +1,8 @@
 package com.vincennlin.flashcardservice.controller.tag;
 
-import com.vincennlin.flashcardservice.payload.tag.TagDto;
+import com.vincennlin.flashcardservice.payload.tag.dto.TagDto;
+import com.vincennlin.flashcardservice.payload.tag.request.EditFlashcardTagsRequest;
+import com.vincennlin.flashcardservice.payload.tag.response.EditFlashcardTagsResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 
 @Tag(
-        name = "[NEW] Tag Controller",
+        name = "Tag Controller",
         description = "字卡標籤相關的 API"
 )
 public interface TagControllerSwagger {
@@ -53,7 +55,7 @@ public interface TagControllerSwagger {
     ResponseEntity<List<TagDto>> getAllTags();
 
     @Operation(
-            summary = "取得特定字卡的所有標籤",
+            summary = "[EDITED] 取得特定字卡的所有標籤",
             description = "根據 flashcard_id 取得特定字卡的所有標籤"
     )
     @ApiResponse(
@@ -79,7 +81,7 @@ public interface TagControllerSwagger {
     ResponseEntity<List<TagDto>> getTagsByFlashcardId(@PathVariable(name = "flashcard_id") Long flashcardId);
 
     @Operation(
-            summary = "取得特定標籤",
+            summary = "[EDITED] 取得特定標籤",
             description = "根據 tag_id 取得特定標籤"
     )
     @ApiResponse(
@@ -100,7 +102,7 @@ public interface TagControllerSwagger {
     ResponseEntity<TagDto> getTagById(@PathVariable(name = "tag_id") Long tagId);
 
     @Operation(
-            summary = "為特定字卡新增標籤",
+            summary = "[EDITED] 為特定字卡新增標籤",
             description = "根據 flashcard_id 為特定字卡新增標籤，如果這個標籤不存在則會建立一個新標籤"
     )
     @ApiResponse(
@@ -131,7 +133,57 @@ public interface TagControllerSwagger {
                                              ) TagDto tagDto);
 
     @Operation(
-            summary = "新增標籤",
+            summary = "[NEW] 編輯特定字卡的標籤",
+            description = "根據 flashcard_id 編輯特定字卡的標籤"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "成功編輯特定字卡的標籤",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                "flashcard_id": 1,
+                                "tags": [
+                                    {
+                                        "tag_name": "資料結構"
+                                    },
+                                    {
+                                        "tag_name": "樹"
+                                    },
+                                    {
+                                        "tag_name": "台科"
+                                    }
+                                ]
+                            }
+                            """)
+            )
+    )
+    @SecurityRequirement(name = "Bear Authentication")
+    ResponseEntity<EditFlashcardTagsResponse> editFlashcardTags(@PathVariable(name = "flashcard_id") Long flashcardId,
+                                                                       @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                                               content = @Content(
+                                                                                       mediaType = "application/json",
+                                                                                       examples = @ExampleObject(value = """
+                                                                                               {
+                                                                                                   "tags": [
+                                                                                                       {
+                                                                                                           "tag_name": "資料結構"
+                                                                                                       },
+                                                                                                       {
+                                                                                                           "tag_name": "樹"
+                                                                                                       },
+                                                                                                       {
+                                                                                                           "tag_name": "台科"
+                                                                                                       }
+                                                                                                   ]
+                                                                                               }
+                                                                                               """)
+                                                                               )
+                                                                       ) EditFlashcardTagsRequest request);
+
+    @Operation(
+            summary = "[EDITED] 新增標籤",
             description = "建立一個新標籤"
     )
     @ApiResponse(
@@ -162,7 +214,7 @@ public interface TagControllerSwagger {
                                      ) TagDto tagDto);
 
     @Operation(
-            summary = "更新標籤",
+            summary = "[EDITED] 更新標籤",
             description = "根據 tag_id 更新特定標籤"
     )
     @ApiResponse(
@@ -193,7 +245,7 @@ public interface TagControllerSwagger {
                                      ) TagDto tagDto);
 
     @Operation(
-            summary = "刪除標籤",
+            summary = "[EDITED] 刪除標籤",
             description = "根據 tag_id 刪除特定標籤"
     )
     @ApiResponse(
@@ -204,7 +256,7 @@ public interface TagControllerSwagger {
     ResponseEntity<Void> deleteTagById(@PathVariable(name = "tag_id") Long tagId);
 
     @Operation(
-            summary = "移除特定字卡的特定標籤",
+            summary = "[EDITED] 移除特定字卡的特定標籤",
             description = "根據 flashcard_id 移除特定字卡的特定標籤"
     )
     @ApiResponse(
