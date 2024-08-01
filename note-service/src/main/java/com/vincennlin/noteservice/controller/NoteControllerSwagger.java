@@ -510,7 +510,7 @@ public interface NoteControllerSwagger {
     ResponseEntity<Boolean> isNoteOwner(@PathVariable(name = "note_id") @Min(1) Long id);
 
     @Operation(
-            summary = "生成一個字卡",
+            summary = "[EDITED] 生成一個字卡",
             description = "根據 note_id，將筆記內容傳給 ChatGPT，生成一個簡答題字卡並存進資料庫"
     )
     @ApiResponse(
@@ -546,7 +546,7 @@ public interface NoteControllerSwagger {
                                                            ) GenerateFlashcardRequest request);
 
     @Operation(
-            summary = "生成多張字卡",
+            summary = "[EDITED] 生成多張字卡",
             description = "根據 note_id，自訂要生成的字卡題目數量，將筆記內容傳給 ChatGPT，生成相對應數量的字卡並存進資料庫"
     )
     @ApiResponse(

@@ -14,11 +14,11 @@ import java.util.List;
 @FeignClient(name = "ai-ws")
 public interface AiServiceClient {
 
-    @PostMapping("/api/v1/ai/generate/flashcard")
+    @PostMapping("/api/v1/ai/generate/flashcards")
     ResponseEntity<FlashcardDto> generateFlashcard(@RequestBody GenerateFlashcardRequest request,
                                                    @RequestHeader("Authorization") String authorization);
 
-    @PostMapping("/api/v1/ai/generate/flashcards")
+    @PostMapping("/api/v1/ai/generate/flashcards/bulk")
     ResponseEntity<List<FlashcardDto>> generateFlashcards(@RequestBody GenerateFlashcardsRequest request,
                                                           @RequestHeader("Authorization") String authorization);
 }
