@@ -58,7 +58,7 @@ public class FlashcardController implements FlashcardControllerSwagger {
 
 
     @PreAuthorize("hasAuthority('CREATE')")
-    @PostMapping("/notes/{note_id}/flashcard")
+    @PostMapping("/notes/{note_id}/flashcards")
     public ResponseEntity<FlashcardDto> createFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
                                                         @Valid @RequestBody FlashcardDto flashcardDto){
 
@@ -68,7 +68,7 @@ public class FlashcardController implements FlashcardControllerSwagger {
     }
 
     @PreAuthorize("hasAuthority('CREATE')")
-    @PostMapping("/notes/{note_id}/flashcards")
+    @PostMapping("/notes/{note_id}/flashcards/bulk")
     public ResponseEntity<List<FlashcardDto>> createFlashcards(@PathVariable(name = "note_id") @Min(1) Long noteId,
                                                                @RequestBody List<FlashcardDto> flashcardDtoList) {
 
@@ -78,7 +78,7 @@ public class FlashcardController implements FlashcardControllerSwagger {
     }
 
     @PreAuthorize("hasAuthority('UPDATE')")
-    @PutMapping("/flashcard/{flashcard_id}")
+    @PutMapping("/flashcards/{flashcard_id}")
     public ResponseEntity<FlashcardDto> updateFlashcard(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
                                                         @Valid @RequestBody FlashcardDto flashcardDto) {
 
@@ -88,7 +88,7 @@ public class FlashcardController implements FlashcardControllerSwagger {
     }
 
     @PreAuthorize("hasAuthority('DELETE')")
-    @DeleteMapping("/flashcard/{flashcard_id}")
+    @DeleteMapping("/flashcards/{flashcard_id}")
     public ResponseEntity<Void> deleteFlashcardById(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId) {
 
         flashcardService.deleteFlashcardById(flashcardId);

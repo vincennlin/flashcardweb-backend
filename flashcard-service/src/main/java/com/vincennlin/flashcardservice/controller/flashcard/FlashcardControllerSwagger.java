@@ -141,7 +141,7 @@ public interface FlashcardControllerSwagger {
     ResponseEntity<FlashcardDto> getFlashcardById(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId);
 
     @Operation(
-            summary = "[NEW] 利用標籤查詢字卡",
+            summary = "利用標籤查詢字卡",
             description = "根據多個標籤名稱取查詢字卡",
             parameters = {
                     @Parameter(
@@ -223,7 +223,7 @@ public interface FlashcardControllerSwagger {
     ResponseEntity<List<FlashcardDto>> getFlashcardsByTagNames(@RequestParam(name = "tag") List<String> tagNames);
 
     @Operation(
-            summary = "新增字卡",
+            summary = "[EDITED] 新增字卡",
             description = "根據 note_id 新增字卡"
     )
     @ApiResponse(
@@ -259,7 +259,7 @@ public interface FlashcardControllerSwagger {
                                                                 ) FlashcardDto flashcardDto);
 
     @Operation(
-            summary = "新增多張字卡",
+            summary = "[EDITED] 新增多張字卡",
             description = "根據 note_id 新增多張字卡"
     )
     @ApiResponse(
@@ -398,7 +398,7 @@ public interface FlashcardControllerSwagger {
                                                                        ) List<FlashcardDto> flashcardDtoList);
 
     @Operation(
-            summary = "更新字卡",
+            summary = "[EDITED] 更新字卡",
             description = "根據 flashcard_id 更新字卡"
     )
     @ApiResponse(
@@ -434,7 +434,7 @@ public interface FlashcardControllerSwagger {
                                                                 ) FlashcardDto flashcardDto);
 
     @Operation(
-            summary = "刪除字卡",
+            summary = "[EDITED] 刪除字卡",
             description = "根據 flashcard_id 刪除字卡"
     )
     @ApiResponse(
