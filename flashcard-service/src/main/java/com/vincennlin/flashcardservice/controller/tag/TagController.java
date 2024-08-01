@@ -31,7 +31,7 @@ public class TagController implements TagControllerSwagger{
     }
 
     @PreAuthorize("hasAuthority('READ')")
-    @GetMapping("/flashcard/{flashcard_id}/tags")
+    @GetMapping("/flashcards/{flashcard_id}/tags")
     public ResponseEntity<List<TagDto>> getTagsByFlashcardId(@PathVariable(name = "flashcard_id") Long flashcardId) {
 
         List<TagDto> tags = tagService.getTagsByFlashcardId(flashcardId);
@@ -40,7 +40,7 @@ public class TagController implements TagControllerSwagger{
     }
 
     @PreAuthorize("hasAuthority('READ')")
-    @GetMapping("/tag/{tag_id}")
+    @GetMapping("/tags/{tag_id}")
     public ResponseEntity<TagDto> getTagById(@PathVariable(name = "tag_id") Long tagId) {
 
         TagDto tag = tagService.getTagById(tagId);
@@ -49,7 +49,7 @@ public class TagController implements TagControllerSwagger{
     }
 
     @PreAuthorize("hasAuthority('CREATE')")
-    @PostMapping("/flashcard/{flashcard_id}/tag")
+    @PostMapping("/flashcards/{flashcard_id}/tags")
     public ResponseEntity<TagDto> addTagToFlashcard(@PathVariable(name = "flashcard_id") Long flashcardId,
                                                     @RequestBody TagDto tagDto) {
 
@@ -59,7 +59,7 @@ public class TagController implements TagControllerSwagger{
     }
 
     @PreAuthorize("hasAuthority('CREATE')")
-    @PostMapping("/flashcard/{flashcard_id}/tags/edit")
+    @PostMapping("/flashcards/{flashcard_id}/tags/edit")
     public ResponseEntity<EditFlashcardTagsResponse> editFlashcardTags(@PathVariable(name = "flashcard_id") Long flashcardId,
                                                                        @RequestBody EditFlashcardTagsRequest request) {
 
@@ -69,7 +69,7 @@ public class TagController implements TagControllerSwagger{
     }
 
     @PreAuthorize("hasAuthority('CREATE')")
-    @PostMapping("/tag")
+    @PostMapping("/tags")
     public ResponseEntity<TagDto> createTag(@RequestBody TagDto tagDto) {
 
         TagDto newTag = tagService.createTag(tagDto);
@@ -78,7 +78,7 @@ public class TagController implements TagControllerSwagger{
     }
 
     @PreAuthorize("hasAuthority('UPDATE')")
-    @PutMapping("/tag/{tag_id}")
+    @PutMapping("/tags/{tag_id}")
     public ResponseEntity<TagDto> updateTag(@PathVariable(name = "tag_id") Long tagId,
                                            @RequestBody TagDto tagDto) {
 
@@ -88,7 +88,7 @@ public class TagController implements TagControllerSwagger{
     }
 
     @PreAuthorize("hasAuthority('DELETE')")
-    @DeleteMapping("/tag/{tag_id}")
+    @DeleteMapping("/tags/{tag_id}")
     public ResponseEntity<Void> deleteTagById(@PathVariable(name = "tag_id") Long tagId) {
 
         tagService.deleteTagById(tagId);
@@ -97,7 +97,7 @@ public class TagController implements TagControllerSwagger{
     }
 
     @PreAuthorize("hasAuthority('DELETE')")
-    @DeleteMapping("/flashcard/{flashcard_id}/tag")
+    @DeleteMapping("/flashcards/{flashcard_id}/tags")
     public ResponseEntity<Void> removeTagFromFlashcard(@PathVariable(name = "flashcard_id") Long flashcardId,
                                                       @RequestBody TagDto tagDto) {
 

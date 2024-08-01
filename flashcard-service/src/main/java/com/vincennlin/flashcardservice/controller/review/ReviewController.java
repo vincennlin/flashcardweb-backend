@@ -30,7 +30,7 @@ public class ReviewController implements ReviewControllerSwagger{
     }
 
     @PreAuthorize("hasAuthority('READ')")
-    @GetMapping("/flashcard/{flashcard_id}/review-history")
+    @GetMapping("/flashcards/{flashcard_id}/review/history")
     public ResponseEntity<List<ReviewStateDto>> getReviewHistoryByFlashcardId(@PathVariable(name = "flashcard_id") Long flashcardId) {
         List<ReviewStateDto> reviewHistory = reviewService.getReviewStatesByFlashcardId(flashcardId);
 
@@ -38,7 +38,7 @@ public class ReviewController implements ReviewControllerSwagger{
     }
 
     @PreAuthorize("hasAuthority('CREATE')")
-    @PostMapping("/flashcard/{flashcard_id}/review")
+    @PostMapping("/flashcards/{flashcard_id}/review")
     public ResponseEntity<FlashcardDto> reviewFlashcard(@PathVariable(name = "flashcard_id") Long flashcardId,
                                                         @RequestBody ReviewRequest request) {
 
@@ -48,7 +48,7 @@ public class ReviewController implements ReviewControllerSwagger{
     }
 
     @PreAuthorize("hasAuthority('UPDATE')")
-    @PutMapping("/flashcard/{flashcard_id}/undo-review")
+    @PutMapping("/flashcards/{flashcard_id}/review/undo")
     public ResponseEntity<FlashcardDto> undoReviewFlashcard(@PathVariable(name = "flashcard_id") Long flashcardId) {
 
         FlashcardDto updatedFlashcard = reviewService.undoReviewFlashcard(flashcardId);
