@@ -54,11 +54,11 @@ class ReviewControllerTest {
     private FlashcardMapper flashcardMapper;
 
     private final String getFlashcardsToReviewUrl = "/api/v1/flashcards/review";
-    private final String getReviewHistoryByFlashcardIdUrl = "/api/v1/flashcard/{flashcard_id}/review-history";
+    private final String getReviewHistoryByFlashcardIdUrl = "/api/v1/flashcards/{flashcard_id}/review/history";
 
-    private final String reviewUrl = "/api/v1/flashcard/{flashcard_id}/review";
+    private final String reviewUrl = "/api/v1/flashcards/{flashcard_id}/review";
 
-    private final String undoReviewUrl = "/api/v1/flashcard/{flashcard_id}/undo-review";
+    private final String undoReviewUrl = "/api/v1/flashcards/{flashcard_id}/review/undo";
 
     @Test
     public void getReviewInfo_success() throws Exception {
