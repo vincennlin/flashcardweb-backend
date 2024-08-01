@@ -104,36 +104,6 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public EditFlashcardTagsResponse editFlashcardTags(Long flashcardId, EditFlashcardTagsRequest request) {
-
-        Flashcard flashcard = getFlashcardEntityById(flashcardId);
-        flashcard.getTags().clear();
-
-        List<TagDto> tagDtoList = request.getTags();
-
-        tagDtoList.stream().map(TagDto -> {
-            Tag tag = tagRepository.findByTagNameAndUserId(TagDto.getTagName(), getCurrentUserId()).orElse(null);
-
-            if (tag == null) {
-                tag = createTagAndGetEntity(TagDto.getTagName());
-            }
-
-            return tag;
-        }).forEach(tag -> {
-            flashcard.getTags().add(tag);
-            tag.getFlashcards().add(flashcard);
-        });
-
-        flashcardRepository.save(flashcard);
-
-        EditFlashcardTagsResponse response = new EditFlashcardTagsResponse();
-        response.setFlashcardId(flashcardId);
-        response.setTags(tagDtoList);
-
-        return response;
-    }
-
-    @Override
     public TagDto updateTag(Long tagId, TagDto tagDto) {
 
         Tag tag = tagRepository.findById(tagId).orElseThrow(() ->
@@ -152,6 +122,39 @@ public class TagServiceImpl implements TagService {
         Tag updatedTag = tagRepository.save(tag);
 
         return mapToDto(updatedTag);
+    }
+
+    @Override
+    public EditFlashcardTagsResponse editFlashcardTags(Long flashcardId, EditFlashcardTagsRequest request) {
+
+        Flashcard flashcard = getFlashcardEntityById(flashcardId);
+        flashcard.getTags().clear();
+
+        List<TagDto> tagDtoList = request.getTags();
+
+        List<Tag> tags = tagDtoList.stream().map(tagDto -> {
+            Tag tag = tagRepository.findByTagNameAndUserId(tagDto.getTagName(), getCurrentUserId()).orElse(null);
+
+            if (tag == null) {
+                tag = createTagAndGetEntity(tagDto.getTagName());
+            }
+
+            flashcard.getTags().add(tag);
+            tag.getFlashcards().add(flashcard);
+
+            return tag;
+        }).toList();
+
+        flashcardRepository.save(flashcard);
+        List<Tag> savedTags = tagRepository.saveAll(tags);
+
+        List<TagDto> responseTagDtoList = savedTags.stream().map(this::mapToDto).toList();
+
+        EditFlashcardTagsResponse response = new EditFlashcardTagsResponse();
+        response.setFlashcardId(flashcardId);
+        response.setTags(responseTagDtoList);
+
+        return response;
     }
 
     @Override

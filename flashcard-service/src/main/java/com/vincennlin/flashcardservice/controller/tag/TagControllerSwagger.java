@@ -55,7 +55,7 @@ public interface TagControllerSwagger {
     ResponseEntity<List<TagDto>> getAllTags();
 
     @Operation(
-            summary = "[EDITED] 取得特定字卡的所有標籤",
+            summary = "[EDITED][路由名稱] 取得特定字卡的所有標籤",
             description = "根據 flashcard_id 取得特定字卡的所有標籤"
     )
     @ApiResponse(
@@ -81,7 +81,7 @@ public interface TagControllerSwagger {
     ResponseEntity<List<TagDto>> getTagsByFlashcardId(@PathVariable(name = "flashcard_id") Long flashcardId);
 
     @Operation(
-            summary = "[EDITED] 取得特定標籤",
+            summary = "[EDITED][路由名稱] 取得特定標籤",
             description = "根據 tag_id 取得特定標籤"
     )
     @ApiResponse(
@@ -102,8 +102,70 @@ public interface TagControllerSwagger {
     ResponseEntity<TagDto> getTagById(@PathVariable(name = "tag_id") Long tagId);
 
     @Operation(
-            summary = "[EDITED] 為特定字卡新增標籤",
-            description = "根據 flashcard_id 為特定字卡新增標籤，如果這個標籤不存在則會建立一個新標籤"
+            summary = "[EDITED][路由名稱] 新增標籤",
+            description = "建立一個新標籤"
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "成功建立新標籤",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                "id": 9,
+                                "tag_name": "演算法",
+                                "flashcard_count": 0
+                            }
+                            """)
+            )
+    )
+    @SecurityRequirement(name = "Bear Authentication")
+    ResponseEntity<TagDto> createTag(@RequestBody
+                                     @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                             content = @Content(
+                                                     mediaType = "application/json",
+                                                     examples = @ExampleObject(value = """
+                                                             {
+                                                                 "tag_name": "演算法"
+                                                             }
+                                                             """)
+                                             )
+                                     ) TagDto tagDto);
+
+    @Operation(
+            summary = "[EDITED][路由名稱] 更新標籤",
+            description = "根據 tag_id 更新特定標籤"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "成功更新特定標籤",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                "id": 8,
+                                "tag_name": "資料結構",
+                                "flashcard_count": 3
+                            }
+                            """)
+            )
+    )
+    @SecurityRequirement(name = "Bear Authentication")
+    ResponseEntity<TagDto> updateTag(@PathVariable(name = "tag_id") Long tagId,
+                                     @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                             content = @Content(
+                                                     mediaType = "application/json",
+                                                     examples = @ExampleObject(value = """
+                                                             {
+                                                                 "tag_name": "資料結構"
+                                                             }
+                                                             """)
+                                             )
+                                     ) TagDto tagDto);
+
+    @Operation(
+            summary = "[EDITED][路由名稱][方法：POST->PUT] 為特定字卡加上標籤",
+            description = "根據 flashcard_id 為特定字卡加上標籤，如果這個標籤不存在則會建立一個新標籤"
     )
     @ApiResponse(
             responseCode = "201",
@@ -161,10 +223,10 @@ public interface TagControllerSwagger {
     )
     @SecurityRequirement(name = "Bear Authentication")
     ResponseEntity<EditFlashcardTagsResponse> editFlashcardTags(@PathVariable(name = "flashcard_id") Long flashcardId,
-                                                                       @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                                                               content = @Content(
-                                                                                       mediaType = "application/json",
-                                                                                       examples = @ExampleObject(value = """
+                                                                @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                                        content = @Content(
+                                                                                mediaType = "application/json",
+                                                                                examples = @ExampleObject(value = """
                                                                                                {
                                                                                                    "tags": [
                                                                                                        {
@@ -179,73 +241,11 @@ public interface TagControllerSwagger {
                                                                                                    ]
                                                                                                }
                                                                                                """)
-                                                                               )
-                                                                       ) EditFlashcardTagsRequest request);
+                                                                        )
+                                                                ) EditFlashcardTagsRequest request);
 
     @Operation(
-            summary = "[EDITED] 新增標籤",
-            description = "建立一個新標籤"
-    )
-    @ApiResponse(
-            responseCode = "201",
-            description = "成功建立新標籤",
-            content = @Content(
-                    mediaType = "application/json",
-                    examples = @ExampleObject(value = """
-                            {
-                                "id": 9,
-                                "tag_name": "演算法",
-                                "flashcard_count": 0
-                            }
-                            """)
-            )
-    )
-    @SecurityRequirement(name = "Bear Authentication")
-    ResponseEntity<TagDto> createTag(@RequestBody
-                                     @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                             content = @Content(
-                                                     mediaType = "application/json",
-                                                     examples = @ExampleObject(value = """
-                                                             {
-                                                                 "tag_name": "演算法"
-                                                             }
-                                                             """)
-                                             )
-                                     ) TagDto tagDto);
-
-    @Operation(
-            summary = "[EDITED] 更新標籤",
-            description = "根據 tag_id 更新特定標籤"
-    )
-    @ApiResponse(
-            responseCode = "200",
-            description = "成功更新特定標籤",
-            content = @Content(
-                    mediaType = "application/json",
-                    examples = @ExampleObject(value = """
-                            {
-                                "id": 8,
-                                "tag_name": "資料結構",
-                                "flashcard_count": 3
-                            }
-                            """)
-            )
-    )
-    @SecurityRequirement(name = "Bear Authentication")
-    ResponseEntity<TagDto> updateTag(@PathVariable(name = "tag_id") Long tagId,
-                                     @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                             content = @Content(
-                                                     mediaType = "application/json",
-                                                     examples = @ExampleObject(value = """
-                                                             {
-                                                                 "tag_name": "資料結構"
-                                                             }
-                                                             """)
-                                             )
-                                     ) TagDto tagDto);
-
-    @Operation(
-            summary = "[EDITED] 刪除標籤",
+            summary = "[EDITED][路由名稱] 刪除標籤",
             description = "根據 tag_id 刪除特定標籤"
     )
     @ApiResponse(
@@ -256,7 +256,7 @@ public interface TagControllerSwagger {
     ResponseEntity<Void> deleteTagById(@PathVariable(name = "tag_id") Long tagId);
 
     @Operation(
-            summary = "[EDITED] 移除特定字卡的特定標籤",
+            summary = "[EDITED][路由名稱] 移除特定字卡的特定標籤",
             description = "根據 flashcard_id 移除特定字卡的特定標籤"
     )
     @ApiResponse(

@@ -16,13 +16,13 @@ public interface TagService {
 
     Integer getFlashcardCountByTagId(Long tagId);
 
-    TagDto addTagToFlashcard(Long flashcardId, String tagName);
-
-    EditFlashcardTagsResponse editFlashcardTags(Long flashcardId, EditFlashcardTagsRequest request);
-
     TagDto createTag(TagDto tagDto);
 
+    TagDto addTagToFlashcard(Long flashcardId, String tagName);
+
     TagDto updateTag(Long tagId, TagDto tagDto);
+
+    EditFlashcardTagsResponse editFlashcardTags(Long flashcardId, EditFlashcardTagsRequest request);
 
     void deleteTagById(Long tagId);
 

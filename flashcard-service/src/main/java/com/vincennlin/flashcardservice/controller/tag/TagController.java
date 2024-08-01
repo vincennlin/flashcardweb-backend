@@ -49,26 +49,6 @@ public class TagController implements TagControllerSwagger{
     }
 
     @PreAuthorize("hasAuthority('CREATE')")
-    @PostMapping("/flashcards/{flashcard_id}/tags")
-    public ResponseEntity<TagDto> addTagToFlashcard(@PathVariable(name = "flashcard_id") Long flashcardId,
-                                                    @RequestBody TagDto tagDto) {
-
-        TagDto addedTag = tagService.addTagToFlashcard(flashcardId, tagDto.getTagName());
-
-        return new ResponseEntity<>(addedTag, HttpStatus.CREATED);
-    }
-
-    @PreAuthorize("hasAuthority('CREATE')")
-    @PostMapping("/flashcards/{flashcard_id}/tags/edit")
-    public ResponseEntity<EditFlashcardTagsResponse> editFlashcardTags(@PathVariable(name = "flashcard_id") Long flashcardId,
-                                                                       @RequestBody EditFlashcardTagsRequest request) {
-
-        EditFlashcardTagsResponse response = tagService.editFlashcardTags(flashcardId, request);
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasAuthority('CREATE')")
     @PostMapping("/tags")
     public ResponseEntity<TagDto> createTag(@RequestBody TagDto tagDto) {
 
@@ -85,6 +65,26 @@ public class TagController implements TagControllerSwagger{
         TagDto updatedTag = tagService.updateTag(tagId, tagDto);
 
         return new ResponseEntity<>(updatedTag, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('UPDATE')")
+    @PutMapping("/flashcards/{flashcard_id}/tags")
+    public ResponseEntity<TagDto> addTagToFlashcard(@PathVariable(name = "flashcard_id") Long flashcardId,
+                                                    @RequestBody TagDto tagDto) {
+
+        TagDto addedTag = tagService.addTagToFlashcard(flashcardId, tagDto.getTagName());
+
+        return new ResponseEntity<>(addedTag, HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasAuthority('UPDATE')")
+    @PutMapping("/flashcards/{flashcard_id}/tags/edit")
+    public ResponseEntity<EditFlashcardTagsResponse> editFlashcardTags(@PathVariable(name = "flashcard_id") Long flashcardId,
+                                                                       @RequestBody EditFlashcardTagsRequest request) {
+
+        EditFlashcardTagsResponse response = tagService.editFlashcardTags(flashcardId, request);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('DELETE')")
