@@ -32,6 +32,11 @@ public class NoteMapper {
     }
 
     public DeckDto mapDeckToDto(Deck deck) {
-        return modelMapper.map(deck, DeckDto.class);
+        DeckDto deckDto = modelMapper.map(deck, DeckDto.class);
+        if (deck.getParent() != null) {
+            deckDto.setParentId(deck.getParent().getId());
+        }
+        deckDto.getSubDecks().forEach(subDeck -> subDeck.setParentId(deck.getId()));
+        return deckDto;
     }
 }

@@ -1,6 +1,7 @@
 package com.vincennlin.noteservice.controller.deck;
 
 import com.vincennlin.noteservice.payload.deck.dto.DeckDto;
+import com.vincennlin.noteservice.payload.deck.request.CreateDeckRequest;
 import com.vincennlin.noteservice.service.DeckService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -40,9 +41,9 @@ public class DeckController implements DeckControllerSwagger{
 
     @PreAuthorize("hasAuthority('CREATE')")
     @PostMapping("/decks")
-    public ResponseEntity<DeckDto> createDeck(@Valid @RequestBody DeckDto deckDto) {
+    public ResponseEntity<DeckDto> createDeck(@Valid @RequestBody CreateDeckRequest request) {
 
-        DeckDto newDeck = deckService.createDeck(deckDto);
+        DeckDto newDeck = deckService.createDeck(request);
 
         return new ResponseEntity<>(newDeck, HttpStatus.CREATED);
     }
