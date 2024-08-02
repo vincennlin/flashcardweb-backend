@@ -57,8 +57,8 @@ class AiServiceApplicationTests {
 	@MockBean
 	public OpenAiChatModel openAiChatModel;
 
-	private final String generateFlashcardUrl = "/api/v1/ai/generate/flashcard";
-	private final String generateFlashcardsUrl = "/api/v1/ai/generate/flashcards";
+	private final String generateFlashcardUrl = "/api/v1/ai/generate/flashcards";
+	private final String generateFlashcardsUrl = "/api/v1/ai/generate/flashcards/bulk";
 
     @Test
 	public void generateShortAnswerFlashcard_success() throws Exception {

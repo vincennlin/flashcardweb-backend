@@ -10,7 +10,7 @@ import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.TrueFalseFlash
 import com.vincennlin.flashcardservice.payload.flashcard.type.FlashcardType;
 import com.vincennlin.flashcardservice.operation.Operation;
 import com.vincennlin.flashcardservice.payload.review.dto.ReviewInfoDto;
-import com.vincennlin.flashcardservice.payload.tag.TagDto;
+import com.vincennlin.flashcardservice.payload.tag.dto.TagDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;

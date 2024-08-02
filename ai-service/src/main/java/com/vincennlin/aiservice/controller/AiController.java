@@ -26,7 +26,7 @@ public class AiController implements AiControllerSwagger{
         return new ResponseEntity<>(generation, HttpStatus.OK);
     }
 
-    @PostMapping("/ai/generate/flashcard")
+    @PostMapping("/ai/generate/flashcards")
     public  ResponseEntity<FlashcardDto> generateFlashcard(@RequestBody GenerateFlashcardRequest request) {
 
         FlashcardDto generatedFlashcard = aiService.generateFlashcard(request);
@@ -34,7 +34,7 @@ public class AiController implements AiControllerSwagger{
         return new ResponseEntity<>(generatedFlashcard, HttpStatus.OK);
     }
 
-    @PostMapping("/ai/generate/flashcards")
+    @PostMapping("/ai/generate/flashcards/bulk")
     public ResponseEntity<List<FlashcardDto>> generateFlashcards(@RequestBody GenerateFlashcardsRequest request) {
 
         List<FlashcardDto> generatedFlashcards = aiService.generateFlashcards(request);

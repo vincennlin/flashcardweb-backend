@@ -85,7 +85,7 @@ public interface ReviewControllerSwagger {
     ResponseEntity<List<FlashcardDto>> getFlashcardsToReview();
 
     @Operation(
-            summary = "取得該字卡的複習歷史紀錄",
+            summary = "[EDITED][路由名稱] 取得該字卡的複習歷史紀錄",
             description = "根據 flashcard_id 取得該字卡的複習歷史紀錄"
     )
     @ApiResponse(
@@ -126,7 +126,7 @@ public interface ReviewControllerSwagger {
     ResponseEntity<List<ReviewStateDto>> getReviewHistoryByFlashcardId(@PathVariable(name = "flashcard_id") Long flashcardId);
 
     @Operation(
-            summary = "複習字卡",
+            summary = "[EDITED][路由名稱] 複習字卡",
             description = "根據 flashcard_id 複習字卡，並更新字卡的複習狀態。總共有四種 Review option: AGAIN, HARD, GOOD, EASY"
     )
     @ApiResponse(
@@ -166,7 +166,7 @@ public interface ReviewControllerSwagger {
                                                         ) ReviewRequest request);
 
     @Operation(
-            summary = "取消上一次複習紀錄",
+            summary = "[EDITED][路由名稱] 取消上一次複習紀錄",
             description = "根據 flashcard_id 取消上一次複習紀錄，類似 Undo"
     )
     @ApiResponse(
