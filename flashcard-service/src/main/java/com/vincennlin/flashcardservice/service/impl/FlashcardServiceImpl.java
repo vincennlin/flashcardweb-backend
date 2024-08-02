@@ -1,8 +1,10 @@
 package com.vincennlin.flashcardservice.service.impl;
 
 import com.vincennlin.flashcardservice.client.NoteServiceClient;
+import com.vincennlin.flashcardservice.entity.review.ReviewInfo;
 import com.vincennlin.flashcardservice.entity.tag.Tag;
 import com.vincennlin.flashcardservice.mapper.FlashcardMapper;
+import com.vincennlin.flashcardservice.payload.deck.FlashcardCountInfo;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.*;
 import com.vincennlin.flashcardservice.payload.flashcard.type.FlashcardType;
 import com.vincennlin.flashcardservice.entity.flashcard.Flashcard;
@@ -27,8 +29,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor
 @Service
@@ -43,6 +46,17 @@ public class FlashcardServiceImpl implements FlashcardService {
     private final TagRepository tagRepository;
 
     private final NoteServiceClient noteServiceClient;
+
+    @Override
+    public List<FlashcardDto> getFlashcardsByDeckId(Long deckId) {
+
+        authorizeOwnershipByDeckId(deckId);
+
+        List<Long> noteIds = getNoteIdsByDeckId(deckId);
+
+        return noteIds.stream().map(this::getFlashcardsByNoteId)
+                .flatMap(List::stream).toList();
+    }
 
     @Override
     public List<FlashcardDto> getFlashcardsByNoteId(Long noteId) {
@@ -84,6 +98,36 @@ public class FlashcardServiceImpl implements FlashcardService {
         return flashcard;
     }
 
+    @Override
+    public FlashcardCountInfo getFlashcardCountInfo() {
+
+        List<Object[]> totalCountResults = flashcardRepository.findNoteIdAndFlashcardCountByUserId(getCurrentUserId());
+
+        Map<Long, Integer> noteIdTotalFlashcardCountMap = new HashMap<>();
+
+        for (Object[] result : totalCountResults) {
+            Long noteId = (Long) result[0];
+            Long count = (Long) result[1];
+            noteIdTotalFlashcardCountMap.put(noteId, count.intValue());
+        }
+
+        List<Object[]> reviewCountResults = flashcardRepository.findNoteIdAndFlashcardCountByUserIdAndNextReviewPast(getCurrentUserId());
+
+        Map<Long, Integer> noteIdReviewFlashcardCountMap = new HashMap<>();
+
+        for (Object[] result : reviewCountResults) {
+            Long noteId = (Long) result[0];
+            Long count = (Long) result[1];
+            noteIdReviewFlashcardCountMap.put(noteId, count.intValue());
+        }
+
+        FlashcardCountInfo flashcardCountInfo = new FlashcardCountInfo();
+        flashcardCountInfo.setNoteIdTotalFlashcardCountMap(noteIdTotalFlashcardCountMap);
+        flashcardCountInfo.setNoteIdReviewFlashcardCountMap(noteIdReviewFlashcardCountMap);
+
+        return flashcardCountInfo;
+    }
+
     @Transactional
     @Override
     public FlashcardDto createFlashcard(Long noteId, FlashcardDto flashcardDto) {
@@ -93,38 +137,39 @@ public class FlashcardServiceImpl implements FlashcardService {
         flashcardDto.setUserId(getCurrentUserId());
         flashcardDto.setNoteId(noteId);
 
+        Flashcard flashcard;
+
         if (flashcardDto.getType() == FlashcardType.FILL_IN_THE_BLANK) {
-            return createFillInTheBlankFlashcard((FillInTheBlankFlashcardDto) flashcardDto);
+            flashcard = createFillInTheBlankFlashcard((FillInTheBlankFlashcardDto) flashcardDto);
         } else if (flashcardDto.getType() == FlashcardType.MULTIPLE_CHOICE) {
-            return createMultipleChoiceFlashcard((MultipleChoiceFlashcardDto) flashcardDto);
+            flashcard = createMultipleChoiceFlashcard((MultipleChoiceFlashcardDto) flashcardDto);
         } else {
-
-            Flashcard flashcard = flashcardMapper.mapToEntity(flashcardDto);
-
-            flashcard.getReviewInfo().setFlashcard(flashcard);
-            flashcard.getReviewInfo().setReviewStates(new ArrayList<>());
-
-            Flashcard newFlashcard = flashcardRepository.save(flashcard);
-
-            return flashcardMapper.mapToDto(newFlashcard);
+            flashcard = flashcardMapper.mapToEntity(flashcardDto);
         }
+
+        ReviewInfo reviewInfo = new ReviewInfo();
+
+        reviewInfo.setFlashcard(flashcard);
+        flashcard.setReviewInfo(reviewInfo);
+
+        Flashcard newFlashcard = flashcardRepository.save(flashcard);
+
+        return flashcardMapper.mapToDto(newFlashcard);
     }
 
     @Transactional
-    public FlashcardDto createFillInTheBlankFlashcard(FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto) {
+    public Flashcard createFillInTheBlankFlashcard(FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto) {
 
         FillInTheBlankFlashcard fillInTheBlankFlashcard = (FillInTheBlankFlashcard) flashcardMapper.mapToEntity(fillInTheBlankFlashcardDto);
 
         fillInTheBlankFlashcard.getInBlankAnswers().forEach(
                 inBlankAnswers -> inBlankAnswers.setFlashcard(fillInTheBlankFlashcard));
 
-        Flashcard newFlashcard = flashcardRepository.save(fillInTheBlankFlashcard);
-
-        return flashcardMapper.mapToDto(newFlashcard);
+        return flashcardRepository.save(fillInTheBlankFlashcard);
     }
 
     @Transactional
-    public FlashcardDto createMultipleChoiceFlashcard(MultipleChoiceFlashcardDto multipleChoiceFlashcardDto) {
+    public Flashcard createMultipleChoiceFlashcard(MultipleChoiceFlashcardDto multipleChoiceFlashcardDto) {
 
         if (multipleChoiceFlashcardDto.getAnswerIndex() > multipleChoiceFlashcardDto.getOptions().size()) {
             throw new IllegalArgumentException("Answer index is out of range of options");
@@ -142,7 +187,7 @@ public class FlashcardServiceImpl implements FlashcardService {
 
         optionRepository.saveAll(options);
 
-        return flashcardMapper.mapToDto(newFlashcard);
+        return newFlashcard;
     }
 
     @Transactional
@@ -262,6 +307,12 @@ public class FlashcardServiceImpl implements FlashcardService {
         return getAuthentication().getCredentials().toString();
     }
 
+    private void authorizeOwnershipByDeckId(Long deckId) {
+        if (!isDeckOwner(deckId) && !containsAuthority("ADVANCED")) {
+            throw new ResourceOwnershipException(getCurrentUserId(), "Deck");
+        }
+    }
+
     private void authorizeOwnershipByNoteId(Long noteId) {
         if (!isNoteOwner(noteId) && !containsAuthority("ADVANCED")) {
             throw new ResourceOwnershipException(getCurrentUserId(), "Note");
@@ -281,6 +332,36 @@ public class FlashcardServiceImpl implements FlashcardService {
 
     private Authentication getAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
+    }
+
+    private List<Long> getNoteIdsByDeckId(Long deckId) {
+        ResponseEntity<List<Long>> response = null;
+        try{
+            response = noteServiceClient.getNoteIdsByDeckId(deckId, getAuthorization());
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+            if (e instanceof FeignException && ((FeignException)e).status() == HttpStatus.NOT_FOUND.value())
+                throw new ResourceNotFoundException("Deck", "id", deckId.toString());
+            else if (!(e instanceof ResourceNotFoundException))
+                throw new WebAPIException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+            throw e;
+        }
+        return response.getBody();
+    }
+
+    private Boolean isDeckOwner(Long deckId) {
+        ResponseEntity<Boolean> response = null;
+        try{
+            response = noteServiceClient.isDeckOwner(deckId, getAuthorization());
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+            if (e instanceof FeignException && ((FeignException)e).status() == HttpStatus.NOT_FOUND.value())
+                throw new ResourceNotFoundException("Deck", "id", deckId.toString());
+            else if (!(e instanceof ResourceNotFoundException))
+                throw new WebAPIException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+            throw e;
+        }
+        return response.getBody();
     }
 
     private Boolean isNoteOwner(Long noteId) {

@@ -1,11 +1,11 @@
-package com.vincennlin.noteservice.controller;
+package com.vincennlin.noteservice.controller.note;
 
 import com.vincennlin.noteservice.constant.AppConstants;
 import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
-import com.vincennlin.noteservice.payload.request.GenerateFlashcardRequest;
+import com.vincennlin.noteservice.payload.flashcard.request.GenerateFlashcardRequest;
 import com.vincennlin.noteservice.payload.note.dto.NoteDto;
 import com.vincennlin.noteservice.payload.note.page.NotePageResponse;
-import com.vincennlin.noteservice.payload.request.GenerateFlashcardsRequest;
+import com.vincennlin.noteservice.payload.flashcard.request.GenerateFlashcardsRequest;
 import com.vincennlin.noteservice.service.NoteService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -56,7 +56,7 @@ public class NoteController implements NoteControllerSwagger {
     }
 
     @PostAuthorize("principal == #userId or hasAuthority('ADVANCED')")
-    @GetMapping("/notes/user/{user_id}")
+    @GetMapping("/notes/users/{user_id}")
     public ResponseEntity<NotePageResponse> getNotesByUserId(
             @PathVariable(name = "user_id") @Min(1) Long userId,
             @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) @Min(0) Integer pageNo,
@@ -73,6 +73,23 @@ public class NoteController implements NoteControllerSwagger {
     }
 
     @PreAuthorize("hasAuthority('READ')")
+    @GetMapping("/decks/{deck_id}/notes")
+    public ResponseEntity<NotePageResponse> getNotesByDeckId(
+            @PathVariable(name = "deck_id") @Min(1) Long deckId,
+            @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) @Min(0) Integer pageNo,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) @Max(100) @Min(1) Integer pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir) {
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize,
+                sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending());
+
+        NotePageResponse notePageResponse = noteService.getNotesByDeckId(deckId, pageable);
+
+        return new ResponseEntity<>(notePageResponse, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('READ')")
     @PostAuthorize("returnObject.body.userId == principal or hasAuthority('ADVANCED')")
     @GetMapping("/notes/{note_id}")
     public ResponseEntity<NoteDto> getNoteById(@PathVariable(name = "note_id") @Min(1) Long id) {
@@ -83,10 +100,11 @@ public class NoteController implements NoteControllerSwagger {
     }
 
     @PreAuthorize("hasAuthority('CREATE')")
-    @PostMapping("/notes")
-    public ResponseEntity<NoteDto> createNote(@Valid @RequestBody NoteDto noteDto) {
+    @PostMapping("/decks/{deck_id}/notes")
+    public ResponseEntity<NoteDto> createNote(@PathVariable(name = "deck_id") @Min(1) Long deckId,
+                                                  @Valid @RequestBody NoteDto noteDto) {
 
-        NoteDto noteResponse = noteService.createNote(noteDto);
+        NoteDto noteResponse = noteService.createNote(deckId, noteDto);
 
         return new ResponseEntity<>(noteResponse, HttpStatus.CREATED);
     }
