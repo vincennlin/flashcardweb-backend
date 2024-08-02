@@ -7,8 +7,7 @@ import com.vincennlin.noteservice.exception.WebAPIException;
 import com.vincennlin.noteservice.mapper.NoteMapper;
 import com.vincennlin.noteservice.payload.deck.dto.DeckDto;
 import com.vincennlin.noteservice.payload.deck.request.CreateDeckRequest;
-import com.vincennlin.noteservice.payload.deck.response.NoteIdFlashcardCount;
-import com.vincennlin.noteservice.payload.note.dto.NoteDto;
+import com.vincennlin.noteservice.payload.deck.response.FlashcardCountInfo;
 import com.vincennlin.noteservice.repository.DeckRepository;
 import com.vincennlin.noteservice.service.AuthService;
 import com.vincennlin.noteservice.service.DeckService;
@@ -17,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @AllArgsConstructor
 @Service
@@ -38,7 +36,7 @@ public class DeckServiceImpl implements DeckService {
         List<Deck> decks = deckRepository.findByUserIdAndParent(userId, null);
 
         return decks.stream().map(deck ->
-                noteMapper.mapDeckToDto(deck, getNoteIdFlashcardCountMap())).toList();
+                noteMapper.mapDeckToDto(deck, getFlashcardCountInfo())).toList();
     }
 
     @Override
@@ -46,7 +44,7 @@ public class DeckServiceImpl implements DeckService {
 
         Deck deck = getDeckEntityById(deckId);
 
-        return noteMapper.mapDeckToDto(deck, getNoteIdFlashcardCountMap());
+        return noteMapper.mapDeckToDto(deck, getFlashcardCountInfo());
     }
 
     @Override
@@ -81,7 +79,7 @@ public class DeckServiceImpl implements DeckService {
 
         Deck newDeck = deckRepository.save(deck);
 
-        return noteMapper.mapDeckToDto(newDeck, getNoteIdFlashcardCountMap());
+        return noteMapper.mapDeckToDto(newDeck, getFlashcardCountInfo());
     }
 
     @Override
@@ -108,7 +106,7 @@ public class DeckServiceImpl implements DeckService {
 
         Deck updatedDeck = deckRepository.save(deck);
 
-        return noteMapper.mapDeckToDto(updatedDeck, getNoteIdFlashcardCountMap());
+        return noteMapper.mapDeckToDto(updatedDeck, getFlashcardCountInfo());
     }
 
     @Override
@@ -137,9 +135,9 @@ public class DeckServiceImpl implements DeckService {
         deck.setParent(parentDeck);
     }
 
-    private Map<Long, Integer> getNoteIdFlashcardCountMap() {
+    private FlashcardCountInfo getFlashcardCountInfo() {
         try {
-            return flashcardServiceClient.getNotesFlashcardsCountByUserId(authService.getAuthorization()).getBody();
+            return flashcardServiceClient.getFlashcardCountInfo(authService.getAuthorization()).getBody();
         } catch (Exception e) {
             throw new WebAPIException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to get flashcard count");
         }

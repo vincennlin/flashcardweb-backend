@@ -1,8 +1,10 @@
 package com.vincennlin.noteservice.payload.deck.dto;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vincennlin.noteservice.payload.deck.response.FlashcardCountInfo;
 import com.vincennlin.noteservice.payload.note.dto.NoteDto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -10,9 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter
@@ -36,8 +36,11 @@ public class DeckDto {
     @JsonProperty(value = "note_count")
     private Integer noteCount;
 
-    @JsonProperty(value = "flashcard_count")
-    private Integer flashcardCount;
+    @JsonProperty(value = "total_flashcard_count")
+    private Integer totalFlashcardCount;
+
+    @JsonProperty(value = "review_flashcard_count")
+    private Integer reviewFlashcardCount;
 
     @JsonProperty(value = "sub_decks")
     private List<DeckDto> subDecks;
@@ -56,29 +59,43 @@ public class DeckDto {
         return total;
     }
 
-    public void setNoteFlashcardCount(Map<Long, Integer> noteIdFlashcardCountMap) {
+    @JsonIgnore
+    public void setFlashcardCountInfo(FlashcardCountInfo flashcardCountInfo) {
         for (NoteDto note : notes) {
-            Integer flashcardCount = noteIdFlashcardCountMap.getOrDefault(note.getId(), 0);
-            note.setFlashcardCount(flashcardCount);
+            Integer totalFlashcardCount = flashcardCountInfo
+                    .getNoteIdTotalFlashcardCountMap().getOrDefault(note.getId(), 0);
+            Integer reviewFlashcardCount = flashcardCountInfo
+                    .getNoteIdReviewFlashcardCountMap().getOrDefault(note.getId(), 0);
+            note.setTotalFlashcardCount(totalFlashcardCount);
+            note.setReviewFlashcardCount(reviewFlashcardCount);
         }
         for (DeckDto subDeck : subDecks) {
-            subDeck.setNoteFlashcardCount(noteIdFlashcardCountMap);
+            subDeck.setFlashcardCountInfo(flashcardCountInfo);
         }
     }
 
-    public Integer updateFlashcardCount() {
+    public void updateFlashcardCount() {
         Integer total = 0;
+        Integer review = 0;
         for (NoteDto note : notes) {
-            total += note.getFlashcardCount();
+            total += note.getTotalFlashcardCount();
+            review += note.getReviewFlashcardCount();
         }
         for (DeckDto subDeck : subDecks) {
-            total += subDeck.getFlashcardCount();
+            total += subDeck.getTotalFlashcardCount();
+            review += subDeck.getReviewFlashcardCount();
         }
-        this.setFlashcardCount(total);
-        return total;
+        this.setTotalFlashcardCount(total);
+        this.setReviewFlashcardCount(review);
     }
 
-    public Integer getFlashcardCount() {
-        return updateFlashcardCount();
+    public Integer getTotalFlashcardCount() {
+        updateFlashcardCount();
+        return this.totalFlashcardCount;
+    }
+
+    public Integer getReviewFlashcardCount() {
+        updateFlashcardCount();
+        return this.reviewFlashcardCount;
     }
 }

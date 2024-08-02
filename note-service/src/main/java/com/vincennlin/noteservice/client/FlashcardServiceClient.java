@@ -1,12 +1,12 @@
 package com.vincennlin.noteservice.client;
 
+import com.vincennlin.noteservice.payload.deck.response.FlashcardCountInfo;
 import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @FeignClient(name = "flashcard-ws")
 public interface FlashcardServiceClient {
@@ -16,7 +16,7 @@ public interface FlashcardServiceClient {
                                                              @RequestHeader("Authorization") String authorization);
 
     @GetMapping("/api/v1/notes/flashcards/count")
-    ResponseEntity<Map<Long, Integer>> getNotesFlashcardsCountByUserId(@RequestHeader("Authorization") String authorization);
+    ResponseEntity<FlashcardCountInfo> getFlashcardCountInfo(@RequestHeader("Authorization") String authorization);
 
     @DeleteMapping("api/v1/notes/{note_id}/flashcards")
     ResponseEntity<Void> deleteFlashcardsByNoteId(@PathVariable("note_id") Long noteId,

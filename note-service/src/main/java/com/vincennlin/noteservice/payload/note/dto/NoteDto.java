@@ -89,6 +89,9 @@ public class NoteDto {
     )
     private List<? extends FlashcardDto> flashcards;
 
-    @JsonProperty(value = "flashcard_count")
-    private Integer flashcardCount;
+    @JsonProperty(value = "total_flashcard_count")
+    private Integer totalFlashcardCount;
+
+    @JsonProperty(value = "review_flashcard_count")
+    private Integer reviewFlashcardCount;
 }

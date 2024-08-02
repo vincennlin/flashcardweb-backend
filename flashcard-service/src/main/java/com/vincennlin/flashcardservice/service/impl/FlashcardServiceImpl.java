@@ -4,6 +4,7 @@ import com.vincennlin.flashcardservice.client.NoteServiceClient;
 import com.vincennlin.flashcardservice.entity.review.ReviewInfo;
 import com.vincennlin.flashcardservice.entity.tag.Tag;
 import com.vincennlin.flashcardservice.mapper.FlashcardMapper;
+import com.vincennlin.flashcardservice.payload.deck.FlashcardCountInfo;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.*;
 import com.vincennlin.flashcardservice.payload.flashcard.type.FlashcardType;
 import com.vincennlin.flashcardservice.entity.flashcard.Flashcard;
@@ -28,7 +29,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,21 +88,33 @@ public class FlashcardServiceImpl implements FlashcardService {
     }
 
     @Override
-    public Map<Long, Integer> getNotesFlashcardsCountByUserId() {
+    public FlashcardCountInfo getFlashcardCountInfo() {
 
-        List<Object[]> results = flashcardRepository.findNoteIdAndFlashcardCountByUserId(getCurrentUserId());
+        List<Object[]> totalCountResults = flashcardRepository.findNoteIdAndFlashcardCountByUserId(getCurrentUserId());
 
         Map<Long, Integer> noteIdTotalFlashcardCountMap = new HashMap<>();
 
-        for (Object[] result : results) {
+        for (Object[] result : totalCountResults) {
             Long noteId = (Long) result[0];
             Long count = (Long) result[1];
             noteIdTotalFlashcardCountMap.put(noteId, count.intValue());
         }
 
+        List<Object[]> reviewCountResults = flashcardRepository.findNoteIdAndFlashcardCountByUserIdAndNextReviewPast(getCurrentUserId());
+
         Map<Long, Integer> noteIdReviewFlashcardCountMap = new HashMap<>();
 
-        return noteIdTotalFlashcardCountMap;
+        for (Object[] result : reviewCountResults) {
+            Long noteId = (Long) result[0];
+            Long count = (Long) result[1];
+            noteIdReviewFlashcardCountMap.put(noteId, count.intValue());
+        }
+
+        FlashcardCountInfo flashcardCountInfo = new FlashcardCountInfo();
+        flashcardCountInfo.setNoteIdTotalFlashcardCountMap(noteIdTotalFlashcardCountMap);
+        flashcardCountInfo.setNoteIdReviewFlashcardCountMap(noteIdReviewFlashcardCountMap);
+
+        return flashcardCountInfo;
     }
 
     @Transactional

@@ -18,7 +18,12 @@ public interface FlashcardRepository extends JpaRepository<Flashcard, Long> {
     @Query("SELECT f.noteId, COUNT(f) FROM Flashcard f WHERE f.userId = :userId GROUP BY f.noteId")
     List<Object[]> findNoteIdAndFlashcardCountByUserId(@Param("userId") Long userId);
 
-    Integer countByNoteId(Long noteId);
+    @Query("SELECT f.noteId, COUNT(f) " +
+            "FROM Flashcard f " +
+            "JOIN f.reviewInfo r " +
+            "WHERE f.userId = :userId AND r.nextReview < CURRENT_TIMESTAMP " +
+            "GROUP BY f.noteId")
+    List<Object[]> findNoteIdAndFlashcardCountByUserIdAndNextReviewPast(@Param("userId") Long userId);
 
     void deleteByNoteId(Long noteId);
 }

@@ -1,5 +1,6 @@
 package com.vincennlin.flashcardservice.controller.flashcard;
 
+import com.vincennlin.flashcardservice.payload.deck.FlashcardCountInfo;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.flashcardservice.service.FlashcardService;
 import jakarta.validation.Valid;
@@ -13,7 +14,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @AllArgsConstructor
 @RestController
@@ -59,11 +59,11 @@ public class FlashcardController implements FlashcardControllerSwagger {
 
     @PreAuthorize("hasAuthority('READ')")
     @GetMapping("/notes/flashcards/count")
-    public ResponseEntity<Map<Long, Integer>> getNotesFlashcardsCountByUserId() {
+    public ResponseEntity<FlashcardCountInfo> getFlashcardCountInfo() {
 
-        Map<Long, Integer> noteIdFlashcardCountMap = flashcardService.getNotesFlashcardsCountByUserId();
+        FlashcardCountInfo flashcardCountInfo = flashcardService.getFlashcardCountInfo();
 
-        return new ResponseEntity<>(noteIdFlashcardCountMap, HttpStatus.OK);
+        return new ResponseEntity<>(flashcardCountInfo, HttpStatus.OK);
     }
 
 
