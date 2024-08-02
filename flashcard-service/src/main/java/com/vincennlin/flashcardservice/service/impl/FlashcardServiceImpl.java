@@ -48,6 +48,17 @@ public class FlashcardServiceImpl implements FlashcardService {
     private final NoteServiceClient noteServiceClient;
 
     @Override
+    public List<FlashcardDto> getFlashcardsByDeckId(Long deckId) {
+
+        authorizeOwnershipByDeckId(deckId);
+
+        List<Long> noteIds = getNoteIdsByDeckId(deckId);
+
+        return noteIds.stream().map(this::getFlashcardsByNoteId)
+                .flatMap(List::stream).toList();
+    }
+
+    @Override
     public List<FlashcardDto> getFlashcardsByNoteId(Long noteId) {
 
         authorizeOwnershipByNoteId(noteId);
@@ -296,6 +307,12 @@ public class FlashcardServiceImpl implements FlashcardService {
         return getAuthentication().getCredentials().toString();
     }
 
+    private void authorizeOwnershipByDeckId(Long deckId) {
+        if (!isDeckOwner(deckId) && !containsAuthority("ADVANCED")) {
+            throw new ResourceOwnershipException(getCurrentUserId(), "Deck");
+        }
+    }
+
     private void authorizeOwnershipByNoteId(Long noteId) {
         if (!isNoteOwner(noteId) && !containsAuthority("ADVANCED")) {
             throw new ResourceOwnershipException(getCurrentUserId(), "Note");
@@ -315,6 +332,36 @@ public class FlashcardServiceImpl implements FlashcardService {
 
     private Authentication getAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
+    }
+
+    private List<Long> getNoteIdsByDeckId(Long deckId) {
+        ResponseEntity<List<Long>> response = null;
+        try{
+            response = noteServiceClient.getNoteIdsByDeckId(deckId, getAuthorization());
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+            if (e instanceof FeignException && ((FeignException)e).status() == HttpStatus.NOT_FOUND.value())
+                throw new ResourceNotFoundException("Deck", "id", deckId.toString());
+            else if (!(e instanceof ResourceNotFoundException))
+                throw new WebAPIException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+            throw e;
+        }
+        return response.getBody();
+    }
+
+    private Boolean isDeckOwner(Long deckId) {
+        ResponseEntity<Boolean> response = null;
+        try{
+            response = noteServiceClient.isDeckOwner(deckId, getAuthorization());
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+            if (e instanceof FeignException && ((FeignException)e).status() == HttpStatus.NOT_FOUND.value())
+                throw new ResourceNotFoundException("Deck", "id", deckId.toString());
+            else if (!(e instanceof ResourceNotFoundException))
+                throw new WebAPIException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+            throw e;
+        }
+        return response.getBody();
     }
 
     private Boolean isNoteOwner(Long noteId) {

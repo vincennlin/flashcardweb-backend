@@ -39,6 +39,15 @@ public class DeckController implements DeckControllerSwagger{
         return new ResponseEntity<>(deck, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('READ')")
+    @GetMapping("/decks/{deck_id}/notes/ids")
+    public ResponseEntity<List<Long>> getNoteIdsByDeckId(@PathVariable(name = "deck_id") Long deckId){
+
+        List<Long> noteIds = deckService.getNoteIdsByDeckId(deckId);
+
+        return new ResponseEntity<>(noteIds, HttpStatus.OK);
+    }
+
     @PreAuthorize("hasAuthority('CREATE')")
     @PostMapping("/decks")
     public ResponseEntity<DeckDto> createDeck(@Valid @RequestBody CreateDeckRequest request) {
@@ -65,5 +74,12 @@ public class DeckController implements DeckControllerSwagger{
         deckService.deleteDeckById(deckId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PreAuthorize("hasAuthority('READ')")
+    @GetMapping("/decks/{deck_id}/is-owner")
+    public ResponseEntity<Boolean> isDeckOwner(@PathVariable(name = "deck_id") Long deckId){
+        Boolean isOwner = deckService.isDeckOwner(deckId);
+        return new ResponseEntity<>(isOwner, HttpStatus.OK);
     }
 }

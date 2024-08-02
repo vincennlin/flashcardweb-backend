@@ -14,9 +14,13 @@ public interface DeckService {
 
     Deck getDeckEntityById(Long deckId);
 
+    List<Long> getNoteIdsByDeckId(Long deckId);
+
     DeckDto createDeck(CreateDeckRequest request);
 
     DeckDto updateDeck(Long deckId, DeckDto deckDto);
 
     void deleteDeckById(Long deckId);
+
+    Boolean isDeckOwner(Long deckId);
 }

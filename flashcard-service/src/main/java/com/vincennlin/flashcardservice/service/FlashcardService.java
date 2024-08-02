@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface FlashcardService {
 
+    List<FlashcardDto> getFlashcardsByDeckId(Long deckId);
+
     List<FlashcardDto> getFlashcardsByNoteId(Long noteId);
 
     FlashcardDto getFlashcardById(Long flashcardId);
