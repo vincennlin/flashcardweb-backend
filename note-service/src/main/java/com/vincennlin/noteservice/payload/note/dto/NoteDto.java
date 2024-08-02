@@ -1,6 +1,8 @@
 package com.vincennlin.noteservice.payload.note.dto;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vincennlin.noteservice.payload.deck.dto.DeckDto;
 import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
@@ -71,6 +73,13 @@ public class NoteDto {
             access = JsonProperty.Access.READ_ONLY
     )
     private LocalDateTime lastUpdated;
+
+    @JsonManagedReference
+    @JsonProperty(
+            value = "deck",
+            access = JsonProperty.Access.READ_ONLY
+    )
+    private DeckDto deck;
 
     @Schema(
             name = "flashcards",

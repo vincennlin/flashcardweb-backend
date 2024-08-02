@@ -56,7 +56,7 @@ public class NoteController implements NoteControllerSwagger {
     }
 
     @PostAuthorize("principal == #userId or hasAuthority('ADVANCED')")
-    @GetMapping("/notes/user/{user_id}")
+    @GetMapping("/notes/users/{user_id}")
     public ResponseEntity<NotePageResponse> getNotesByUserId(
             @PathVariable(name = "user_id") @Min(1) Long userId,
             @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) @Min(0) Integer pageNo,
@@ -73,7 +73,7 @@ public class NoteController implements NoteControllerSwagger {
     }
 
     @PreAuthorize("hasAuthority('READ')")
-    @GetMapping("/deck/{deck_id}/notes")
+    @GetMapping("/decks/{deck_id}/notes")
     public ResponseEntity<NotePageResponse> getNotesByDeckId(
             @PathVariable(name = "deck_id") @Min(1) Long deckId,
             @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) @Min(0) Integer pageNo,
@@ -100,10 +100,11 @@ public class NoteController implements NoteControllerSwagger {
     }
 
     @PreAuthorize("hasAuthority('CREATE')")
-    @PostMapping("/notes")
-    public ResponseEntity<NoteDto> createNote(@Valid @RequestBody NoteDto noteDto) {
+    @PostMapping("/decks/{deck_id}/notes")
+    public ResponseEntity<NoteDto> createNote(@PathVariable(name = "deck_id") @Min(1) Long deckId,
+                                                  @Valid @RequestBody NoteDto noteDto) {
 
-        NoteDto noteResponse = noteService.createNote(noteDto);
+        NoteDto noteResponse = noteService.createNote(deckId, noteDto);
 
         return new ResponseEntity<>(noteResponse, HttpStatus.CREATED);
     }

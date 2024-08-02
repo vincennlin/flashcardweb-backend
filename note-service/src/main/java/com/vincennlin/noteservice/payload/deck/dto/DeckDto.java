@@ -1,5 +1,6 @@
 package com.vincennlin.noteservice.payload.deck.dto;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vincennlin.noteservice.payload.note.dto.NoteDto;
 import jakarta.validation.constraints.NotBlank;
@@ -16,16 +17,17 @@ import java.util.List;
 @AllArgsConstructor
 public class DeckDto {
 
-    @JsonProperty(value = "deck_id")
+    @JsonProperty(value = "id")
     private Long id;
 
-    @NotBlank(message = "deck_name cannot be empty")
-    @JsonProperty(value = "deck_name")
+    @NotBlank(message = "name cannot be empty")
+    @JsonProperty(value = "name")
     private String name;
 
     @JsonProperty(value = "user_id")
     private Long userId;
 
+    @JsonBackReference
     @JsonProperty(value = "notes")
     private List<NoteDto> notes;
 }

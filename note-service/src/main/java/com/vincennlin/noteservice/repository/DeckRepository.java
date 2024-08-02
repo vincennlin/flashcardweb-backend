@@ -1,6 +1,6 @@
 package com.vincennlin.noteservice.repository;
 
-import com.vincennlin.noteservice.entity.Deck;
+import com.vincennlin.noteservice.entity.deck.Deck;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
