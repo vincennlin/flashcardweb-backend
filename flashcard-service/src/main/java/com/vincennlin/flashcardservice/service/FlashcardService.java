@@ -1,10 +1,10 @@
 package com.vincennlin.flashcardservice.service;
 
 import com.vincennlin.flashcardservice.entity.flashcard.Flashcard;
+import com.vincennlin.flashcardservice.payload.deck.FlashcardCountInfo;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
 
 import java.util.List;
-import java.util.Map;
 
 public interface FlashcardService {
 
@@ -16,7 +16,7 @@ public interface FlashcardService {
 
     List<FlashcardDto> getFlashcardsByTagNames(List<String> tagNames);
 
-    Map<Long, Integer> getNotesFlashcardsCountByUserId();
+    FlashcardCountInfo getFlashcardCountInfo();
 
     FlashcardDto createFlashcard(Long noteId, FlashcardDto flashcardDto);
 

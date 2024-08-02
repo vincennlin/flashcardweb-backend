@@ -1,5 +1,6 @@
 package com.vincennlin.flashcardservice.controller.flashcard;
 
+import com.vincennlin.flashcardservice.payload.deck.FlashcardCountInfo;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @Tag(
         name = "Flashcard Controller",
@@ -223,31 +223,8 @@ public interface FlashcardControllerSwagger {
     @SecurityRequirement(name = "Bear Authentication")
     ResponseEntity<List<FlashcardDto>> getFlashcardsByTagNames(@RequestParam(name = "tag") List<String> tagNames);
 
-    @Operation(
-            summary = "取得所有筆記的字卡數量",
-            description = "取得所有筆記的字卡數量"
-    )
-    @ApiResponse(
-            responseCode = "200",
-            description = "成功取得所有筆記的字卡數量",
-            content = @Content(
-                    mediaType = "application/json",
-                    examples = @ExampleObject(value = """
-                            [
-                                {
-                                    "note_id": 1,
-                                    "flashcard_count": 4
-                                },
-                                {
-                                    "note_id": 2,
-                                    "flashcard_count": 2
-                                }
-                            ]
-                            """)
-            )
-    )
     @SecurityRequirement(name = "Bear Authentication")
-    ResponseEntity<Map<Long, Integer>> getNotesFlashcardsCountByUserId();
+    ResponseEntity<FlashcardCountInfo> getFlashcardCountInfo();
 
     @Operation(
             summary = "[EDITED][路由名稱] 新增字卡",

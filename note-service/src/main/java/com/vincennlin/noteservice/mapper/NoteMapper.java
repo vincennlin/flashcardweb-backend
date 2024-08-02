@@ -4,6 +4,7 @@ import com.vincennlin.noteservice.client.FlashcardServiceClient;
 import com.vincennlin.noteservice.entity.deck.Deck;
 import com.vincennlin.noteservice.entity.note.Note;
 import com.vincennlin.noteservice.payload.deck.dto.DeckDto;
+import com.vincennlin.noteservice.payload.deck.response.FlashcardCountInfo;
 import com.vincennlin.noteservice.payload.note.dto.NoteDto;
 import com.vincennlin.noteservice.service.AuthService;
 import org.modelmapper.Converter;
@@ -11,8 +12,6 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
 
 @Component
 public class NoteMapper {
@@ -44,9 +43,9 @@ public class NoteMapper {
         return modelMapper.map(noteDto, Note.class);
     }
 
-    public DeckDto mapDeckToDto(Deck deck, Map<Long, Integer> noteIdFlashcardCountMap) {
+    public DeckDto mapDeckToDto(Deck deck, FlashcardCountInfo flashcardCountInfo) {
         DeckDto deckDto = modelMapper.map(deck, DeckDto.class);
-        deckDto.setNoteFlashcardCount(noteIdFlashcardCountMap);
+        deckDto.setFlashcardCountInfo(flashcardCountInfo);
         deckDto.updateFlashcardCount();
         if (deck.getParent() != null) {
             deckDto.setParentId(deck.getParent().getId());
