@@ -1,12 +1,13 @@
 package com.vincennlin.noteservice.service.impl;
 
-import com.vincennlin.noteservice.entity.Deck;
+import com.vincennlin.noteservice.entity.deck.Deck;
 import com.vincennlin.noteservice.exception.ResourceNotFoundException;
 import com.vincennlin.noteservice.exception.ResourceOwnershipException;
 import com.vincennlin.noteservice.exception.WebAPIException;
 import com.vincennlin.noteservice.mapper.NoteMapper;
 import com.vincennlin.noteservice.payload.deck.dto.DeckDto;
 import com.vincennlin.noteservice.repository.DeckRepository;
+import com.vincennlin.noteservice.service.AuthService;
 import com.vincennlin.noteservice.service.DeckService;
 import com.vincennlin.noteservice.service.NoteService;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,7 @@ import java.util.List;
 @Service
 public class DeckServiceImpl implements DeckService {
 
-    private final NoteService noteService;
+    private final AuthService authService;
 
     private final DeckRepository deckRepository;
     private final NoteMapper noteMapper;
@@ -27,7 +28,7 @@ public class DeckServiceImpl implements DeckService {
     @Override
     public List<DeckDto> getAllDecks() {
 
-        Long userId = noteService.getCurrentUserId();
+        Long userId = authService.getCurrentUserId();
 
         List<Deck> decks = deckRepository.findByUserId(userId);
 
@@ -37,18 +38,26 @@ public class DeckServiceImpl implements DeckService {
     @Override
     public DeckDto getDeckById(Long deckId) {
 
-        Deck deck = deckRepository.findById(deckId)
-                .orElseThrow(() -> new ResourceNotFoundException("Deck", "id", deckId.toString()));
-
-        authorizeDeckOwnership(deck.getUserId());
+        Deck deck = getDeckEntityById(deckId);
 
         return noteMapper.mapDeckToDto(deck);
     }
 
     @Override
+    public Deck getDeckEntityById(Long deckId) {
+
+        Deck deck = deckRepository.findById(deckId)
+                .orElseThrow(() -> new ResourceNotFoundException("Deck", "id", deckId.toString()));
+
+        authService.authorizeOwnership(deck.getUserId());
+
+        return deck;
+    }
+
+    @Override
     public DeckDto createDeck(DeckDto deckDto) {
 
-        Long userId = noteService.getCurrentUserId();
+        Long userId = authService.getCurrentUserId();
 
         if (deckRepository.existsByNameAndUserId(deckDto.getName(), userId)) {
             throw new WebAPIException(HttpStatus.BAD_REQUEST, "Deck with name " + deckDto.getName() + " already exists");
@@ -66,7 +75,7 @@ public class DeckServiceImpl implements DeckService {
     @Override
     public DeckDto updateDeck(Long deckId, DeckDto deckDto) {
 
-        Long userId = noteService.getCurrentUserId();
+        Long userId = authService.getCurrentUserId();
 
         if (deckRepository.existsByNameAndUserId(deckDto.getName(), userId)) {
             throw new WebAPIException(HttpStatus.BAD_REQUEST, "Deck with name " + deckDto.getName() + " already exists");
@@ -75,7 +84,7 @@ public class DeckServiceImpl implements DeckService {
         Deck deck = deckRepository.findById(deckId)
                 .orElseThrow(() -> new ResourceNotFoundException("Deck", "id", deckId.toString()));
 
-        authorizeDeckOwnership(deck.getUserId());
+        authService.authorizeOwnership(deck.getUserId());
 
         deck.setName(deckDto.getName());
 
@@ -94,15 +103,8 @@ public class DeckServiceImpl implements DeckService {
             throw new ResourceNotFoundException("Deck", "id", deckId.toString());
         }
 
-        authorizeDeckOwnership(deck.getUserId());
+        authService.authorizeOwnership(deck.getUserId());
 
         deckRepository.delete(deck);
-    }
-
-    private void authorizeDeckOwnership(Long ownerId) {
-        Long currentUserId = noteService.getCurrentUserId();
-        if (!currentUserId.equals(ownerId) && !noteService.containsAuthority("ADVANCED")) {
-            throw new ResourceOwnershipException(currentUserId, ownerId);
-        }
     }
 }

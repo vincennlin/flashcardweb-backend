@@ -20,7 +20,7 @@ public interface NoteService {
 
     NoteDto getNoteById(Long noteId);
 
-    NoteDto createNote(NoteDto noteDto);
+    NoteDto createNote(Long deckId, NoteDto noteDto);
 
     NoteDto updateNote(Long noteId, NoteDto noteDto);
 
@@ -31,8 +31,4 @@ public interface NoteService {
     FlashcardDto generateFlashcard(Long noteId, GenerateFlashcardRequest request);
 
     List<FlashcardDto> generateFlashcards(Long noteId, GenerateFlashcardsRequest request);
-
-    Long getCurrentUserId();
-
-    Boolean containsAuthority(String authority);
 }

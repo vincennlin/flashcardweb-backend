@@ -1,7 +1,7 @@
 package com.vincennlin.noteservice.mapper;
 
-import com.vincennlin.noteservice.entity.Deck;
-import com.vincennlin.noteservice.entity.Note;
+import com.vincennlin.noteservice.entity.deck.Deck;
+import com.vincennlin.noteservice.entity.note.Note;
 import com.vincennlin.noteservice.payload.deck.dto.DeckDto;
 import com.vincennlin.noteservice.payload.note.dto.NoteDto;
 import org.modelmapper.Converter;

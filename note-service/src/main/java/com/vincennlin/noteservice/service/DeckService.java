@@ -1,5 +1,6 @@
 package com.vincennlin.noteservice.service;
 
+import com.vincennlin.noteservice.entity.deck.Deck;
 import com.vincennlin.noteservice.payload.deck.dto.DeckDto;
 
 import java.util.List;
@@ -9,6 +10,8 @@ public interface DeckService {
     List<DeckDto> getAllDecks();
 
     DeckDto getDeckById(Long deckId);
+
+    Deck getDeckEntityById(Long deckId);
 
     DeckDto createDeck(DeckDto deckDto);
 

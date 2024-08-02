@@ -30,7 +30,7 @@ public class DeckController implements DeckControllerSwagger{
     }
 
     @PreAuthorize("hasAuthority('READ')")
-    @GetMapping("/deck/{deck_id}")
+    @GetMapping("/decks/{deck_id}")
     public ResponseEntity<DeckDto> getDeckById(@PathVariable(name = "deck_id") Long deckId) {
 
         DeckDto deck = deckService.getDeckById(deckId);
@@ -39,7 +39,7 @@ public class DeckController implements DeckControllerSwagger{
     }
 
     @PreAuthorize("hasAuthority('CREATE')")
-    @PostMapping("/deck")
+    @PostMapping("/decks")
     public ResponseEntity<DeckDto> createDeck(@Valid @RequestBody DeckDto deckDto) {
 
         DeckDto newDeck = deckService.createDeck(deckDto);
@@ -48,7 +48,7 @@ public class DeckController implements DeckControllerSwagger{
     }
 
     @PreAuthorize("hasAuthority('UPDATE')")
-    @PutMapping("/deck/{deck_id}")
+    @PutMapping("/decks/{deck_id}")
     public ResponseEntity<DeckDto> updateDeck(@PathVariable(name = "deck_id") Long deckId,
                                               @Valid @RequestBody DeckDto deckDto) {
 
@@ -58,7 +58,7 @@ public class DeckController implements DeckControllerSwagger{
     }
 
     @PreAuthorize("hasAuthority('DELETE')")
-    @DeleteMapping("/deck/{deck_id}")
+    @DeleteMapping("/decks/{deck_id}")
     public ResponseEntity<Void> deleteDeckById(@PathVariable(name = "deck_id") Long deckId) {
 
         deckService.deleteDeckById(deckId);

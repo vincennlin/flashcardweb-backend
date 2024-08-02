@@ -148,7 +148,7 @@ public interface NoteControllerSwagger {
 
 
     @Operation(
-            summary = "取得特定使用者的筆記",
+            summary = "[EDITED][路由名稱] 取得特定使用者的筆記",
             description = "根據 user_id 取得特定使用者的筆記，並且可以加入分頁、排序等參數"
     )
     @ApiResponse(
@@ -368,7 +368,8 @@ public interface NoteControllerSwagger {
             )
     )
     @SecurityRequirement(name = "Bear Authentication")
-    ResponseEntity<NoteDto> createNote(@Valid @RequestBody
+    ResponseEntity<NoteDto> createNote(@PathVariable(name = "deck_id") @Min(1) Long deckId,
+                                       @Valid @RequestBody
                                        @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                content = @Content(
                                                        mediaType = "application/json",
