@@ -60,6 +60,14 @@ public class DeckDto {
     }
 
     @JsonIgnore
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
+        for (DeckDto subDeck : subDecks) {
+            subDeck.setParentId(this.id);
+        }
+    }
+
+    @JsonIgnore
     public void setFlashcardCountInfo(FlashcardCountInfo flashcardCountInfo) {
         for (NoteDto note : notes) {
             note.setFlashcardCountInfo(flashcardCountInfo);

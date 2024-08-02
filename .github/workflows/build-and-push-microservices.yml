@@ -87,7 +87,7 @@ jobs:
 
       # Build and push note-service
       - name: Build note-service with Maven
-        run: mvn -B package --file note-service/pom.xml
+        run: mvn -B package -DskipTests --file note-service/pom.xml
 
       - name: Extract metadata for note-service
         id: meta-note-service

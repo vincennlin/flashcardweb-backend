@@ -76,9 +76,9 @@ public class DeckServiceImpl implements DeckService {
 
         Long userId = authService.getCurrentUserId();
 
-        if (deckRepository.existsByNameAndUserId(request.getName(), userId)) {
-            throw new WebAPIException(HttpStatus.BAD_REQUEST, "Deck with name " + request.getName() + " already exists");
-        }
+//        if (deckRepository.existsByNameAndUserId(request.getName(), userId)) {
+//            throw new WebAPIException(HttpStatus.BAD_REQUEST, "Deck with name " + request.getName() + " already exists");
+//        }
 
         Deck deck = new Deck();
         deck.setName(request.getName());
@@ -98,11 +98,11 @@ public class DeckServiceImpl implements DeckService {
     @Override
     public DeckDto updateDeck(Long deckId, DeckDto deckDto) {
 
-        Long userId = authService.getCurrentUserId();
-
-        if (deckRepository.existsByNameAndUserId(deckDto.getName(), userId)) {
-            throw new WebAPIException(HttpStatus.BAD_REQUEST, "Deck with name " + deckDto.getName() + " already exists");
-        }
+//        Long userId = authService.getCurrentUserId();
+//
+//        if (deckRepository.existsByNameAndUserId(deckDto.getName(), userId)) {
+//            throw new WebAPIException(HttpStatus.BAD_REQUEST, "Deck with name " + deckDto.getName() + " already exists");
+//        }
 
         Deck deck = deckRepository.findById(deckId)
                 .orElseThrow(() -> new ResourceNotFoundException("Deck", "id", deckId.toString()));

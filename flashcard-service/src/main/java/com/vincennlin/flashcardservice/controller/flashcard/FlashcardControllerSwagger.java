@@ -38,6 +38,125 @@ public interface FlashcardControllerSwagger {
     ResponseEntity<String> status();
 
     @Operation(
+            summary = "[NEW] 取得特定牌組的所有字卡",
+            description = "根據 deck_id 取得特定牌組的所有字卡，取得的字卡會包含所有子牌組的字卡"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "成功取得特定牌組的所有字卡",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            [
+                                {
+                                    "id": 1,
+                                    "question": "什麼是紅黑樹？",
+                                    "type": "SHORT_ANSWER",
+                                    "tags": [],
+                                    "note_id": 1,
+                                    "user_id": 2,
+                                    "review_info": {
+                                        "review_level": 0,
+                                        "review_interval": 0,
+                                        "last_reviewed": null,
+                                        "next_review": "2024-08-02T23:10:16.283893"
+                                    },
+                                    "short_answer": "紅黑樹是一種自平衡的二叉搜尋樹，提供最好的最壞情況保證的插入、刪除和搜尋時間。"
+                                },
+                                {
+                                    "id": 2,
+                                    "question": "紅黑樹的時間複雜度為 O(___ n) 的插入和刪除操作。",
+                                    "type": "FILL_IN_THE_BLANK",
+                                    "tags": [],
+                                    "note_id": 1,
+                                    "user_id": 2,
+                                    "review_info": {
+                                        "review_level": 0,
+                                        "review_interval": 0,
+                                        "last_reviewed": null,
+                                        "next_review": "2024-08-02T23:10:16.424523"
+                                    },
+                                    "in_blank_answers": [
+                                        {
+                                            "id": 1,
+                                            "text": "log"
+                                        }
+                                    ],
+                                    "full_answer": "紅黑樹的時間複雜度為 O(log n) 的插入和刪除操作。"
+                                },
+                                {
+                                    "id": 3,
+                                    "question": "紅黑樹的持久版本在每次插入或刪除後需要額外的空間複雜度為 O(n)。",
+                                    "type": "MULTIPLE_CHOICE",
+                                    "tags": [],
+                                    "options": [
+                                        {
+                                            "id": 1,
+                                            "text": "對"
+                                        },
+                                        {
+                                            "id": 2,
+                                            "text": "錯"
+                                        },
+                                        {
+                                            "id": 3,
+                                            "text": "無法確定"
+                                        },
+                                        {
+                                            "id": 4,
+                                            "text": "不適用"
+                                        }
+                                    ],
+                                    "note_id": 1,
+                                    "user_id": 2,
+                                    "review_info": {
+                                        "review_level": 0,
+                                        "review_interval": 0,
+                                        "last_reviewed": null,
+                                        "next_review": "2024-08-02T23:10:16.455829"
+                                    },
+                                    "answer_option": {
+                                        "id": 2,
+                                        "text": "錯"
+                                    }
+                                },
+                                {
+                                    "id": 4,
+                                    "question": "紅黑樹與 AVL 樹相比，提供更好的最壞時間複雜度保證。",
+                                    "type": "TRUE_FALSE",
+                                    "tags": [],
+                                    "note_id": 1,
+                                    "user_id": 2,
+                                    "review_info": {
+                                        "review_level": 0,
+                                        "review_interval": 0,
+                                        "last_reviewed": null,
+                                        "next_review": "2024-08-02T23:10:16.475803"
+                                    },
+                                    "true_false_answer": false
+                                },
+                                {
+                                    "id": 9,
+                                    "question": "紅黑樹的主要特性是什麼？",
+                                    "type": "SHORT_ANSWER",
+                                    "tags": [],
+                                    "note_id": 2,
+                                    "user_id": 2,
+                                    "review_info": {
+                                        "review_level": 0,
+                                        "review_interval": 0,
+                                        "last_reviewed": null,
+                                        "next_review": "2024-08-02T23:26:59.036686"
+                                    },
+                                    "short_answer": "紅黑樹在插入、刪除和搜尋時間方面提供了最好的最壞情況保證。"
+                                }
+                            ]
+                            """)
+            )
+    )
+    ResponseEntity<List<FlashcardDto>> getFlashcardsByDeckId(@PathVariable(name = "deck_id") @Min(1) Long deckId);
+
+    @Operation(
             summary = "取得特定筆記的所有字卡",
             description = "根據 note_id 取得特定筆記的所有字卡"
     )
@@ -223,6 +342,29 @@ public interface FlashcardControllerSwagger {
     @SecurityRequirement(name = "Bear Authentication")
     ResponseEntity<List<FlashcardDto>> getFlashcardsByTagNames(@RequestParam(name = "tag") List<String> tagNames);
 
+    @Operation(
+            summary = "取得字卡數量資訊",
+            description = "取得字卡數量資訊，包含每個筆記的所有字卡數量、待複習字卡數量"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "成功取得字卡數量資訊",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                "noteIdTotalFlashcardCountMap": {
+                                    "1": 4,
+                                    "2": 1
+                                },
+                                "noteIdReviewFlashcardCountMap": {
+                                    "1": 4,
+                                    "2": 1
+                                }
+                            }
+                            """)
+            )
+    )
     @SecurityRequirement(name = "Bear Authentication")
     ResponseEntity<FlashcardCountInfo> getFlashcardCountInfo();
 

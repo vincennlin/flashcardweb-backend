@@ -83,7 +83,7 @@ public class NoteServiceImpl implements NoteService {
 
         List<FlashcardDto> flashcardDtoList = getFlashcardsByNoteId(noteId);
 
-        NoteDto noteDto = noteMapper.mapToDto(note);
+        NoteDto noteDto = noteMapper.mapToDto(note, deckService.getFlashcardCountInfo());
 
         noteDto.setFlashcards(flashcardDtoList);
 
@@ -118,7 +118,7 @@ public class NoteServiceImpl implements NoteService {
 
         Note updatedNote = noteRepository.save(note);
 
-        NoteDto updatedNoteDto = noteMapper.mapToDto(updatedNote);
+        NoteDto updatedNoteDto = noteMapper.mapToDto(updatedNote, deckService.getFlashcardCountInfo());
 
         updatedNoteDto.setFlashcards(getFlashcardsByNoteId(noteId));
 

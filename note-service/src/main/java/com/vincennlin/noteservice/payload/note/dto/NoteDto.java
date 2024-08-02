@@ -57,6 +57,23 @@ public class NoteDto {
     )
     private Long deckId;
 
+    @JsonProperty(value = "total_flashcard_count")
+    private Integer totalFlashcardCount;
+
+    @JsonProperty(value = "review_flashcard_count")
+    private Integer reviewFlashcardCount;
+
+    @Schema(
+            name = "flashcards",
+            description = "筆記裡的字卡列表",
+            example = "null"
+    )
+    @JsonProperty(
+            value = "flashcards",
+            access = JsonProperty.Access.READ_ONLY
+    )
+    private List<? extends FlashcardDto> flashcards;
+
     @Schema(
             name = "date_created",
             description = "筆記建立日期",
@@ -78,23 +95,6 @@ public class NoteDto {
             access = JsonProperty.Access.READ_ONLY
     )
     private LocalDateTime lastUpdated;
-
-    @Schema(
-            name = "flashcards",
-            description = "筆記裡的字卡列表",
-            example = "null"
-    )
-    @JsonProperty(
-            value = "flashcards",
-            access = JsonProperty.Access.READ_ONLY
-    )
-    private List<? extends FlashcardDto> flashcards;
-
-    @JsonProperty(value = "total_flashcard_count")
-    private Integer totalFlashcardCount;
-
-    @JsonProperty(value = "review_flashcard_count")
-    private Integer reviewFlashcardCount;
 
     public void setFlashcardCountInfo(FlashcardCountInfo flashcardCountInfo) {
         Integer totalFlashcardCount = flashcardCountInfo

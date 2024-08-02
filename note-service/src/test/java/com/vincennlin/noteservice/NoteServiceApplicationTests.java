@@ -3,6 +3,7 @@ package com.vincennlin.noteservice;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vincennlin.noteservice.client.AiServiceClient;
 import com.vincennlin.noteservice.client.FlashcardServiceClient;
+import com.vincennlin.noteservice.payload.deck.response.FlashcardCountInfo;
 import com.vincennlin.noteservice.payload.flashcard.dto.impl.FillInTheBlankFlashcardDto;
 import com.vincennlin.noteservice.payload.flashcard.dto.impl.MultipleChoiceFlashcardDto;
 import com.vincennlin.noteservice.payload.flashcard.type.FlashcardType;
@@ -65,7 +66,7 @@ class NoteServiceApplicationTests {
 
 	private final String getNotesUrl = "/api/v1/notes";
 	private final String getNoteByIdUrl = "/api/v1/notes/{id}";
-	private final String getNoteByUserIdUrl = "/api/v1/notes/user/{userId}";
+	private final String getNoteByUserIdUrl = "/api/v1/notes/users/{userId}";
 
 	private final String createNoteUrl = "/api/v1/notes";
 
@@ -500,6 +501,12 @@ class NoteServiceApplicationTests {
 
 		Mockito.when(flashcardServiceClient.createFlashcards(Mockito.anyLong(), Mockito.any(), Mockito.anyString()))
 				.thenReturn(getMockFlashcardServiceFlashcardsResponse());
+
+		Mockito.when(flashcardServiceClient.getFlashcardCountInfo(Mockito.anyString()))
+				.thenReturn(new ResponseEntity<>(new FlashcardCountInfo(), HttpStatus.OK));
+
+		Mockito.when(flashcardServiceClient.deleteFlashcardsByNoteId(Mockito.anyLong(), Mockito.anyString()))
+				.thenReturn(new ResponseEntity<>(HttpStatus.NO_CONTENT));
 	}
 
 	private ResponseEntity<FlashcardDto> getMockAiGenerateFlashcardResponse() {
