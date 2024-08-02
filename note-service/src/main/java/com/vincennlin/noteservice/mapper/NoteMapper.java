@@ -51,11 +51,9 @@ public class NoteMapper {
         deckDto.updateFlashcardCount();
         if (deck.getParent() != null) {
             deckDto.setParentId(deck.getParent().getId());
+        } else {
+            deckDto.setParentId(null);
         }
-        deckDto.getSubDecks().forEach(subDeck -> {
-            subDeck.setParentId(deck.getId());
-        });
-
         return deckDto;
     }
 }

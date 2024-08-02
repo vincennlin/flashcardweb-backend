@@ -52,90 +52,96 @@ public interface NoteControllerSwagger {
                     mediaType = "application/json",
                     examples = @ExampleObject(value = """
                             {
-                                 "content": [
-                                     {
-                                         "id": 1,
-                                         "content": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這不僅使它們在時間敏感的應用（如即時應用）中有價值，還使它們成為其他提供最壞情況保證的資料結構的基礎模板。例如，在計算幾何中使用的許多資料結構都可以基於紅黑樹實現。紅黑樹在函數式程式設計中也特別有用。在這裡，它們是最常用的持久資料結構之一，用來構造關聯陣列和集合。每次插入或刪除之後，它們能保持為以前的版本。除了 O(log n) 的時間之外，紅黑樹的持久版本每次插入或刪除還需要 O(log n) 的空間。紅黑樹是2-3-4樹的一種等價結構。換句話說，對於每個2-3-4樹，都存在至少一個數據元素是同樣次序的紅黑樹。在2-3-4樹上的插入和刪除操作也等同於在紅黑樹中的顏色翻轉和旋轉。這使得2-3-4樹成為理解紅黑樹背後邏輯的重要工具，這也是為什麼很多介紹演算法的教科書在介紹紅黑樹之前會先介紹2-3-4樹，儘管2-3-4樹在實踐中不常使用。",
-                                         "user_id": 1,
-                                         "date_created": "2024-07-21T18:59:53.171794",
-                                         "last_updated": "2024-07-21T19:26:02.228534",
-                                         "flashcards": [
-                                             {
-                                                 "id": 1,
-                                                 "question": "紅黑樹的主要特點是什麼？",
-                                                 "type": "SHORT_ANSWER",
-                                                 "note_id": 1,
-                                                 "user_id": 1,
-                                                 "short_answer": "紅黑樹在插入、刪除和搜尋時間方面提供最壞情況保證，並且是持久資料結構，能保持歷史版本。"
-                                             },
-                                             {
-                                                 "id": 2,
-                                                 "question": "紅黑樹和AVL樹都提供了最好的最壞情況保證，這使得它們有價值於___、___和___等時間敏感的應用。",
-                                                 "type": "FILL_IN_THE_BLANK",
-                                                 "note_id": 1,
-                                                 "user_id": 1,
-                                                 "in_blank_answers": [
-                                                     {
-                                                         "id": 2,
-                                                         "text": "即時應用"
-                                                     },
-                                                     {
-                                                         "id": 3,
-                                                         "text": "計算幾何"
-                                                     },
-                                                     {
-                                                         "id": 4,
-                                                         "text": "持久資料結構"
-                                                     }
-                                                 ],
-                                                 "full_answer": "紅黑樹和AVL樹都提供了最好的最壞情況保證，這使得它們有價值於即時應用、計算幾何和持久資料結構等時間敏感的應用。"
-                                             },
-                                             {
-                                                 "id": 3,
-                                                 "question": "紅黑樹在函數式程式設計中不常用。這句話是？",
-                                                 "type": "TRUE_FALSE",
-                                                 "note_id": 1,
-                                                 "user_id": 1,
-                                                 "true_false_answer": false
-                                             },
-                                             {
-                                                 "id": 4,
-                                                 "question": "以下哪一個是紅黑樹的特性？",
-                                                 "type": "MULTIPLE_CHOICE",
-                                                 "options": [
-                                                     {
-                                                         "id": 1,
-                                                         "text": "每次操作需要 O(log n) 的時間"
-                                                     },
-                                                     {
-                                                         "id": 2,
-                                                         "text": "無法保持為以前的版本"
-                                                     },
-                                                     {
-                                                         "id": 3,
-                                                         "text": "不支持持久資料結構"
-                                                     },
-                                                     {
-                                                         "id": 4,
-                                                         "text": "只能用於靜態資料結構"
-                                                     }
-                                                 ],
-                                                 "note_id": 1,
-                                                 "user_id": 1,
-                                                 "answer_option": {
-                                                     "id": 1,
-                                                     "text": "每次操作需要 O(log n) 的時間"
-                                                 }
-                                             }
-                                         ]
-                                     }
-                                 ],
-                                 "pageNo": 0,
-                                 "pageSize": 10,
-                                 "totalElements": 1,
-                                 "totalPages": 1,
-                                 "last": true
-                             }
+                                "content": [
+                                    {
+                                        "id": 1,
+                                        "content": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這不僅使它們在時間敏感的應用（如即時應用）中有價值，還使它們成為其他提供最壞情況保證的資料結構的基礎模板。例如，在計算幾何中使用的許多資料結構都可以基於紅黑樹實現。紅黑樹在函數式程式設計中也特別有用。在這裡，它們是最常用的持久資料結構之一，用來構造關聯陣列和集合。每次插入或刪除之後，它們能保持為以前的版本。除了 O(log n) 的時間之外，紅黑樹的持久版本每次插入或刪除還需要 O(log n) 的空間。紅黑樹是2-3-4樹的一種等價結構。換句話說，對於每個2-3-4樹，都存在至少一個數據元素是同樣次序的紅黑樹。在2-3-4樹上的插入和刪除操作也等同於在紅黑樹中的顏色翻轉和旋轉。這使得2-3-4樹成為理解紅黑樹背後邏輯的重要工具，這也是為什麼很多介紹演算法的教科書在介紹紅黑樹之前會先介紹2-3-4樹，儘管2-3-4樹在實踐中不常使用。",
+                                        "user_id": 2,
+                                        "deck_id": 1,
+                                        "total_flashcard_count": 4,
+                                        "review_flashcard_count": 4,
+                                        "flashcards": [
+                                            {
+                                                "id": 1,
+                                                "question": "什麼是紅黑樹？",
+                                                "type": "SHORT_ANSWER",
+                                                "note_id": 1,
+                                                "user_id": 2,
+                                                "short_answer": "紅黑樹是一種自平衡的二叉搜尋樹，提供最好的最壞情況保證的插入、刪除和搜尋時間。"
+                                            },
+                                            {
+                                                "id": 2,
+                                                "question": "紅黑樹的時間複雜度為 O(___ n) 的插入和刪除操作。",
+                                                "type": "FILL_IN_THE_BLANK",
+                                                "note_id": 1,
+                                                "user_id": 2,
+                                                "in_blank_answers": [
+                                                    {
+                                                        "id": 1,
+                                                        "text": "log"
+                                                    }
+                                                ],
+                                                "full_answer": "紅黑樹的時間複雜度為 O(log n) 的插入和刪除操作。"
+                                            },
+                                            {
+                                                "id": 3,
+                                                "question": "紅黑樹的持久版本在每次插入或刪除後需要額外的空間複雜度為 O(n)。",
+                                                "type": "MULTIPLE_CHOICE",
+                                                "options": [
+                                                    {
+                                                        "id": 1,
+                                                        "text": "對"
+                                                    },
+                                                    {
+                                                        "id": 2,
+                                                        "text": "錯"
+                                                    },
+                                                    {
+                                                        "id": 3,
+                                                        "text": "無法確定"
+                                                    },
+                                                    {
+                                                        "id": 4,
+                                                        "text": "不適用"
+                                                    }
+                                                ],
+                                                "note_id": 1,
+                                                "user_id": 2,
+                                                "answer_option": {
+                                                    "id": 2,
+                                                    "text": "錯"
+                                                }
+                                            },
+                                            {
+                                                "id": 4,
+                                                "question": "紅黑樹與 AVL 樹相比，提供更好的最壞時間複雜度保證。",
+                                                "type": "TRUE_FALSE",
+                                                "note_id": 1,
+                                                "user_id": 2,
+                                                "true_false_answer": false
+                                            }
+                                        ],
+                                        "date_created": "2024-08-02T23:07:51.339166",
+                                        "last_updated": "2024-08-02T23:17:40.060185"
+                                    },
+                                    {
+                                        "id": 2,
+                                        "content": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這不僅使它們在時間敏感的應用（如即時應用）中有價值，還使它們成為其他提供最壞情況保證的資料結構的基礎模板。例如，在計算幾何中使用的許多資料結構都可以基於紅黑樹實現。紅黑樹在函數式程式設計中也特別有用。在這裡，它們是最常用的持久資料結構之一，用來構造關聯陣列和集合。每次插入或刪除之後，它們能保持為以前的版本。除了 O(log n) 的時間之外，紅黑樹的持久版本每次插入或刪除還需要 O(log n) 的空間。紅黑樹是2-3-4樹的一種等價結構。換句話說，對於每個2-3-4樹，都存在至少一個數據元素是同樣次序的紅黑樹。在2-3-4樹上的插入和刪除操作也等同於在紅黑樹中的顏色翻轉和旋轉。這使得2-3-4樹成為理解紅黑樹背後邏輯的重要工具，這也是為什麼很多介紹演算法的教科書在介紹紅黑樹之前會先介紹2-3-4樹，儘管2-3-4樹在實踐中不常使用。",
+                                        "user_id": 2,
+                                        "deck_id": 2,
+                                        "total_flashcard_count": 0,
+                                        "review_flashcard_count": 0,
+                                        "flashcards": [],
+                                        "date_created": "2024-08-02T23:22:30.91771",
+                                        "last_updated": "2024-08-02T23:22:30.918029"
+                                    }
+                                ],
+                                "pageNo": 0,
+                                "pageSize": 10,
+                                "totalElements": 2,
+                                "totalPages": 1,
+                                "last": true
+                            }
                             """)
             )
     )
@@ -158,96 +164,213 @@ public interface NoteControllerSwagger {
                     mediaType = "application/json",
                     examples = @ExampleObject(value = """
                             {
-                                 "content": [
-                                     {
-                                         "id": 1,
-                                         "content": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這不僅使它們在時間敏感的應用（如即時應用）中有價值，還使它們成為其他提供最壞情況保證的資料結構的基礎模板。例如，在計算幾何中使用的許多資料結構都可以基於紅黑樹實現。紅黑樹在函數式程式設計中也特別有用。在這裡，它們是最常用的持久資料結構之一，用來構造關聯陣列和集合。每次插入或刪除之後，它們能保持為以前的版本。除了 O(log n) 的時間之外，紅黑樹的持久版本每次插入或刪除還需要 O(log n) 的空間。紅黑樹是2-3-4樹的一種等價結構。換句話說，對於每個2-3-4樹，都存在至少一個數據元素是同樣次序的紅黑樹。在2-3-4樹上的插入和刪除操作也等同於在紅黑樹中的顏色翻轉和旋轉。這使得2-3-4樹成為理解紅黑樹背後邏輯的重要工具，這也是為什麼很多介紹演算法的教科書在介紹紅黑樹之前會先介紹2-3-4樹，儘管2-3-4樹在實踐中不常使用。",
-                                         "user_id": 1,
-                                         "date_created": "2024-07-21T18:59:53.171794",
-                                         "last_updated": "2024-07-21T19:26:02.228534",
-                                         "flashcards": [
-                                             {
-                                                 "id": 1,
-                                                 "question": "紅黑樹的主要特點是什麼？",
-                                                 "type": "SHORT_ANSWER",
-                                                 "note_id": 1,
-                                                 "user_id": 1,
-                                                 "short_answer": "紅黑樹在插入、刪除和搜尋時間方面提供最壞情況保證，並且是持久資料結構，能保持歷史版本。"
-                                             },
-                                             {
-                                                 "id": 2,
-                                                 "question": "紅黑樹和AVL樹都提供了最好的最壞情況保證，這使得它們有價值於___、___和___等時間敏感的應用。",
-                                                 "type": "FILL_IN_THE_BLANK",
-                                                 "note_id": 1,
-                                                 "user_id": 1,
-                                                 "in_blank_answers": [
-                                                     {
-                                                         "id": 2,
-                                                         "text": "即時應用"
-                                                     },
-                                                     {
-                                                         "id": 3,
-                                                         "text": "計算幾何"
-                                                     },
-                                                     {
-                                                         "id": 4,
-                                                         "text": "持久資料結構"
-                                                     }
-                                                 ],
-                                                 "full_answer": "紅黑樹和AVL樹都提供了最好的最壞情況保證，這使得它們有價值於即時應用、計算幾何和持久資料結構等時間敏感的應用。"
-                                             },
-                                             {
-                                                 "id": 3,
-                                                 "question": "紅黑樹在函數式程式設計中不常用。這句話是？",
-                                                 "type": "TRUE_FALSE",
-                                                 "note_id": 1,
-                                                 "user_id": 1,
-                                                 "true_false_answer": false
-                                             },
-                                             {
-                                                 "id": 4,
-                                                 "question": "以下哪一個是紅黑樹的特性？",
-                                                 "type": "MULTIPLE_CHOICE",
-                                                 "options": [
-                                                     {
-                                                         "id": 1,
-                                                         "text": "每次操作需要 O(log n) 的時間"
-                                                     },
-                                                     {
-                                                         "id": 2,
-                                                         "text": "無法保持為以前的版本"
-                                                     },
-                                                     {
-                                                         "id": 3,
-                                                         "text": "不支持持久資料結構"
-                                                     },
-                                                     {
-                                                         "id": 4,
-                                                         "text": "只能用於靜態資料結構"
-                                                     }
-                                                 ],
-                                                 "note_id": 1,
-                                                 "user_id": 1,
-                                                 "answer_option": {
-                                                     "id": 1,
-                                                     "text": "每次操作需要 O(log n) 的時間"
-                                                 }
-                                             }
-                                         ]
-                                     }
-                                 ],
-                                 "pageNo": 0,
-                                 "pageSize": 10,
-                                 "totalElements": 1,
-                                 "totalPages": 1,
-                                 "last": true
-                             }
+                                "content": [
+                                    {
+                                        "id": 1,
+                                        "content": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這不僅使它們在時間敏感的應用（如即時應用）中有價值，還使它們成為其他提供最壞情況保證的資料結構的基礎模板。例如，在計算幾何中使用的許多資料結構都可以基於紅黑樹實現。紅黑樹在函數式程式設計中也特別有用。在這裡，它們是最常用的持久資料結構之一，用來構造關聯陣列和集合。每次插入或刪除之後，它們能保持為以前的版本。除了 O(log n) 的時間之外，紅黑樹的持久版本每次插入或刪除還需要 O(log n) 的空間。紅黑樹是2-3-4樹的一種等價結構。換句話說，對於每個2-3-4樹，都存在至少一個數據元素是同樣次序的紅黑樹。在2-3-4樹上的插入和刪除操作也等同於在紅黑樹中的顏色翻轉和旋轉。這使得2-3-4樹成為理解紅黑樹背後邏輯的重要工具，這也是為什麼很多介紹演算法的教科書在介紹紅黑樹之前會先介紹2-3-4樹，儘管2-3-4樹在實踐中不常使用。",
+                                        "user_id": 2,
+                                        "deck_id": 1,
+                                        "total_flashcard_count": 4,
+                                        "review_flashcard_count": 4,
+                                        "flashcards": [
+                                            {
+                                                "id": 1,
+                                                "question": "什麼是紅黑樹？",
+                                                "type": "SHORT_ANSWER",
+                                                "note_id": 1,
+                                                "user_id": 2,
+                                                "short_answer": "紅黑樹是一種自平衡的二叉搜尋樹，提供最好的最壞情況保證的插入、刪除和搜尋時間。"
+                                            },
+                                            {
+                                                "id": 2,
+                                                "question": "紅黑樹的時間複雜度為 O(___ n) 的插入和刪除操作。",
+                                                "type": "FILL_IN_THE_BLANK",
+                                                "note_id": 1,
+                                                "user_id": 2,
+                                                "in_blank_answers": [
+                                                    {
+                                                        "id": 1,
+                                                        "text": "log"
+                                                    }
+                                                ],
+                                                "full_answer": "紅黑樹的時間複雜度為 O(log n) 的插入和刪除操作。"
+                                            },
+                                            {
+                                                "id": 3,
+                                                "question": "紅黑樹的持久版本在每次插入或刪除後需要額外的空間複雜度為 O(n)。",
+                                                "type": "MULTIPLE_CHOICE",
+                                                "options": [
+                                                    {
+                                                        "id": 1,
+                                                        "text": "對"
+                                                    },
+                                                    {
+                                                        "id": 2,
+                                                        "text": "錯"
+                                                    },
+                                                    {
+                                                        "id": 3,
+                                                        "text": "無法確定"
+                                                    },
+                                                    {
+                                                        "id": 4,
+                                                        "text": "不適用"
+                                                    }
+                                                ],
+                                                "note_id": 1,
+                                                "user_id": 2,
+                                                "answer_option": {
+                                                    "id": 2,
+                                                    "text": "錯"
+                                                }
+                                            },
+                                            {
+                                                "id": 4,
+                                                "question": "紅黑樹與 AVL 樹相比，提供更好的最壞時間複雜度保證。",
+                                                "type": "TRUE_FALSE",
+                                                "note_id": 1,
+                                                "user_id": 2,
+                                                "true_false_answer": false
+                                            }
+                                        ],
+                                        "date_created": "2024-08-02T23:07:51.339166",
+                                        "last_updated": "2024-08-02T23:17:40.060185"
+                                    },
+                                    {
+                                        "id": 2,
+                                        "content": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這不僅使它們在時間敏感的應用（如即時應用）中有價值，還使它們成為其他提供最壞情況保證的資料結構的基礎模板。例如，在計算幾何中使用的許多資料結構都可以基於紅黑樹實現。紅黑樹在函數式程式設計中也特別有用。在這裡，它們是最常用的持久資料結構之一，用來構造關聯陣列和集合。每次插入或刪除之後，它們能保持為以前的版本。除了 O(log n) 的時間之外，紅黑樹的持久版本每次插入或刪除還需要 O(log n) 的空間。紅黑樹是2-3-4樹的一種等價結構。換句話說，對於每個2-3-4樹，都存在至少一個數據元素是同樣次序的紅黑樹。在2-3-4樹上的插入和刪除操作也等同於在紅黑樹中的顏色翻轉和旋轉。這使得2-3-4樹成為理解紅黑樹背後邏輯的重要工具，這也是為什麼很多介紹演算法的教科書在介紹紅黑樹之前會先介紹2-3-4樹，儘管2-3-4樹在實踐中不常使用。",
+                                        "user_id": 2,
+                                        "deck_id": 2,
+                                        "total_flashcard_count": 0,
+                                        "review_flashcard_count": 0,
+                                        "flashcards": [],
+                                        "date_created": "2024-08-02T23:22:30.91771",
+                                        "last_updated": "2024-08-02T23:22:30.918029"
+                                    }
+                                ],
+                                "pageNo": 0,
+                                "pageSize": 10,
+                                "totalElements": 2,
+                                "totalPages": 1,
+                                "last": true
+                            }
                             """)
             )
     )
     @SecurityRequirement(name = "Bear Authentication")
     ResponseEntity<NotePageResponse> getNotesByUserId(
             @PathVariable(name = "user_id") @Min(1) Long userId,
+            @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) @Min(0) Integer pageNo,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) @Max(100) @Min(1) Integer pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir);
+
+    @Operation(
+            summary = "取得特定牌組的筆記",
+            description = "根據 deck_id 取得特定牌組的筆記，取得的筆記會包含所有子牌組的筆記。"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "成功取得特定牌組的筆記",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                "content": [
+                                    {
+                                        "id": 1,
+                                        "content": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這不僅使它們在時間敏感的應用（如即時應用）中有價值，還使它們成為其他提供最壞情況保證的資料結構的基礎模板。例如，在計算幾何中使用的許多資料結構都可以基於紅黑樹實現。紅黑樹在函數式程式設計中也特別有用。在這裡，它們是最常用的持久資料結構之一，用來構造關聯陣列和集合。每次插入或刪除之後，它們能保持為以前的版本。除了 O(log n) 的時間之外，紅黑樹的持久版本每次插入或刪除還需要 O(log n) 的空間。紅黑樹是2-3-4樹的一種等價結構。換句話說，對於每個2-3-4樹，都存在至少一個數據元素是同樣次序的紅黑樹。在2-3-4樹上的插入和刪除操作也等同於在紅黑樹中的顏色翻轉和旋轉。這使得2-3-4樹成為理解紅黑樹背後邏輯的重要工具，這也是為什麼很多介紹演算法的教科書在介紹紅黑樹之前會先介紹2-3-4樹，儘管2-3-4樹在實踐中不常使用。",
+                                        "user_id": 2,
+                                        "deck_id": 1,
+                                        "total_flashcard_count": 4,
+                                        "review_flashcard_count": 4,
+                                        "flashcards": [
+                                            {
+                                                "id": 1,
+                                                "question": "什麼是紅黑樹？",
+                                                "type": "SHORT_ANSWER",
+                                                "note_id": 1,
+                                                "user_id": 2,
+                                                "short_answer": "紅黑樹是一種自平衡的二叉搜尋樹，提供最好的最壞情況保證的插入、刪除和搜尋時間。"
+                                            },
+                                            {
+                                                "id": 2,
+                                                "question": "紅黑樹的時間複雜度為 O(___ n) 的插入和刪除操作。",
+                                                "type": "FILL_IN_THE_BLANK",
+                                                "note_id": 1,
+                                                "user_id": 2,
+                                                "in_blank_answers": [
+                                                    {
+                                                        "id": 1,
+                                                        "text": "log"
+                                                    }
+                                                ],
+                                                "full_answer": "紅黑樹的時間複雜度為 O(log n) 的插入和刪除操作。"
+                                            },
+                                            {
+                                                "id": 3,
+                                                "question": "紅黑樹的持久版本在每次插入或刪除後需要額外的空間複雜度為 O(n)。",
+                                                "type": "MULTIPLE_CHOICE",
+                                                "options": [
+                                                    {
+                                                        "id": 1,
+                                                        "text": "對"
+                                                    },
+                                                    {
+                                                        "id": 2,
+                                                        "text": "錯"
+                                                    },
+                                                    {
+                                                        "id": 3,
+                                                        "text": "無法確定"
+                                                    },
+                                                    {
+                                                        "id": 4,
+                                                        "text": "不適用"
+                                                    }
+                                                ],
+                                                "note_id": 1,
+                                                "user_id": 2,
+                                                "answer_option": {
+                                                    "id": 2,
+                                                    "text": "錯"
+                                                }
+                                            },
+                                            {
+                                                "id": 4,
+                                                "question": "紅黑樹與 AVL 樹相比，提供更好的最壞時間複雜度保證。",
+                                                "type": "TRUE_FALSE",
+                                                "note_id": 1,
+                                                "user_id": 2,
+                                                "true_false_answer": false
+                                            }
+                                        ],
+                                        "date_created": "2024-08-02T23:07:51.339166",
+                                        "last_updated": "2024-08-02T23:17:40.060185"
+                                    },
+                                    {
+                                        "id": 2,
+                                        "content": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這不僅使它們在時間敏感的應用（如即時應用）中有價值，還使它們成為其他提供最壞情況保證的資料結構的基礎模板。例如，在計算幾何中使用的許多資料結構都可以基於紅黑樹實現。紅黑樹在函數式程式設計中也特別有用。在這裡，它們是最常用的持久資料結構之一，用來構造關聯陣列和集合。每次插入或刪除之後，它們能保持為以前的版本。除了 O(log n) 的時間之外，紅黑樹的持久版本每次插入或刪除還需要 O(log n) 的空間。紅黑樹是2-3-4樹的一種等價結構。換句話說，對於每個2-3-4樹，都存在至少一個數據元素是同樣次序的紅黑樹。在2-3-4樹上的插入和刪除操作也等同於在紅黑樹中的顏色翻轉和旋轉。這使得2-3-4樹成為理解紅黑樹背後邏輯的重要工具，這也是為什麼很多介紹演算法的教科書在介紹紅黑樹之前會先介紹2-3-4樹，儘管2-3-4樹在實踐中不常使用。",
+                                        "user_id": 2,
+                                        "deck_id": 2,
+                                        "total_flashcard_count": 0,
+                                        "review_flashcard_count": 0,
+                                        "flashcards": [],
+                                        "date_created": "2024-08-02T23:22:30.91771",
+                                        "last_updated": "2024-08-02T23:22:30.918029"
+                                    }
+                                ],
+                                "pageNo": 0,
+                                "pageSize": 10,
+                                "totalElements": 2,
+                                "totalPages": 1,
+                                "last": true
+                            }
+                            """)
+            )
+    )
+    ResponseEntity<NotePageResponse> getNotesByDeckId(
+            @PathVariable(name = "deck_id") @Min(1) Long deckId,
             @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) @Min(0) Integer pageNo,
             @RequestParam(name = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) @Max(100) @Min(1) Integer pageSize,
             @RequestParam(name = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
@@ -264,81 +387,76 @@ public interface NoteControllerSwagger {
                     mediaType = "application/json",
                     examples = @ExampleObject(value = """
                             {
-                                 "id": 1,
-                                 "content": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這不僅使它們在時間敏感的應用（如即時應用）中有價值，還使它們成為其他提供最壞情況保證的資料結構的基礎模板。例如，在計算幾何中使用的許多資料結構都可以基於紅黑樹實現。紅黑樹在函數式程式設計中也特別有用。在這裡，它們是最常用的持久資料結構之一，用來構造關聯陣列和集合。每次插入或刪除之後，它們能保持為以前的版本。除了 O(log n) 的時間之外，紅黑樹的持久版本每次插入或刪除還需要 O(log n) 的空間。紅黑樹是2-3-4樹的一種等價結構。換句話說，對於每個2-3-4樹，都存在至少一個數據元素是同樣次序的紅黑樹。在2-3-4樹上的插入和刪除操作也等同於在紅黑樹中的顏色翻轉和旋轉。這使得2-3-4樹成為理解紅黑樹背後邏輯的重要工具，這也是為什麼很多介紹演算法的教科書在介紹紅黑樹之前會先介紹2-3-4樹，儘管2-3-4樹在實踐中不常使用。",
-                                 "user_id": 1,
-                                 "date_created": "2024-07-21T18:59:53.171794",
-                                 "last_updated": "2024-07-21T19:26:02.228534",
-                                 "flashcards": [
-                                     {
-                                         "id": 1,
-                                         "question": "紅黑樹的主要特點是什麼？",
-                                         "type": "SHORT_ANSWER",
-                                         "note_id": 1,
-                                         "user_id": 1,
-                                         "short_answer": "紅黑樹在插入、刪除和搜尋時間方面提供最壞情況保證，並且是持久資料結構，能保持歷史版本。"
-                                     },
-                                     {
-                                         "id": 2,
-                                         "question": "紅黑樹和AVL樹都提供了最好的最壞情況保證，這使得它們有價值於___、___和___等時間敏感的應用。",
-                                                 "type": "FILL_IN_THE_BLANK",
-                                                 "note_id": 1,
-                                                 "user_id": 1,
-                                                 "in_blank_answers": [
-                                                     {
-                                                         "id": 2,
-                                                         "text": "即時應用"
-                                                     },
-                                                     {
-                                                         "id": 3,
-                                                         "text": "計算幾何"
-                                                     },
-                                                     {
-                                                         "id": 4,
-                                                         "text": "持久資料結構"
-                                                     }
-                                                 ],
-                                                 "full_answer": "紅黑樹和AVL樹都提供了最好的最壞情況保證，這使得它們有價值於即時應用、計算幾何和持久資料結構等時間敏感的應用。"
-                                     },
-                                     {
-                                         "id": 3,
-                                         "question": "紅黑樹在函數式程式設計中不常用。這句話是？",
-                                         "type": "TRUE_FALSE",
-                                         "note_id": 1,
-                                         "user_id": 1,
-                                         "true_false_answer": false
-                                     },
-                                     {
-                                         "id": 4,
-                                         "question": "以下哪一個是紅黑樹的特性？",
-                                         "type": "MULTIPLE_CHOICE",
-                                         "options": [
-                                             {
-                                                 "id": 1,
-                                                 "text": "每次操作需要 O(log n) 的時間"
-                                             },
-                                             {
-                                                 "id": 2,
-                                                 "text": "無法保持為以前的版本"
-                                             },
-                                             {
-                                                 "id": 3,
-                                                 "text": "不支持持久資料結構"
-                                             },
-                                             {
-                                                 "id": 4,
-                                                 "text": "只能用於靜態資料結構"
-                                             }
-                                         ],
-                                         "note_id": 1,
-                                         "user_id": 1,
-                                         "answer_option": {
-                                             "id": 1,
-                                             "text": "每次操作需要 O(log n) 的時間"
-                                         }
-                                     }
-                                 ]
-                             }
+                                "id": 1,
+                                "content": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這不僅使它們在時間敏感的應用（如即時應用）中有價值，還使它們成為其他提供最壞情況保證的資料結構的基礎模板。例如，在計算幾何中使用的許多資料結構都可以基於紅黑樹實現。紅黑樹在函數式程式設計中也特別有用。在這裡，它們是最常用的持久資料結構之一，用來構造關聯陣列和集合。每次插入或刪除之後，它們能保持為以前的版本。除了 O(log n) 的時間之外，紅黑樹的持久版本每次插入或刪除還需要 O(log n) 的空間。紅黑樹是2-3-4樹的一種等價結構。換句話說，對於每個2-3-4樹，都存在至少一個數據元素是同樣次序的紅黑樹。在2-3-4樹上的插入和刪除操作也等同於在紅黑樹中的顏色翻轉和旋轉。這使得2-3-4樹成為理解紅黑樹背後邏輯的重要工具，這也是為什麼很多介紹演算法的教科書在介紹紅黑樹之前會先介紹2-3-4樹，儘管2-3-4樹在實踐中不常使用。",
+                                "user_id": 2,
+                                "deck_id": 1,
+                                "total_flashcard_count": 4,
+                                "review_flashcard_count": 4,
+                                "flashcards": [
+                                    {
+                                        "id": 1,
+                                        "question": "什麼是紅黑樹？",
+                                        "type": "SHORT_ANSWER",
+                                        "note_id": 1,
+                                        "user_id": 2,
+                                        "short_answer": "紅黑樹是一種自平衡的二叉搜尋樹，提供最好的最壞情況保證的插入、刪除和搜尋時間。"
+                                    },
+                                    {
+                                        "id": 2,
+                                        "question": "紅黑樹的時間複雜度為 O(___ n) 的插入和刪除操作。",
+                                        "type": "FILL_IN_THE_BLANK",
+                                        "note_id": 1,
+                                        "user_id": 2,
+                                        "in_blank_answers": [
+                                            {
+                                                "id": 1,
+                                                "text": "log"
+                                            }
+                                        ],
+                                        "full_answer": "紅黑樹的時間複雜度為 O(log n) 的插入和刪除操作。"
+                                    },
+                                    {
+                                        "id": 3,
+                                        "question": "紅黑樹的持久版本在每次插入或刪除後需要額外的空間複雜度為 O(n)。",
+                                        "type": "MULTIPLE_CHOICE",
+                                        "options": [
+                                            {
+                                                "id": 1,
+                                                "text": "對"
+                                            },
+                                            {
+                                                "id": 2,
+                                                "text": "錯"
+                                            },
+                                            {
+                                                "id": 3,
+                                                "text": "無法確定"
+                                            },
+                                            {
+                                                "id": 4,
+                                                "text": "不適用"
+                                            }
+                                        ],
+                                        "note_id": 1,
+                                        "user_id": 2,
+                                        "answer_option": {
+                                            "id": 2,
+                                            "text": "錯"
+                                        }
+                                    },
+                                    {
+                                        "id": 4,
+                                        "question": "紅黑樹與 AVL 樹相比，提供更好的最壞時間複雜度保證。",
+                                        "type": "TRUE_FALSE",
+                                        "note_id": 1,
+                                        "user_id": 2,
+                                        "true_false_answer": false
+                                    }
+                                ],
+                                "date_created": "2024-08-02T23:07:51.339166",
+                                "last_updated": "2024-08-02T23:17:40.060185"
+                            }
                             """)
             )
     )
@@ -347,7 +465,7 @@ public interface NoteControllerSwagger {
 
 
     @Operation(
-            summary = "新增筆記",
+            summary = "[EDITED][路由][Response Body] 新增筆記",
             description = "新增筆記"
     )
     @ApiResponse(
@@ -359,10 +477,13 @@ public interface NoteControllerSwagger {
                             {
                                 "id": 1,
                                 "content": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這不僅使它們在時間敏感的應用（如即時應用）中有價值，還使它們成為其他提供最壞情況保證的資料結構的基礎模板。例如，在計算幾何中使用的許多資料結構都可以基於紅黑樹實現。紅黑樹在函數式程式設計中也特別有用。在這裡，它們是最常用的持久資料結構之一，用來構造關聯陣列和集合。每次插入或刪除之後，它們能保持為以前的版本。除了 O(log n) 的時間之外，紅黑樹的持久版本每次插入或刪除還需要 O(log n) 的空間。紅黑樹是2-3-4樹的一種等價結構。換句話說，對於每個2-3-4樹，都存在至少一個數據元素是同樣次序的紅黑樹。在2-3-4樹上的插入和刪除操作也等同於在紅黑樹中的顏色翻轉和旋轉。這使得2-3-4樹成為理解紅黑樹背後邏輯的重要工具，這也是為什麼很多介紹演算法的教科書在介紹紅黑樹之前會先介紹2-3-4樹，儘管2-3-4樹在實踐中不常使用。",
-                                "user_id": 1,
-                                "date_created": "2024-07-21T18:59:53.171794",
-                                "last_updated": "2024-07-21T18:59:53.173535",
-                                "flashcards": null
+                                "user_id": 2,
+                                "deck_id": 1,
+                                "flashcards": null,
+                                "total_flashcard_count": 0,
+                                "review_flashcard_count": 0,
+                                "date_created": "2024-08-02T23:07:51.339166",
+                                "last_updated": "2024-08-02T23:07:51.339424"
                             }
                             """)
             )
@@ -393,79 +514,74 @@ public interface NoteControllerSwagger {
                     examples = @ExampleObject(value = """
                             {
                                 "id": 1,
-                                "content": "（已更新）紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這不僅使它們在時間敏感的應用（如即時應用）中有價值，還使它們成為其他提供最壞情況保證的資料結構的基礎模板。例如，在計算幾何中使用的許多資料結構都可以基於紅黑樹實現。紅黑樹在函數式程式設計中也特別有用。在這裡，它們是最常用的持久資料結構之一，用來構造關聯陣列和集合。每次插入或刪除之後，它們能保持為以前的版本。除了 O(log n) 的時間之外，紅黑樹的持久版本每次插入或刪除還需要 O(log n) 的空間。紅黑樹是2-3-4樹的一種等價結構。換句話說，對於每個2-3-4樹，都存在至少一個數據元素是同樣次序的紅黑樹。在2-3-4樹上的插入和刪除操作也等同於在紅黑樹中的顏色翻轉和旋轉。這使得2-3-4樹成為理解紅黑樹背後邏輯的重要工具，這也是為什麼很多介紹演算法的教科書在介紹紅黑樹之前會先介紹2-3-4樹，儘管2-3-4樹在實踐中不常使用。",
-                                "user_id": 1,
-                                "date_created": "2024-07-21T18:59:53.171794",
-                                "last_updated": "2024-07-21T18:59:53.173535",
+                                "content": "(已更新) 紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這不僅使它們在時間敏感的應用（如即時應用）中有價值，還使它們成為其他提供最壞情況保證的資料結構的基礎模板。例如，在計算幾何中使用的許多資料結構都可以基於紅黑樹實現。紅黑樹在函數式程式設計中也特別有用。在這裡，它們是最常用的持久資料結構之一，用來構造關聯陣列和集合。每次插入或刪除之後，它們能保持為以前的版本。除了 O(log n) 的時間之外，紅黑樹的持久版本每次插入或刪除還需要 O(log n) 的空間。紅黑樹是2-3-4樹的一種等價結構。換句話說，對於每個2-3-4樹，都存在至少一個數據元素是同樣次序的紅黑樹。在2-3-4樹上的插入和刪除操作也等同於在紅黑樹中的顏色翻轉和旋轉。這使得2-3-4樹成為理解紅黑樹背後邏輯的重要工具，這也是為什麼很多介紹演算法的教科書在介紹紅黑樹之前會先介紹2-3-4樹，儘管2-3-4樹在實踐中不常使用。",
+                                "user_id": 2,
+                                "deck_id": 1,
+                                "total_flashcard_count": 4,
+                                "review_flashcard_count": 4,
                                 "flashcards": [
                                     {
                                         "id": 1,
-                                        "question": "紅黑樹的主要特點是什麼？",
+                                        "question": "什麼是紅黑樹？",
                                         "type": "SHORT_ANSWER",
                                         "note_id": 1,
-                                        "user_id": 1,
-                                        "short_answer": "紅黑樹在插入、刪除和搜尋時間方面提供最壞情況保證，並且是持久資料結構，能保持歷史版本。"
+                                        "user_id": 2,
+                                        "short_answer": "紅黑樹是一種自平衡的二叉搜尋樹，提供最好的最壞情況保證的插入、刪除和搜尋時間。"
                                     },
                                     {
                                         "id": 2,
-                                        "question": "紅黑樹和AVL樹都提供了最好的最壞情況保證，這使得它們有價值於___、___和___等時間敏感的應用。",
-                                         "type": "FILL_IN_THE_BLANK",
-                                         "note_id": 1,
-                                         "user_id": 1,
-                                         "in_blank_answers": [
-                                             {
-                                                 "id": 2,
-                                                 "text": "即時應用"
-                                             },
-                                             {
-                                                 "id": 3,
-                                                 "text": "計算幾何"
-                                             },
-                                             {
-                                                 "id": 4,
-                                                 "text": "持久資料結構"
-                                             }
-                                         ],
-                                         "full_answer": "紅黑樹和AVL樹都提供了最好的最壞情況保證，這使得它們有價值於即時應用、計算幾何和持久資料結構等時間敏感的應用。"
+                                        "question": "紅黑樹的時間複雜度為 O(___ n) 的插入和刪除操作。",
+                                        "type": "FILL_IN_THE_BLANK",
+                                        "note_id": 1,
+                                        "user_id": 2,
+                                        "in_blank_answers": [
+                                            {
+                                                "id": 1,
+                                                "text": "log"
+                                            }
+                                        ],
+                                        "full_answer": "紅黑樹的時間複雜度為 O(log n) 的插入和刪除操作。"
                                     },
                                     {
                                         "id": 3,
-                                        "question": "紅黑樹在函數式程式設計中不常用。這句話是？",
-                                        "type": "TRUE_FALSE",
-                                        "note_id": 1,
-                                        "user_id": 1,
-                                        "true_false_answer": false
-                                    },
-                                    {
-                                        "id": 4,
-                                        "question": "以下哪一個是紅黑樹的特性？",
+                                        "question": "紅黑樹的持久版本在每次插入或刪除後需要額外的空間複雜度為 O(n)。",
                                         "type": "MULTIPLE_CHOICE",
                                         "options": [
                                             {
                                                 "id": 1,
-                                                "text": "每次操作需要 O(log n) 的時間"
+                                                "text": "對"
                                             },
                                             {
                                                 "id": 2,
-                                                "text": "無法保持為以前的版本"
+                                                "text": "錯"
                                             },
                                             {
                                                 "id": 3,
-                                                "text": "不支持持久資料結構"
+                                                "text": "無法確定"
                                             },
                                             {
                                                 "id": 4,
-                                                "text": "只能用於靜態資料結構"
+                                                "text": "不適用"
                                             }
                                         ],
                                         "note_id": 1,
-                                        "user_id": 1,
+                                        "user_id": 2,
                                         "answer_option": {
-                                            "id": 1,
-                                            "text": "每次操作需要 O(log n) 的時間"
+                                            "id": 2,
+                                            "text": "錯"
                                         }
+                                    },
+                                    {
+                                        "id": 4,
+                                        "question": "紅黑樹與 AVL 樹相比，提供更好的最壞時間複雜度保證。",
+                                        "type": "TRUE_FALSE",
+                                        "note_id": 1,
+                                        "user_id": 2,
+                                        "true_false_answer": false
                                     }
-                                ]
+                                ],
+                                "date_created": "2024-08-02T23:07:51.339166",
+                                "last_updated": "2024-08-02T23:09:18.745139"
                             }
                             """)
             )
