@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Getter
@@ -13,7 +14,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class FlashcardCountInfo {
 
-    private Map<Long, Integer> noteIdTotalFlashcardCountMap;
+    private Map<Long, Integer> noteIdTotalFlashcardCountMap = new HashMap<>();
 
-    private Map<Long, Integer> noteIdReviewFlashcardCountMap;
+    private Map<Long, Integer> noteIdReviewFlashcardCountMap = new HashMap<>();
 }

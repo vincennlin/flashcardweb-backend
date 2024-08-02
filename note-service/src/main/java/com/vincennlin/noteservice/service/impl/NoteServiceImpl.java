@@ -7,6 +7,7 @@ import com.vincennlin.noteservice.client.FlashcardServiceClient;
 import com.vincennlin.noteservice.entity.note.Note;
 import com.vincennlin.noteservice.exception.ResourceNotFoundException;
 import com.vincennlin.noteservice.mapper.NoteMapper;
+import com.vincennlin.noteservice.payload.deck.response.FlashcardCountInfo;
 import com.vincennlin.noteservice.payload.note.dto.NoteDto;
 import com.vincennlin.noteservice.payload.note.page.NotePageResponse;
 import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
@@ -64,7 +65,14 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public NotePageResponse getNotesByDeckId(Long deckId, Pageable pageable) {
 
-        return getNotePageResponse(noteRepository.findByDeckId(deckId, pageable));
+        Deck deck = deckRepository.findById(deckId).orElseThrow(() ->
+                new ResourceNotFoundException("Deck", "id", deckId.toString()));
+
+        authService.authorizeOwnership(deck.getUserId());
+
+        List<Long> noteIds = deckService.getNoteIdsByDeck(deck);
+
+        return getNotePageResponse(noteRepository.findByIdIn(noteIds, pageable));
     }
 
     @Override
@@ -182,21 +190,25 @@ public class NoteServiceImpl implements NoteService {
                 throw new WebAPIException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
             }
         }
-    }private NotePageResponse getNotePageResponse(Page<Note> pageOfNotes) {
+    }
+
+    private NotePageResponse getNotePageResponse(Page<Note> pageOfNotes) {
         List<Note> listOfNotes = pageOfNotes.getContent();
 
-        List<NoteDto> content = listOfNotes.stream().map(note -> {
+        FlashcardCountInfo flashcardCountInfo = deckService.getFlashcardCountInfo();
+
+        List<NoteDto> NoteDtoList = listOfNotes.stream().map(note -> {
             authService.authorizeOwnership(note.getUserId());
-            return noteMapper.mapToDto(note);
+            return noteMapper.mapToDto(note, flashcardCountInfo);
         }).toList();
 
-        for (NoteDto noteDto : content) {
+        for (NoteDto noteDto : NoteDtoList) {
             List<FlashcardDto> flashcardDtoList = getFlashcardsByNoteId(noteDto.getId());
             noteDto.setFlashcards(flashcardDtoList);
         }
 
         NotePageResponse notePageResponse = new NotePageResponse();
-        notePageResponse.setContent(content);
+        notePageResponse.setContent(NoteDtoList);
         notePageResponse.setPageNo(pageOfNotes.getNumber());
         notePageResponse.setPageSize(pageOfNotes.getSize());
         notePageResponse.setTotalElements(pageOfNotes.getTotalElements());

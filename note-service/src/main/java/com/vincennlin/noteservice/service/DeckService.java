@@ -3,6 +3,7 @@ package com.vincennlin.noteservice.service;
 import com.vincennlin.noteservice.entity.deck.Deck;
 import com.vincennlin.noteservice.payload.deck.dto.DeckDto;
 import com.vincennlin.noteservice.payload.deck.request.CreateDeckRequest;
+import com.vincennlin.noteservice.payload.deck.response.FlashcardCountInfo;
 
 import java.util.List;
 
@@ -23,4 +24,8 @@ public interface DeckService {
     void deleteDeckById(Long deckId);
 
     Boolean isDeckOwner(Long deckId);
+
+    List<Long> getNoteIdsByDeck(Deck deck);
+
+    FlashcardCountInfo getFlashcardCountInfo();
 }
