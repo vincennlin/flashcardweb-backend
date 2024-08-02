@@ -14,11 +14,18 @@ import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "review_infos")
 public class ReviewInfo {
+
+    public ReviewInfo() {
+        this.reviewLevel = 0;
+        this.reviewInterval = 0;
+        this.lastReviewed = null;
+        this.nextReview = LocalDateTime.now();
+        this.reviewStates = new ArrayList<>();
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,7 +56,7 @@ public class ReviewInfo {
             orphanRemoval = true
     )
     @JoinColumn(name = "review_info_id")
-    private List<ReviewState> reviewStates = new ArrayList<>();
+    private List<ReviewState> reviewStates;
 
     public void review(ReviewOption option) {
         pushReviewState(this.createState(option));

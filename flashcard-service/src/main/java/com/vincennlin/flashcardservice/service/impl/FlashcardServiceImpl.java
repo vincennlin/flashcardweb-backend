@@ -1,6 +1,7 @@
 package com.vincennlin.flashcardservice.service.impl;
 
 import com.vincennlin.flashcardservice.client.NoteServiceClient;
+import com.vincennlin.flashcardservice.entity.review.ReviewInfo;
 import com.vincennlin.flashcardservice.entity.tag.Tag;
 import com.vincennlin.flashcardservice.mapper.FlashcardMapper;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.*;
@@ -91,15 +92,17 @@ public class FlashcardServiceImpl implements FlashcardService {
 
         List<Object[]> results = flashcardRepository.findNoteIdAndFlashcardCountByUserId(getCurrentUserId());
 
-        Map<Long, Integer> noteIdFlashcardCountMap = new HashMap<>();
+        Map<Long, Integer> noteIdTotalFlashcardCountMap = new HashMap<>();
 
         for (Object[] result : results) {
             Long noteId = (Long) result[0];
             Long count = (Long) result[1];
-            noteIdFlashcardCountMap.put(noteId, count.intValue());
+            noteIdTotalFlashcardCountMap.put(noteId, count.intValue());
         }
 
-        return noteIdFlashcardCountMap;
+        Map<Long, Integer> noteIdReviewFlashcardCountMap = new HashMap<>();
+
+        return noteIdTotalFlashcardCountMap;
     }
 
     @Transactional
@@ -111,38 +114,39 @@ public class FlashcardServiceImpl implements FlashcardService {
         flashcardDto.setUserId(getCurrentUserId());
         flashcardDto.setNoteId(noteId);
 
+        Flashcard flashcard;
+
         if (flashcardDto.getType() == FlashcardType.FILL_IN_THE_BLANK) {
-            return createFillInTheBlankFlashcard((FillInTheBlankFlashcardDto) flashcardDto);
+            flashcard = createFillInTheBlankFlashcard((FillInTheBlankFlashcardDto) flashcardDto);
         } else if (flashcardDto.getType() == FlashcardType.MULTIPLE_CHOICE) {
-            return createMultipleChoiceFlashcard((MultipleChoiceFlashcardDto) flashcardDto);
+            flashcard = createMultipleChoiceFlashcard((MultipleChoiceFlashcardDto) flashcardDto);
         } else {
-
-            Flashcard flashcard = flashcardMapper.mapToEntity(flashcardDto);
-
-            flashcard.getReviewInfo().setFlashcard(flashcard);
-            flashcard.getReviewInfo().setReviewStates(new ArrayList<>());
-
-            Flashcard newFlashcard = flashcardRepository.save(flashcard);
-
-            return flashcardMapper.mapToDto(newFlashcard);
+            flashcard = flashcardMapper.mapToEntity(flashcardDto);
         }
+
+        ReviewInfo reviewInfo = new ReviewInfo();
+
+        reviewInfo.setFlashcard(flashcard);
+        flashcard.setReviewInfo(reviewInfo);
+
+        Flashcard newFlashcard = flashcardRepository.save(flashcard);
+
+        return flashcardMapper.mapToDto(newFlashcard);
     }
 
     @Transactional
-    public FlashcardDto createFillInTheBlankFlashcard(FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto) {
+    public Flashcard createFillInTheBlankFlashcard(FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto) {
 
         FillInTheBlankFlashcard fillInTheBlankFlashcard = (FillInTheBlankFlashcard) flashcardMapper.mapToEntity(fillInTheBlankFlashcardDto);
 
         fillInTheBlankFlashcard.getInBlankAnswers().forEach(
                 inBlankAnswers -> inBlankAnswers.setFlashcard(fillInTheBlankFlashcard));
 
-        Flashcard newFlashcard = flashcardRepository.save(fillInTheBlankFlashcard);
-
-        return flashcardMapper.mapToDto(newFlashcard);
+        return flashcardRepository.save(fillInTheBlankFlashcard);
     }
 
     @Transactional
-    public FlashcardDto createMultipleChoiceFlashcard(MultipleChoiceFlashcardDto multipleChoiceFlashcardDto) {
+    public Flashcard createMultipleChoiceFlashcard(MultipleChoiceFlashcardDto multipleChoiceFlashcardDto) {
 
         if (multipleChoiceFlashcardDto.getAnswerIndex() > multipleChoiceFlashcardDto.getOptions().size()) {
             throw new IllegalArgumentException("Answer index is out of range of options");
@@ -160,7 +164,7 @@ public class FlashcardServiceImpl implements FlashcardService {
 
         optionRepository.saveAll(options);
 
-        return flashcardMapper.mapToDto(newFlashcard);
+        return newFlashcard;
     }
 
     @Transactional
