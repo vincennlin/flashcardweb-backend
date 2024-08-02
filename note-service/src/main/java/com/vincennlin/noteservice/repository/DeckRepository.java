@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface DeckRepository extends JpaRepository<Deck, Long> {
 
-    List<Deck> findByUserId(Long userId);
+    List<Deck> findByUserIdAndParent(Long userId, Deck deck);
 
     Boolean existsByNameAndUserId(String name, Long userId);
 }

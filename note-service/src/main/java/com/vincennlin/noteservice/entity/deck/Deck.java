@@ -37,20 +37,7 @@ public class Deck {
             cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Deck> subDecks = new HashSet<>();
 
-    @OneToMany(mappedBy = "deck", fetch = FetchType.LAZY,
+    @OneToMany(mappedBy = "deck", fetch = FetchType.EAGER,
             cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Note> notes = new HashSet<>();
-
-    public void addNote(Note note) {
-        notes.add(note);
-        note.setDeck(this);
-    }
-
-    public int getTotalNotes() {
-        int total = notes.size();
-        for (Deck subDeck : subDecks) {
-            total += subDeck.getTotalNotes();
-        }
-        return total;
-    }
 }

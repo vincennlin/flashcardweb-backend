@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @FeignClient(name = "flashcard-ws")
 public interface FlashcardServiceClient {
@@ -13,6 +14,9 @@ public interface FlashcardServiceClient {
     @GetMapping("/api/v1/notes/{note_id}/flashcards")
     ResponseEntity<List<FlashcardDto>> getFlashcardsByNoteId(@PathVariable("note_id") Long noteId,
                                                              @RequestHeader("Authorization") String authorization);
+
+    @GetMapping("/api/v1/notes/flashcards/count")
+    ResponseEntity<Map<Long, Integer>> getNotesFlashcardsCountByUserId(@RequestHeader("Authorization") String authorization);
 
     @DeleteMapping("api/v1/notes/{note_id}/flashcards")
     ResponseEntity<Void> deleteFlashcardsByNoteId(@PathVariable("note_id") Long noteId,

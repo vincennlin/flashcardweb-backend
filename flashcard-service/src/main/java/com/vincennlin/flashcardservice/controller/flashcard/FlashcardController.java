@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor
 @RestController
@@ -54,6 +55,15 @@ public class FlashcardController implements FlashcardControllerSwagger {
         List<FlashcardDto> flashcardsResponse = flashcardService.getFlashcardsByTagNames(tagNames);
 
         return new ResponseEntity<>(flashcardsResponse, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('READ')")
+    @GetMapping("/notes/flashcards/count")
+    public ResponseEntity<Map<Long, Integer>> getNotesFlashcardsCountByUserId() {
+
+        Map<Long, Integer> noteIdFlashcardCountMap = flashcardService.getNotesFlashcardsCountByUserId();
+
+        return new ResponseEntity<>(noteIdFlashcardCountMap, HttpStatus.OK);
     }
 
 
