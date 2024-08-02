@@ -133,7 +133,7 @@ public class NoteController implements NoteControllerSwagger {
         return new ResponseEntity<>(noteService.isNoteOwner(id), HttpStatus.OK);
     }
 
-    @PostMapping("/notes/{note_id}/generate/flashcard")
+    @PostMapping("/notes/{note_id}/generate/flashcards")
     public ResponseEntity<FlashcardDto> generateFlashcard(@PathVariable(name = "note_id") @Min(1) Long id,
                                                           @RequestBody GenerateFlashcardRequest request) {
 
@@ -142,7 +142,7 @@ public class NoteController implements NoteControllerSwagger {
         return new ResponseEntity<>(flashcard, HttpStatus.OK);
     }
 
-    @PostMapping("/notes/{note_id}/generate/flashcards")
+    @PostMapping("/notes/{note_id}/generate/flashcards/bulk")
     public ResponseEntity<List<FlashcardDto>> generateFlashcards(@PathVariable(name = "note_id") @Min(1) Long id,
                                                                  @RequestBody GenerateFlashcardsRequest request) {
 

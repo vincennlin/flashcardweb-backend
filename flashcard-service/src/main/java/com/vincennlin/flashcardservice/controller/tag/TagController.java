@@ -1,6 +1,8 @@
 package com.vincennlin.flashcardservice.controller.tag;
 
-import com.vincennlin.flashcardservice.payload.tag.TagDto;
+import com.vincennlin.flashcardservice.payload.tag.dto.TagDto;
+import com.vincennlin.flashcardservice.payload.tag.request.EditFlashcardTagsRequest;
+import com.vincennlin.flashcardservice.payload.tag.response.EditFlashcardTagsResponse;
 import com.vincennlin.flashcardservice.service.TagService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,7 +31,7 @@ public class TagController implements TagControllerSwagger{
     }
 
     @PreAuthorize("hasAuthority('READ')")
-    @GetMapping("/flashcard/{flashcard_id}/tags")
+    @GetMapping("/flashcards/{flashcard_id}/tags")
     public ResponseEntity<List<TagDto>> getTagsByFlashcardId(@PathVariable(name = "flashcard_id") Long flashcardId) {
 
         List<TagDto> tags = tagService.getTagsByFlashcardId(flashcardId);
@@ -38,7 +40,7 @@ public class TagController implements TagControllerSwagger{
     }
 
     @PreAuthorize("hasAuthority('READ')")
-    @GetMapping("/tag/{tag_id}")
+    @GetMapping("/tags/{tag_id}")
     public ResponseEntity<TagDto> getTagById(@PathVariable(name = "tag_id") Long tagId) {
 
         TagDto tag = tagService.getTagById(tagId);
@@ -47,17 +49,7 @@ public class TagController implements TagControllerSwagger{
     }
 
     @PreAuthorize("hasAuthority('CREATE')")
-    @PostMapping("/flashcard/{flashcard_id}/tag")
-    public ResponseEntity<TagDto> addTagToFlashcard(@PathVariable(name = "flashcard_id") Long flashcardId,
-                                                    @RequestBody TagDto tagDto) {
-
-        TagDto addedTag = tagService.addTagToFlashcard(flashcardId, tagDto.getTagName());
-
-        return new ResponseEntity<>(addedTag, HttpStatus.CREATED);
-    }
-
-    @PreAuthorize("hasAuthority('CREATE')")
-    @PostMapping("/tag")
+    @PostMapping("/tags")
     public ResponseEntity<TagDto> createTag(@RequestBody TagDto tagDto) {
 
         TagDto newTag = tagService.createTag(tagDto);
@@ -66,7 +58,7 @@ public class TagController implements TagControllerSwagger{
     }
 
     @PreAuthorize("hasAuthority('UPDATE')")
-    @PutMapping("/tag/{tag_id}")
+    @PutMapping("/tags/{tag_id}")
     public ResponseEntity<TagDto> updateTag(@PathVariable(name = "tag_id") Long tagId,
                                            @RequestBody TagDto tagDto) {
 
@@ -75,8 +67,28 @@ public class TagController implements TagControllerSwagger{
         return new ResponseEntity<>(updatedTag, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('UPDATE')")
+    @PutMapping("/flashcards/{flashcard_id}/tags")
+    public ResponseEntity<TagDto> addTagToFlashcard(@PathVariable(name = "flashcard_id") Long flashcardId,
+                                                    @RequestBody TagDto tagDto) {
+
+        TagDto addedTag = tagService.addTagToFlashcard(flashcardId, tagDto.getTagName());
+
+        return new ResponseEntity<>(addedTag, HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasAuthority('UPDATE')")
+    @PutMapping("/flashcards/{flashcard_id}/tags/edit")
+    public ResponseEntity<EditFlashcardTagsResponse> editFlashcardTags(@PathVariable(name = "flashcard_id") Long flashcardId,
+                                                                       @RequestBody EditFlashcardTagsRequest request) {
+
+        EditFlashcardTagsResponse response = tagService.editFlashcardTags(flashcardId, request);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @PreAuthorize("hasAuthority('DELETE')")
-    @DeleteMapping("/tag/{tag_id}")
+    @DeleteMapping("/tags/{tag_id}")
     public ResponseEntity<Void> deleteTagById(@PathVariable(name = "tag_id") Long tagId) {
 
         tagService.deleteTagById(tagId);
@@ -85,7 +97,7 @@ public class TagController implements TagControllerSwagger{
     }
 
     @PreAuthorize("hasAuthority('DELETE')")
-    @DeleteMapping("/flashcard/{flashcard_id}/tag")
+    @DeleteMapping("/flashcards/{flashcard_id}/tags")
     public ResponseEntity<Void> removeTagFromFlashcard(@PathVariable(name = "flashcard_id") Long flashcardId,
                                                       @RequestBody TagDto tagDto) {
 
