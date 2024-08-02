@@ -1,5 +1,6 @@
-package com.vincennlin.noteservice.entity;
+package com.vincennlin.noteservice.entity.note;
 
+import com.vincennlin.noteservice.entity.deck.Deck;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +15,6 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 @Entity
 @Table(name = "notes")
 public class Note {
@@ -36,4 +36,8 @@ public class Note {
     @UpdateTimestamp
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "deck_id")
+    private Deck deck;
 }

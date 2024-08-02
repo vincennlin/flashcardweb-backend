@@ -3,20 +3,17 @@ package com.vincennlin.flashcardservice.payload.review.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 public class ReviewInfoDto {
-
-    public ReviewInfoDto() {
-        this.reviewLevel = 0;
-        this.reviewInterval = 1;
-        this.nextReview = new Date();
-    }
 
     @JsonProperty("review_level")
     private Integer reviewLevel;
@@ -25,8 +22,8 @@ public class ReviewInfoDto {
     private Integer reviewInterval;
 
     @JsonProperty("last_reviewed")
-    private Date lastReviewed;
+    private LocalDateTime lastReviewed;
 
     @JsonProperty("next_review")
-    private Date nextReview;
+    private LocalDateTime nextReview;
 }

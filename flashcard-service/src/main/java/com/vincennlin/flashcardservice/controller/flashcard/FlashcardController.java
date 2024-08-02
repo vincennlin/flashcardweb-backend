@@ -1,5 +1,6 @@
 package com.vincennlin.flashcardservice.controller.flashcard;
 
+import com.vincennlin.flashcardservice.payload.deck.FlashcardCountInfo;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.flashcardservice.service.FlashcardService;
 import jakarta.validation.Valid;
@@ -30,6 +31,15 @@ public class FlashcardController implements FlashcardControllerSwagger {
     }
 
     @PreAuthorize("hasAuthority('READ')")
+    @GetMapping("/decks/{deck_id}/flashcards")
+    public ResponseEntity<List<FlashcardDto>> getFlashcardsByDeckId(@PathVariable(name = "deck_id") @Min(1) Long deckId) {
+
+        List<FlashcardDto> flashcardsResponse = flashcardService.getFlashcardsByDeckId(deckId);
+
+        return new ResponseEntity<>(flashcardsResponse, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('READ')")
     @GetMapping("/notes/{note_id}/flashcards")
     public ResponseEntity<List<FlashcardDto>> getFlashcardsByNoteId(@PathVariable(name = "note_id") @Min(1) Long noteId) {
 
@@ -54,6 +64,15 @@ public class FlashcardController implements FlashcardControllerSwagger {
         List<FlashcardDto> flashcardsResponse = flashcardService.getFlashcardsByTagNames(tagNames);
 
         return new ResponseEntity<>(flashcardsResponse, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('READ')")
+    @GetMapping("/notes/flashcards/count")
+    public ResponseEntity<FlashcardCountInfo> getFlashcardCountInfo() {
+
+        FlashcardCountInfo flashcardCountInfo = flashcardService.getFlashcardCountInfo();
+
+        return new ResponseEntity<>(flashcardCountInfo, HttpStatus.OK);
     }
 
 

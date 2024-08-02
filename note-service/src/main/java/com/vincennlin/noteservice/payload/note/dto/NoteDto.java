@@ -1,6 +1,7 @@
 package com.vincennlin.noteservice.payload.note.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vincennlin.noteservice.payload.deck.response.FlashcardCountInfo;
 import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
@@ -50,6 +51,29 @@ public class NoteDto {
     )
     private Long userId;
 
+    @JsonProperty(
+            value = "deck_id",
+            access = JsonProperty.Access.READ_ONLY
+    )
+    private Long deckId;
+
+    @JsonProperty(value = "total_flashcard_count")
+    private Integer totalFlashcardCount;
+
+    @JsonProperty(value = "review_flashcard_count")
+    private Integer reviewFlashcardCount;
+
+    @Schema(
+            name = "flashcards",
+            description = "筆記裡的字卡列表",
+            example = "null"
+    )
+    @JsonProperty(
+            value = "flashcards",
+            access = JsonProperty.Access.READ_ONLY
+    )
+    private List<? extends FlashcardDto> flashcards;
+
     @Schema(
             name = "date_created",
             description = "筆記建立日期",
@@ -72,14 +96,12 @@ public class NoteDto {
     )
     private LocalDateTime lastUpdated;
 
-    @Schema(
-            name = "flashcards",
-            description = "筆記裡的字卡列表",
-            example = "null"
-    )
-    @JsonProperty(
-            value = "flashcards",
-            access = JsonProperty.Access.READ_ONLY
-    )
-    private List<? extends FlashcardDto> flashcards;
+    public void setFlashcardCountInfo(FlashcardCountInfo flashcardCountInfo) {
+        Integer totalFlashcardCount = flashcardCountInfo
+                .getNoteIdTotalFlashcardCountMap().getOrDefault(this.id, 0);
+        Integer reviewFlashcardCount = flashcardCountInfo
+                .getNoteIdReviewFlashcardCountMap().getOrDefault(this.id, 0);
+        this.setTotalFlashcardCount(totalFlashcardCount);
+        this.setReviewFlashcardCount(reviewFlashcardCount);
+    }
 }

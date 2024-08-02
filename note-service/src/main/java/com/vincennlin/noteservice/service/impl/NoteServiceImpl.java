@@ -1,28 +1,30 @@
 package com.vincennlin.noteservice.service.impl;
 
 import com.vincennlin.noteservice.client.AiServiceClient;
-import com.vincennlin.noteservice.exception.ResourceOwnershipException;
+import com.vincennlin.noteservice.entity.deck.Deck;
 import com.vincennlin.noteservice.exception.WebAPIException;
 import com.vincennlin.noteservice.client.FlashcardServiceClient;
-import com.vincennlin.noteservice.entity.Note;
+import com.vincennlin.noteservice.entity.note.Note;
 import com.vincennlin.noteservice.exception.ResourceNotFoundException;
+import com.vincennlin.noteservice.mapper.NoteMapper;
+import com.vincennlin.noteservice.payload.deck.response.FlashcardCountInfo;
 import com.vincennlin.noteservice.payload.note.dto.NoteDto;
 import com.vincennlin.noteservice.payload.note.page.NotePageResponse;
 import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
-import com.vincennlin.noteservice.payload.request.GenerateFlashcardRequest;
-import com.vincennlin.noteservice.payload.request.GenerateFlashcardsRequest;
+import com.vincennlin.noteservice.payload.flashcard.request.GenerateFlashcardRequest;
+import com.vincennlin.noteservice.payload.flashcard.request.GenerateFlashcardsRequest;
+import com.vincennlin.noteservice.repository.DeckRepository;
 import com.vincennlin.noteservice.repository.NoteRepository;
+import com.vincennlin.noteservice.service.AuthService;
+import com.vincennlin.noteservice.service.DeckService;
 import com.vincennlin.noteservice.service.NoteService;
 import feign.FeignException;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,21 +35,25 @@ import java.util.List;
 public class NoteServiceImpl implements NoteService {
 
     private final static Logger logger = LoggerFactory.getLogger(NoteServiceImpl.class);
+
+    private final NoteMapper noteMapper;
+
+    private final DeckService deckService;
+    private final AuthService authService;
+
+    private final NoteRepository noteRepository;
+    private final DeckRepository deckRepository;
+
+    private final FlashcardServiceClient flashcardServiceClient;
     private final AiServiceClient aiServiceClient;
-
-    private NoteRepository noteRepository;
-
-    private ModelMapper modelMapper;
-
-    private FlashcardServiceClient flashcardServiceClient;
 
     @Override
     public NotePageResponse getAllNotes(Pageable pageable) {
 
-        if (containsAuthority("ADVANCED")) {
+        if (authService.containsAuthority("ADVANCED")) {
             return getNotePageResponse(noteRepository.findAll(pageable));
         }
-        return getNotePageResponse(noteRepository.findByUserId(getCurrentUserId(), pageable));
+        return getNotePageResponse(noteRepository.findByUserId(authService.getCurrentUserId(), pageable));
     }
 
     @Override
@@ -57,14 +63,27 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
+    public NotePageResponse getNotesByDeckId(Long deckId, Pageable pageable) {
+
+        Deck deck = deckRepository.findById(deckId).orElseThrow(() ->
+                new ResourceNotFoundException("Deck", "id", deckId.toString()));
+
+        authService.authorizeOwnership(deck.getUserId());
+
+        List<Long> noteIds = deckService.getNoteIdsByDeck(deck);
+
+        return getNotePageResponse(noteRepository.findByIdIn(noteIds, pageable));
+    }
+
+    @Override
     public NoteDto getNoteById(Long noteId) {
 
         Note note = noteRepository.findById(noteId).orElseThrow(() ->
-                new ResourceNotFoundException("Note", "id", noteId));
+                new ResourceNotFoundException("Note", "id", noteId.toString()));
 
         List<FlashcardDto> flashcardDtoList = getFlashcardsByNoteId(noteId);
 
-        NoteDto noteDto = modelMapper.map(note, NoteDto.class);
+        NoteDto noteDto = noteMapper.mapToDto(note, deckService.getFlashcardCountInfo());
 
         noteDto.setFlashcards(flashcardDtoList);
 
@@ -72,15 +91,18 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public NoteDto createNote(NoteDto noteDto) {
+    public NoteDto createNote(Long deckId, NoteDto noteDto) {
 
-        noteDto.setUserId(getCurrentUserId());
+        Deck deck = deckService.getDeckEntityById(deckId);
 
-        Note note = modelMapper.map(noteDto, Note.class);
+        noteDto.setUserId(authService.getCurrentUserId());
+
+        Note note = noteMapper.mapToEntity(noteDto);
+        note.setDeck(deck);
 
         Note newNote = noteRepository.save(note);
 
-        return modelMapper.map(newNote, NoteDto.class);
+        return noteMapper.mapToDto(newNote);
     }
 
     @Override
@@ -88,15 +110,15 @@ public class NoteServiceImpl implements NoteService {
     public NoteDto updateNote(Long noteId, NoteDto noteDto) {
 
         Note note = noteRepository.findById(noteId).orElseThrow(() ->
-                new ResourceNotFoundException("Note", "id", noteId));
+                new ResourceNotFoundException("Note", "id", noteId.toString()));
 
-        authorizeOwnership(note.getUserId());
+        authService.authorizeOwnership(note.getUserId());
 
         note.setContent(noteDto.getContent());
 
         Note updatedNote = noteRepository.save(note);
 
-        NoteDto updatedNoteDto = modelMapper.map(updatedNote, NoteDto.class);
+        NoteDto updatedNoteDto = noteMapper.mapToDto(updatedNote, deckService.getFlashcardCountInfo());
 
         updatedNoteDto.setFlashcards(getFlashcardsByNoteId(noteId));
 
@@ -108,69 +130,61 @@ public class NoteServiceImpl implements NoteService {
     public void deleteNoteById(Long noteId) {
 
         Note note = noteRepository.findById(noteId).orElseThrow(() ->
-                new ResourceNotFoundException("Note", "id", noteId));
+                new ResourceNotFoundException("Note", "id", noteId.toString()));
 
-        authorizeOwnership(note.getUserId());
+        authService.authorizeOwnership(note.getUserId());
 
         noteRepository.delete(note);
 
-        flashcardServiceClient.deleteFlashcardsByNoteId(noteId, getAuthorization());
+        flashcardServiceClient.deleteFlashcardsByNoteId(noteId, authService.getAuthorization());
     }
 
     @Override
     public Boolean isNoteOwner(Long noteId) {
 
         Note note = noteRepository.findById(noteId).orElseThrow(() ->
-                new ResourceNotFoundException("Note", "id", noteId));
+                new ResourceNotFoundException("Note", "id", noteId.toString()));
 
-        return note.getUserId().equals(getCurrentUserId());
+        return note.getUserId().equals(authService.getCurrentUserId());
     }
 
     @Override
     public FlashcardDto generateFlashcard(Long noteId, GenerateFlashcardRequest request) {
 
         Note note = noteRepository.findById(noteId).orElseThrow(() ->
-                new ResourceNotFoundException("Note", "id", noteId));
+                new ResourceNotFoundException("Note", "id", noteId.toString()));
 
-        authorizeOwnership(note.getUserId());
+        authService.authorizeOwnership(note.getUserId());
 
         request.setContent(note.getContent());
 
-        FlashcardDto generatedFlashcard = aiServiceClient.generateFlashcard(request, getAuthorization()).getBody();
+        FlashcardDto generatedFlashcard = aiServiceClient.generateFlashcard(request, authService.getAuthorization()).getBody();
 
-        return flashcardServiceClient.createFlashcard(noteId, generatedFlashcard, getAuthorization()).getBody();
+        return flashcardServiceClient.createFlashcard(noteId, generatedFlashcard, authService.getAuthorization()).getBody();
     }
 
     @Override
     public List<FlashcardDto> generateFlashcards(Long noteId, GenerateFlashcardsRequest request) {
 
         Note note = noteRepository.findById(noteId).orElseThrow(() ->
-                new ResourceNotFoundException("Note", "id", noteId));
+                new ResourceNotFoundException("Note", "id", noteId.toString()));
 
-        authorizeOwnership(note.getUserId());
+        authService.authorizeOwnership(note.getUserId());
 
-        request.setNote(mapToDto(note));
+        request.setNote(noteMapper.mapToDto(note));
 
-        List<FlashcardDto> generatedFlashcards = aiServiceClient.generateFlashcards(request, getAuthorization()).getBody();
+        List<FlashcardDto> generatedFlashcards = aiServiceClient.generateFlashcards(request, authService.getAuthorization()).getBody();
 
-        return flashcardServiceClient.createFlashcards(noteId, generatedFlashcards, getAuthorization()).getBody();
-    }
-
-    private Long getCurrentUserId() {
-        return Long.parseLong(getAuthentication().getPrincipal().toString());
-    }
-
-    private String getAuthorization() {
-        return getAuthentication().getCredentials().toString();
+        return flashcardServiceClient.createFlashcards(noteId, generatedFlashcards, authService.getAuthorization()).getBody();
     }
 
     private List<FlashcardDto> getFlashcardsByNoteId(Long noteId) {
         try{
-            return flashcardServiceClient.getFlashcardsByNoteId(noteId, getAuthorization()).getBody();
+            return flashcardServiceClient.getFlashcardsByNoteId(noteId, authService.getAuthorization()).getBody();
         } catch (FeignException e) {
             logger.error(e.getLocalizedMessage());
             if (e.status() == HttpStatus.NOT_FOUND.value()){
-                throw new ResourceNotFoundException("Flashcards", "note_id", noteId);
+                throw new ResourceNotFoundException("Flashcards", "note_id", noteId.toString());
             }
             else {
                 throw new WebAPIException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
@@ -178,35 +192,23 @@ public class NoteServiceImpl implements NoteService {
         }
     }
 
-    private void authorizeOwnership(Long ownerId) {
-        Long currentUserId = getCurrentUserId();
-        if (!currentUserId.equals(ownerId) && !containsAuthority("ADVANCED")) {
-            throw new ResourceOwnershipException(currentUserId, ownerId);
-        }
-    }
-
-    private Boolean containsAuthority(String authorityName) {
-        return getAuthentication().getAuthorities().stream().anyMatch(
-                authority -> authority.getAuthority().equals(authorityName));
-    }
-
-    private Authentication getAuthentication() {
-        return SecurityContextHolder.getContext().getAuthentication();
-    }
-
     private NotePageResponse getNotePageResponse(Page<Note> pageOfNotes) {
         List<Note> listOfNotes = pageOfNotes.getContent();
 
-        List<NoteDto> content = listOfNotes.stream().map(note ->
-                modelMapper.map(note, NoteDto.class)).toList();
+        FlashcardCountInfo flashcardCountInfo = deckService.getFlashcardCountInfo();
 
-        for (NoteDto noteDto : content) {
+        List<NoteDto> NoteDtoList = listOfNotes.stream().map(note -> {
+            authService.authorizeOwnership(note.getUserId());
+            return noteMapper.mapToDto(note, flashcardCountInfo);
+        }).toList();
+
+        for (NoteDto noteDto : NoteDtoList) {
             List<FlashcardDto> flashcardDtoList = getFlashcardsByNoteId(noteDto.getId());
             noteDto.setFlashcards(flashcardDtoList);
         }
 
         NotePageResponse notePageResponse = new NotePageResponse();
-        notePageResponse.setContent(content);
+        notePageResponse.setContent(NoteDtoList);
         notePageResponse.setPageNo(pageOfNotes.getNumber());
         notePageResponse.setPageSize(pageOfNotes.getSize());
         notePageResponse.setTotalElements(pageOfNotes.getTotalElements());
@@ -214,9 +216,5 @@ public class NoteServiceImpl implements NoteService {
         notePageResponse.setLast(pageOfNotes.isLast());
 
         return notePageResponse;
-    }
-
-    private NoteDto mapToDto(Note note) {
-        return modelMapper.map(note, NoteDto.class);
     }
 }
