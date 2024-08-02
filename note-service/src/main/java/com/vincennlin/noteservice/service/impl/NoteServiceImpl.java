@@ -2,7 +2,6 @@ package com.vincennlin.noteservice.service.impl;
 
 import com.vincennlin.noteservice.client.AiServiceClient;
 import com.vincennlin.noteservice.entity.deck.Deck;
-import com.vincennlin.noteservice.exception.ResourceOwnershipException;
 import com.vincennlin.noteservice.exception.WebAPIException;
 import com.vincennlin.noteservice.client.FlashcardServiceClient;
 import com.vincennlin.noteservice.entity.note.Note;
@@ -11,8 +10,8 @@ import com.vincennlin.noteservice.mapper.NoteMapper;
 import com.vincennlin.noteservice.payload.note.dto.NoteDto;
 import com.vincennlin.noteservice.payload.note.page.NotePageResponse;
 import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
-import com.vincennlin.noteservice.payload.request.GenerateFlashcardRequest;
-import com.vincennlin.noteservice.payload.request.GenerateFlashcardsRequest;
+import com.vincennlin.noteservice.payload.flashcard.request.GenerateFlashcardRequest;
+import com.vincennlin.noteservice.payload.flashcard.request.GenerateFlashcardsRequest;
 import com.vincennlin.noteservice.repository.DeckRepository;
 import com.vincennlin.noteservice.repository.NoteRepository;
 import com.vincennlin.noteservice.service.AuthService;
@@ -25,8 +24,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

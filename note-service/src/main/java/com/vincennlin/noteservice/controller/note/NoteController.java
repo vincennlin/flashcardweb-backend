@@ -2,10 +2,10 @@ package com.vincennlin.noteservice.controller.note;
 
 import com.vincennlin.noteservice.constant.AppConstants;
 import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
-import com.vincennlin.noteservice.payload.request.GenerateFlashcardRequest;
+import com.vincennlin.noteservice.payload.flashcard.request.GenerateFlashcardRequest;
 import com.vincennlin.noteservice.payload.note.dto.NoteDto;
 import com.vincennlin.noteservice.payload.note.page.NotePageResponse;
-import com.vincennlin.noteservice.payload.request.GenerateFlashcardsRequest;
+import com.vincennlin.noteservice.payload.flashcard.request.GenerateFlashcardsRequest;
 import com.vincennlin.noteservice.service.NoteService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;

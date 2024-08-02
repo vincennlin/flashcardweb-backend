@@ -15,5 +15,10 @@ public interface FlashcardRepository extends JpaRepository<Flashcard, Long> {
     @Query("SELECT f FROM Flashcard f JOIN f.tags t WHERE t IN :tags")
     List<Flashcard> findByTags(@Param("tags") List<Tag> tags);
 
+    @Query("SELECT f.noteId, COUNT(f) FROM Flashcard f WHERE f.userId = :userId GROUP BY f.noteId")
+    List<Object[]> findNoteIdAndFlashcardCountByUserId(@Param("userId") Long userId);
+
+    Integer countByNoteId(Long noteId);
+
     void deleteByNoteId(Long noteId);
 }

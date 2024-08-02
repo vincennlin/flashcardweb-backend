@@ -28,7 +28,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor
 @Service
@@ -82,6 +84,22 @@ public class FlashcardServiceImpl implements FlashcardService {
         authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
 
         return flashcard;
+    }
+
+    @Override
+    public Map<Long, Integer> getNotesFlashcardsCountByUserId() {
+
+        List<Object[]> results = flashcardRepository.findNoteIdAndFlashcardCountByUserId(getCurrentUserId());
+
+        Map<Long, Integer> noteIdFlashcardCountMap = new HashMap<>();
+
+        for (Object[] result : results) {
+            Long noteId = (Long) result[0];
+            Long count = (Long) result[1];
+            noteIdFlashcardCountMap.put(noteId, count.intValue());
+        }
+
+        return noteIdFlashcardCountMap;
     }
 
     @Transactional
