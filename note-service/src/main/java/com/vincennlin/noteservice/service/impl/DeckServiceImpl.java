@@ -2,6 +2,7 @@ package com.vincennlin.noteservice.service.impl;
 
 import com.vincennlin.noteservice.client.FlashcardServiceClient;
 import com.vincennlin.noteservice.entity.deck.Deck;
+import com.vincennlin.noteservice.entity.note.Note;
 import com.vincennlin.noteservice.exception.ResourceNotFoundException;
 import com.vincennlin.noteservice.exception.WebAPIException;
 import com.vincennlin.noteservice.mapper.NoteMapper;
@@ -15,6 +16,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -56,6 +58,17 @@ public class DeckServiceImpl implements DeckService {
         authService.authorizeOwnership(deck.getUserId());
 
         return deck;
+    }
+
+    @Override
+    public List<Long> getNoteIdsByDeckId(Long deckId) {
+
+        Deck deck = deckRepository.findById(deckId)
+                .orElseThrow(() -> new ResourceNotFoundException("Deck", "id", deckId.toString()));
+
+        authService.authorizeOwnership(deck.getUserId());
+
+        return getNoteIdsByDeck(deck);
     }
 
     @Override
@@ -126,6 +139,15 @@ public class DeckServiceImpl implements DeckService {
         deckRepository.delete(deck);
     }
 
+    @Override
+    public Boolean isDeckOwner(Long deckId) {
+
+        Deck deck = deckRepository.findById(deckId)
+                .orElseThrow(() -> new ResourceNotFoundException("Deck", "id", deckId.toString()));
+
+        return deck.getUserId().equals(authService.getCurrentUserId());
+    }
+
     private void setParentDeck(Deck deck, Long parentId) {
         Deck parentDeck = deckRepository.findById(parentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Deck", "id", parentId.toString()));
@@ -141,5 +163,14 @@ public class DeckServiceImpl implements DeckService {
         } catch (Exception e) {
             throw new WebAPIException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to get flashcard count");
         }
+    }
+
+    private List<Long> getNoteIdsByDeck(Deck deck) {
+        List<Long> noteIds = new ArrayList<>(deck.getNotes().stream().map(Note::getId).toList());
+
+        deck.getSubDecks().forEach(subDeck ->
+                noteIds.addAll(getNoteIdsByDeck(subDeck)));
+
+        return noteIds;
     }
 }
