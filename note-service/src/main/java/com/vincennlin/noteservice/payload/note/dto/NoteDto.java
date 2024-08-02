@@ -1,6 +1,7 @@
 package com.vincennlin.noteservice.payload.note.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vincennlin.noteservice.payload.deck.response.FlashcardCountInfo;
 import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
@@ -94,4 +95,13 @@ public class NoteDto {
 
     @JsonProperty(value = "review_flashcard_count")
     private Integer reviewFlashcardCount;
+
+    public void setFlashcardCountInfo(FlashcardCountInfo flashcardCountInfo) {
+        Integer totalFlashcardCount = flashcardCountInfo
+                .getNoteIdTotalFlashcardCountMap().getOrDefault(this.id, 0);
+        Integer reviewFlashcardCount = flashcardCountInfo
+                .getNoteIdReviewFlashcardCountMap().getOrDefault(this.id, 0);
+        this.setTotalFlashcardCount(totalFlashcardCount);
+        this.setReviewFlashcardCount(reviewFlashcardCount);
+    }
 }

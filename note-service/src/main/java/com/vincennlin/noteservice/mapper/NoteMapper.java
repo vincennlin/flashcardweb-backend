@@ -19,9 +19,6 @@ public class NoteMapper {
     private final ModelMapper modelMapper;
 
     @Autowired
-    private FlashcardServiceClient flashcardServiceClient;
-
-    @Autowired
     private AuthService authService;
 
     public NoteMapper() {
@@ -34,8 +31,13 @@ public class NoteMapper {
     }
 
     public NoteDto mapToDto(Note note) {
+        return mapToDto(note, new FlashcardCountInfo());
+    }
+
+    public NoteDto mapToDto(Note note, FlashcardCountInfo flashcardCountInfo) {
         NoteDto noteDto = modelMapper.map(note, NoteDto.class);
         noteDto.setDeckId(note.getDeck().getId());
+        noteDto.setFlashcardCountInfo(flashcardCountInfo);
         return noteDto;
     }
 

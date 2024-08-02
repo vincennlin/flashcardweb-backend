@@ -148,16 +148,18 @@ public class DeckServiceImpl implements DeckService {
         return deck.getUserId().equals(authService.getCurrentUserId());
     }
 
-    private void setParentDeck(Deck deck, Long parentId) {
-        Deck parentDeck = deckRepository.findById(parentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Deck", "id", parentId.toString()));
+    @Override
+    public List<Long> getNoteIdsByDeck(Deck deck) {
+        List<Long> noteIds = new ArrayList<>(deck.getNotes().stream().map(Note::getId).toList());
 
-        authService.authorizeOwnership(parentDeck.getUserId());
+        deck.getSubDecks().forEach(subDeck ->
+                noteIds.addAll(getNoteIdsByDeck(subDeck)));
 
-        deck.setParent(parentDeck);
+        return noteIds;
     }
 
-    private FlashcardCountInfo getFlashcardCountInfo() {
+    @Override
+    public FlashcardCountInfo getFlashcardCountInfo() {
         try {
             return flashcardServiceClient.getFlashcardCountInfo(authService.getAuthorization()).getBody();
         } catch (Exception e) {
@@ -165,12 +167,12 @@ public class DeckServiceImpl implements DeckService {
         }
     }
 
-    private List<Long> getNoteIdsByDeck(Deck deck) {
-        List<Long> noteIds = new ArrayList<>(deck.getNotes().stream().map(Note::getId).toList());
+    private void setParentDeck(Deck deck, Long parentId) {
+        Deck parentDeck = deckRepository.findById(parentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Deck", "id", parentId.toString()));
 
-        deck.getSubDecks().forEach(subDeck ->
-                noteIds.addAll(getNoteIdsByDeck(subDeck)));
+        authService.authorizeOwnership(parentDeck.getUserId());
 
-        return noteIds;
+        deck.setParent(parentDeck);
     }
 }

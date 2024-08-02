@@ -62,12 +62,7 @@ public class DeckDto {
     @JsonIgnore
     public void setFlashcardCountInfo(FlashcardCountInfo flashcardCountInfo) {
         for (NoteDto note : notes) {
-            Integer totalFlashcardCount = flashcardCountInfo
-                    .getNoteIdTotalFlashcardCountMap().getOrDefault(note.getId(), 0);
-            Integer reviewFlashcardCount = flashcardCountInfo
-                    .getNoteIdReviewFlashcardCountMap().getOrDefault(note.getId(), 0);
-            note.setTotalFlashcardCount(totalFlashcardCount);
-            note.setReviewFlashcardCount(reviewFlashcardCount);
+            note.setFlashcardCountInfo(flashcardCountInfo);
         }
         for (DeckDto subDeck : subDecks) {
             subDeck.setFlashcardCountInfo(flashcardCountInfo);
