@@ -2,14 +2,13 @@ package com.vincennlin.noteservice.service.impl;
 
 import com.vincennlin.noteservice.entity.deck.Deck;
 import com.vincennlin.noteservice.exception.ResourceNotFoundException;
-import com.vincennlin.noteservice.exception.ResourceOwnershipException;
 import com.vincennlin.noteservice.exception.WebAPIException;
 import com.vincennlin.noteservice.mapper.NoteMapper;
 import com.vincennlin.noteservice.payload.deck.dto.DeckDto;
+import com.vincennlin.noteservice.payload.deck.request.CreateDeckRequest;
 import com.vincennlin.noteservice.repository.DeckRepository;
 import com.vincennlin.noteservice.service.AuthService;
 import com.vincennlin.noteservice.service.DeckService;
-import com.vincennlin.noteservice.service.NoteService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -55,17 +54,26 @@ public class DeckServiceImpl implements DeckService {
     }
 
     @Override
-    public DeckDto createDeck(DeckDto deckDto) {
+    public DeckDto createDeck(CreateDeckRequest request) {
 
         Long userId = authService.getCurrentUserId();
 
-        if (deckRepository.existsByNameAndUserId(deckDto.getName(), userId)) {
-            throw new WebAPIException(HttpStatus.BAD_REQUEST, "Deck with name " + deckDto.getName() + " already exists");
+        if (deckRepository.existsByNameAndUserId(request.getName(), userId)) {
+            throw new WebAPIException(HttpStatus.BAD_REQUEST, "Deck with name " + request.getName() + " already exists");
         }
 
         Deck deck = new Deck();
-        deck.setName(deckDto.getName());
+        deck.setName(request.getName());
         deck.setUserId(userId);
+
+        if (request.getParentId() != null) {
+            Deck parentDeck = deckRepository.findById(request.getParentId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Deck", "id", request.getParentId().toString()));
+
+            authService.authorizeOwnership(parentDeck.getUserId());
+
+            deck.setParent(parentDeck);
+        }
 
         Deck newDeck = deckRepository.save(deck);
 

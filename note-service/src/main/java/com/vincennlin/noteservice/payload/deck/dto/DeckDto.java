@@ -27,7 +27,15 @@ public class DeckDto {
     @JsonProperty(value = "user_id")
     private Long userId;
 
+    @JsonProperty(value = "parent_id")
+    private Long parentId;
+
+    @JsonProperty(value = "sub_decks")
+    private List<DeckDto> subDecks;
+
     @JsonBackReference
     @JsonProperty(value = "notes")
     private List<NoteDto> notes;
+
+
 }
