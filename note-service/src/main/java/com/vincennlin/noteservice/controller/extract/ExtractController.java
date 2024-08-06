@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @Validated
 @RequestMapping("/api/v1")
-public class ExtractController {
+public class ExtractController implements ExtractControllerSwagger{
 
     private final ExtractService extractService;
 
