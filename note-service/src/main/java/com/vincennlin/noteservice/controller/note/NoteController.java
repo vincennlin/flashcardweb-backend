@@ -21,6 +21,7 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -107,6 +108,16 @@ public class NoteController implements NoteControllerSwagger {
         NoteDto noteResponse = noteService.createNote(deckId, noteDto);
 
         return new ResponseEntity<>(noteResponse, HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasAuthority('CREATE')")
+    @PostMapping("/decks/{deck_id}/notes/pdf")
+    public ResponseEntity<NoteDto> createNoteFromPdf(@PathVariable(name = "deck_id") @Min(1) Long deckId,
+                                                     @RequestPart("file") MultipartFile file) {
+
+        NoteDto noteResponse = noteService.createNoteFromPdf(deckId, file);
+
+        return new ResponseEntity<>(noteResponse, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('UPDATE')")
