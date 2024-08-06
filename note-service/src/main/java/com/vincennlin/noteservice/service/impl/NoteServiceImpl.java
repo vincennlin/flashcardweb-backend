@@ -17,6 +17,7 @@ import com.vincennlin.noteservice.repository.DeckRepository;
 import com.vincennlin.noteservice.repository.NoteRepository;
 import com.vincennlin.noteservice.service.AuthService;
 import com.vincennlin.noteservice.service.DeckService;
+import com.vincennlin.noteservice.service.ExtractService;
 import com.vincennlin.noteservice.service.NoteService;
 import feign.FeignException;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -39,6 +41,7 @@ public class NoteServiceImpl implements NoteService {
     private final NoteMapper noteMapper;
 
     private final DeckService deckService;
+    private final ExtractService extractService;
     private final AuthService authService;
 
     private final NoteRepository noteRepository;
@@ -103,6 +106,17 @@ public class NoteServiceImpl implements NoteService {
         Note newNote = noteRepository.save(note);
 
         return noteMapper.mapToDto(newNote);
+    }
+
+    @Override
+    public NoteDto createNoteFromPdf(Long deckId, MultipartFile pdfFile) {
+
+        String pdfText = extractService.extractTextFromPdf(pdfFile);
+
+        NoteDto noteDto = new NoteDto();
+        noteDto.setContent(pdfText);
+
+        return createNote(deckId, noteDto);
     }
 
     @Override
