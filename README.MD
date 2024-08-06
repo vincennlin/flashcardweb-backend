@@ -72,6 +72,14 @@ Run Bash in MySQL Docker Container
 ````sh
 docker exec -it c9825f078097 bash
 ````
+將 docker-compose-mysql.yml 檔案上傳至 AWS EC2
+````sh
+scp -i /Users/vincennlin/Repository/flashcardweb-backend/misc/flashcardweb-key-pair.pem /Users/vincennlin/Repository/flashcardweb-backend/misc/docker-compose-mysql.yml ec2-user@54.180.176.32:/home/ec2-user/
+````
+啟動該容器
+````sh
+docker-compose -f docker-compose-mysql.yml up -d
+````
 --------------------------------------------
 
 Build User Service Docker Image
@@ -138,7 +146,11 @@ docker run -d -p 8765:8765 -e "spring.profiles.active=prod" -e "config.server.ip
 --------------------------------------------
 將 docker-compose.yml 檔案上傳至 AWS EC2
 ````sh
-scp -i /Users/vincennlin/Repository/flashcardweb-backend/misc/flashcardweb-key-pair.pem /Users/vincennlin/Repository/flashcardweb-backend/docker-compose.yml ec2-user@54.180.176.32:/home/ec2-user/
+scp -i /Users/vincennlin/Repository/flashcardweb-backend/misc/flashcardweb-key-pair.pem /Users/vincennlin/Repository/flashcardweb-backend/misc/docker-compose.yml ec2-user@54.180.176.32:/home/ec2-user/
+````
+將 docker-compose-mysql.yml 檔案上傳至 AWS EC2
+````sh
+scp -i /Users/vincennlin/Repository/flashcardweb-backend/misc/flashcardweb-key-pair.pem /Users/vincennlin/Repository/flashcardweb-backend/misc/docker-compose-mysql.yml ec2-user@54.180.176.32:/home/ec2-user/
 ````
 在 AWS EC2 上安裝 Docker Compose
 ````sh
