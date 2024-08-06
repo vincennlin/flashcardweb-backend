@@ -140,9 +140,9 @@ public class FlashcardServiceImpl implements FlashcardService {
         Flashcard flashcard;
 
         if (flashcardDto.getType() == FlashcardType.FILL_IN_THE_BLANK) {
-            flashcard = createFillInTheBlankFlashcard((FillInTheBlankFlashcardDto) flashcardDto);
+            flashcard = mapFillInTheBlankFlashcardToEntity((FillInTheBlankFlashcardDto) flashcardDto);
         } else if (flashcardDto.getType() == FlashcardType.MULTIPLE_CHOICE) {
-            flashcard = createMultipleChoiceFlashcard((MultipleChoiceFlashcardDto) flashcardDto);
+            flashcard = mapMultipleChoiceFlashcardToEntity((MultipleChoiceFlashcardDto) flashcardDto);
         } else {
             flashcard = flashcardMapper.mapToEntity(flashcardDto);
         }
@@ -158,18 +158,18 @@ public class FlashcardServiceImpl implements FlashcardService {
     }
 
     @Transactional
-    public Flashcard createFillInTheBlankFlashcard(FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto) {
+    public Flashcard mapFillInTheBlankFlashcardToEntity(FillInTheBlankFlashcardDto fillInTheBlankFlashcardDto) {
 
         FillInTheBlankFlashcard fillInTheBlankFlashcard = (FillInTheBlankFlashcard) flashcardMapper.mapToEntity(fillInTheBlankFlashcardDto);
 
         fillInTheBlankFlashcard.getInBlankAnswers().forEach(
                 inBlankAnswers -> inBlankAnswers.setFlashcard(fillInTheBlankFlashcard));
 
-        return flashcardRepository.save(fillInTheBlankFlashcard);
+        return fillInTheBlankFlashcard;
     }
 
     @Transactional
-    public Flashcard createMultipleChoiceFlashcard(MultipleChoiceFlashcardDto multipleChoiceFlashcardDto) {
+    public Flashcard mapMultipleChoiceFlashcardToEntity(MultipleChoiceFlashcardDto multipleChoiceFlashcardDto) {
 
         if (multipleChoiceFlashcardDto.getAnswerIndex() > multipleChoiceFlashcardDto.getOptions().size()) {
             throw new IllegalArgumentException("Answer index is out of range of options");
@@ -182,12 +182,13 @@ public class FlashcardServiceImpl implements FlashcardService {
 
         multipleChoiceFlashcard.setAnswerOption(savedOptions.get(multipleChoiceFlashcardDto.getAnswerIndex() - 1));
 
-        MultipleChoiceFlashcard newFlashcard = flashcardRepository.save(multipleChoiceFlashcard);
-        options.forEach(option -> option.setFlashcard(newFlashcard));
+//        MultipleChoiceFlashcard newFlashcard = flashcardRepository.save(multipleChoiceFlashcard);
+//        options.forEach(option -> option.setFlashcard(newFlashcard));
+        options.forEach(option -> option.setFlashcard(multipleChoiceFlashcard));
 
         optionRepository.saveAll(options);
 
-        return newFlashcard;
+        return multipleChoiceFlashcard;
     }
 
     @Transactional
