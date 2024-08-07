@@ -8,6 +8,7 @@ import com.vincennlin.noteservice.entity.note.Note;
 import com.vincennlin.noteservice.exception.ResourceNotFoundException;
 import com.vincennlin.noteservice.mapper.NoteMapper;
 import com.vincennlin.noteservice.payload.deck.response.FlashcardCountInfo;
+import com.vincennlin.noteservice.payload.extract.ExtractLanguage;
 import com.vincennlin.noteservice.payload.note.dto.NoteDto;
 import com.vincennlin.noteservice.payload.note.page.NotePageResponse;
 import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
@@ -115,6 +116,17 @@ public class NoteServiceImpl implements NoteService {
 
         NoteDto noteDto = new NoteDto();
         noteDto.setContent(pdfText);
+
+        return createNote(deckId, noteDto);
+    }
+
+    @Override
+    public NoteDto createNoteFromImage(Long deckId, ExtractLanguage language, MultipartFile imageFile) {
+
+        String imageText = extractService.extractTextFromImage(language, imageFile);
+
+        NoteDto noteDto = new NoteDto();
+        noteDto.setContent(imageText);
 
         return createNote(deckId, noteDto);
     }

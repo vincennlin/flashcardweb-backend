@@ -1,17 +1,20 @@
 package com.vincennlin.noteservice.controller.extract;
 
+import com.vincennlin.noteservice.payload.extract.ExtractLanguage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 @Tag(
         name = "[NEW] Extract Controller",
-        description = "從檔案提取文字相關的 API"
+        description = "從檔案提取文字相關的 API ，前端不會直接用到"
 )
 public interface ExtractControllerSwagger {
 
@@ -257,6 +260,7 @@ public interface ExtractControllerSwagger {
                             """)
             )
     )
+    @SecurityRequirement(name = "Bear Authentication")
     ResponseEntity<String> extractTextFromPdf(@RequestPart("file")
                                               @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                     description = "PDF 檔案",
@@ -270,4 +274,38 @@ public interface ExtractControllerSwagger {
                                                                     """)
                                                     )
                                               ) MultipartFile file);
+
+
+    @Operation(
+            summary = "從圖片中提取文字",
+            description = "從圖片中提取文字。{language} 可以輸入 eng 或 chi 。" +
+                    "必須指定 mediaType 為 multipart/form-data。 " +
+                    "Request body 必須是圖片檔案，其中 key 為 'file'，value 為該圖片檔案"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "成功提取文字",
+            content = @Content(
+                    mediaType = "application/text",
+                    examples = @ExampleObject(value = """
+                            eazy
+                            JWT TOKENS A
+                            v JWT means JSON Web Token. It is a token implementation which will be in the JSON format and designed to
+                            use for the web requests.
+                            v" JWT is the most common and favorite token type that many systems use these days due to its special features
+                            and advantages.
+                            v JWT tokens can be used both in the scenarios of Authorization/Authentication along with Information
+                            exchange which means you can share certain user related data in the token itself which will reduce the burden
+                            of maintaining such details in the sessions on the server side.
+                            A JWT token has 3 parts each separated by a period(.) Below is a sample JWT token,
+                            RO DESNNIENIDIFEG . S (1 KxwRISMeKKF2QT4fwpMeJf36POk6yJV_adQsswsc
+                            . -
+                            8. Signature (Optional)
+                            """)
+            )
+
+    )
+    @SecurityRequirement(name = "Bear Authentication")
+    ResponseEntity<String> extractTextFromImage(@PathVariable(value = "language") ExtractLanguage language,
+                                                @RequestPart("file") MultipartFile file);
 }
