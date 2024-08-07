@@ -1,6 +1,7 @@
 package com.vincennlin.noteservice.controller.note;
 
 import com.vincennlin.noteservice.constant.AppConstants;
+import com.vincennlin.noteservice.payload.extract.ExtractLanguage;
 import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.noteservice.payload.note.dto.NoteDto;
 import com.vincennlin.noteservice.payload.note.page.NotePageResponse;
@@ -370,6 +371,7 @@ public interface NoteControllerSwagger {
                             """)
             )
     )
+    @SecurityRequirement(name = "Bear Authentication")
     ResponseEntity<NotePageResponse> getNotesByDeckId(
             @PathVariable(name = "deck_id") @Min(1) Long deckId,
             @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) @Min(0) Integer pageNo,
@@ -509,7 +511,7 @@ public interface NoteControllerSwagger {
                     "Request body 必須是 PDF 檔案，其中 key 為 'file'，value 為該 PDF 檔案"
     )
     @ApiResponse(
-            responseCode = "200",
+            responseCode = "201",
             description = "成功根據 PDF 檔案創建筆記",
             content = @Content(
                     mediaType = "application/json",
@@ -528,6 +530,7 @@ public interface NoteControllerSwagger {
                             """)
             )
     )
+    @SecurityRequirement(name = "Bear Authentication")
     ResponseEntity<NoteDto> createNoteFromPdf(@PathVariable(name = "deck_id") @Min(1) Long deckId,
                                               @RequestPart("file")
                                               @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -542,6 +545,36 @@ public interface NoteControllerSwagger {
                                                                     """)
                                                       )
                                               ) MultipartFile file);
+
+    @Operation(
+            summary = "[NEW] 根據圖片新增筆記",
+            description = "根據圖片新增筆記並存進資料庫。 必須指定 mediaType 為 multipart/form-data。 " +
+                    "Request body 必須是圖片檔案，其中 key 為 'file'，value 為該圖片"
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "成功根據圖片創建筆記",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                "id": 4,
+                                "content": "& docker-compose.yml X Y\\\\ console_2 [mysql local]\\nversion: \\"3.8\\"\\n> services:\\n> mysqldb:\\ncontainer_name: mysqldb\\nimage: mysqgl\\nenvironment:\\nMYSQL_ROOT_PASSWORD: Passweord\\nMYSQL_DATABASE: employeedb\\nnetworks:\\nspringboot-mysql-net:\\nnetworks:\\nspringboot-mysql-net:\\n5 driver: bridge\\n",
+                                "user_id": 2,
+                                "deck_id": 5,
+                                "total_flashcard_count": 0,
+                                "review_flashcard_count": 0,
+                                "flashcards": null,
+                                "date_created": "2024-08-07T12:13:40.517023",
+                                "last_updated": "2024-08-07T12:13:40.517072"
+                            }
+                            """)
+            )
+    )
+    @SecurityRequirement(name = "Bear Authentication")
+    ResponseEntity<NoteDto> createNoteFromImage(@PathVariable(name = "deck_id") @Min(1) Long deckId,
+                                                @PathVariable(name = "language") ExtractLanguage language,
+                                                @RequestPart("file") MultipartFile file);
 
     @Operation(
             summary = "更新筆記",
