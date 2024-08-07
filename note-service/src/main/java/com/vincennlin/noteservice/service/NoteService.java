@@ -1,6 +1,7 @@
 package com.vincennlin.noteservice.service;
 
 
+import com.vincennlin.noteservice.payload.extract.ExtractLanguage;
 import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.noteservice.payload.note.dto.NoteDto;
 import com.vincennlin.noteservice.payload.note.page.NotePageResponse;
@@ -24,6 +25,8 @@ public interface NoteService {
     NoteDto createNote(Long deckId, NoteDto noteDto);
 
     NoteDto createNoteFromPdf(Long deckId, MultipartFile pdfFile);
+
+    NoteDto createNoteFromImage(Long deckId, ExtractLanguage language, MultipartFile imageFile);
 
     NoteDto updateNote(Long noteId, NoteDto noteDto);
 

@@ -1,6 +1,7 @@
 package com.vincennlin.noteservice.controller.note;
 
 import com.vincennlin.noteservice.constant.AppConstants;
+import com.vincennlin.noteservice.payload.extract.ExtractLanguage;
 import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.noteservice.payload.flashcard.request.GenerateFlashcardRequest;
 import com.vincennlin.noteservice.payload.note.dto.NoteDto;
@@ -117,7 +118,18 @@ public class NoteController implements NoteControllerSwagger {
 
         NoteDto noteResponse = noteService.createNoteFromPdf(deckId, file);
 
-        return new ResponseEntity<>(noteResponse, HttpStatus.OK);
+        return new ResponseEntity<>(noteResponse, HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasAuthority('CREATE')")
+    @PostMapping("/decks/{deck_id}/notes/image/{language}")
+    public ResponseEntity<NoteDto> createNoteFromImage(@PathVariable(name = "deck_id") @Min(1) Long deckId,
+                                                       @PathVariable(name = "language") ExtractLanguage language,
+                                                       @RequestPart("file") MultipartFile file) {
+
+        NoteDto noteResponse = noteService.createNoteFromImage(deckId, language, file);
+
+        return new ResponseEntity<>(noteResponse, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasAuthority('UPDATE')")
