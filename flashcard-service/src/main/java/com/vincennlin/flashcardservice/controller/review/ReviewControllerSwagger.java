@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -82,6 +83,7 @@ public interface ReviewControllerSwagger {
                             """)
             )
     )
+    @SecurityRequirement(name = "Bear Authentication")
     ResponseEntity<List<FlashcardDto>> getFlashcardsToReview();
 
     @Operation(
@@ -123,6 +125,7 @@ public interface ReviewControllerSwagger {
             )
 
     )
+    @SecurityRequirement(name = "Bear Authentication")
     ResponseEntity<List<ReviewStateDto>> getReviewHistoryByFlashcardId(@PathVariable(name = "flashcard_id") Long flashcardId);
 
     @Operation(
@@ -153,6 +156,7 @@ public interface ReviewControllerSwagger {
                             """)
             )
     )
+    @SecurityRequirement(name = "Bear Authentication")
     ResponseEntity<FlashcardDto> reviewFlashcard(@PathVariable(name = "flashcard_id") Long flashcardId,
                                                         @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                                 content = @Content(
@@ -193,5 +197,6 @@ public interface ReviewControllerSwagger {
                             """)
             )
     )
+    @SecurityRequirement(name = "Bear Authentication")
     ResponseEntity<FlashcardDto> undoReviewFlashcard(@PathVariable(name = "flashcard_id") Long flashcardId);
 }

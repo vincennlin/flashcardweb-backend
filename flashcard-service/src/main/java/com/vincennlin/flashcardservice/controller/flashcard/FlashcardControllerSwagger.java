@@ -154,6 +154,7 @@ public interface FlashcardControllerSwagger {
                             """)
             )
     )
+    @SecurityRequirement(name = "Bear Authentication")
     ResponseEntity<List<FlashcardDto>> getFlashcardsByDeckId(@PathVariable(name = "deck_id") @Min(1) Long deckId);
 
     @Operation(
