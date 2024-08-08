@@ -24,9 +24,9 @@ public interface NoteService {
 
     NoteDto createNote(Long deckId, NoteDto noteDto);
 
-    NoteDto createNoteFromPdf(Long deckId, MultipartFile pdfFile);
+    NoteDto createNoteFromFile(Long deckId, MultipartFile file);
 
-    NoteDto createNoteFromImage(Long deckId, ExtractLanguage language, MultipartFile imageFile);
+//    NoteDto createNoteFromImage(Long deckId, ExtractLanguage language, MultipartFile imageFile);
 
     NoteDto updateNote(Long noteId, NoteDto noteDto);
 
