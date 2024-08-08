@@ -7,4 +7,6 @@ public interface ExtractService {
     String extractTextFromFile(MultipartFile file);
 
 //    String extractTextFromImage(ExtractLanguage language, MultipartFile imageFile);
+
+    String fetchTextFromWiki(String keyword);
 }
