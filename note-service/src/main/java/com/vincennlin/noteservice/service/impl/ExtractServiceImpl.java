@@ -30,7 +30,25 @@ public class ExtractServiceImpl implements ExtractService {
     private final Environment env;
 
     @Override
-    public String extractTextFromPdf(MultipartFile pdfFile) {
+    public String extractTextFromFile(MultipartFile file) {
+
+        String fileName = file.getOriginalFilename();
+        if (fileName == null) {
+            throw new WebAPIException(HttpStatus.BAD_REQUEST, "Failed to extract text from file: file name is null");
+        }
+
+        String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
+
+        return switch (fileExtension) {
+            case "pdf" -> extractTextFromPdf(file);
+            case "txt" -> extractTextFromTxt(file);
+            case "docx" -> extractTextFromDocx(file);
+            default ->
+                    throw new WebAPIException(HttpStatus.BAD_REQUEST, "Failed to extract text from file: unsupported file type");
+        };
+    }
+
+    private String extractTextFromPdf(MultipartFile pdfFile) {
 
         try (PDDocument document = PDDocument.load(pdfFile.getInputStream())) {
             PDFTextStripper pdfStripper = new PDFTextStripper();
@@ -40,8 +58,7 @@ public class ExtractServiceImpl implements ExtractService {
         }
     }
 
-    @Override
-    public String extractTextFromTxt(MultipartFile txtFile) {
+    private String extractTextFromTxt(MultipartFile txtFile) {
 
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(txtFile.getInputStream(), StandardCharsets.UTF_8))) {
@@ -51,8 +68,7 @@ public class ExtractServiceImpl implements ExtractService {
         }
     }
 
-    @Override
-    public String extractTextFromDocx(MultipartFile docxFile) {
+    private String extractTextFromDocx(MultipartFile docxFile) {
 
         try (XWPFDocument document = new XWPFDocument(docxFile.getInputStream())) {
             XWPFWordExtractor extractor = new XWPFWordExtractor(document);
@@ -62,8 +78,7 @@ public class ExtractServiceImpl implements ExtractService {
         }
     }
 
-    @Override
-    public String extractTextFromImage(ExtractLanguage language, MultipartFile imageFile) {
+    private String extractTextFromImage(ExtractLanguage language, MultipartFile imageFile) {
 
         String tesseractTessDataPath = env.getProperty("tesseract.tessdata.path");
         String tesseractLanguage = language.getTesseractLanguage();

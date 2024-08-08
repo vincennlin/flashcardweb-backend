@@ -110,9 +110,9 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public NoteDto createNoteFromPdf(Long deckId, MultipartFile pdfFile) {
+    public NoteDto createNoteFromFile(Long deckId, MultipartFile file) {
 
-        String pdfText = extractService.extractTextFromPdf(pdfFile);
+        String pdfText = extractService.extractTextFromFile(file);
 
         NoteDto noteDto = new NoteDto();
         noteDto.setContent(pdfText);
@@ -120,16 +120,16 @@ public class NoteServiceImpl implements NoteService {
         return createNote(deckId, noteDto);
     }
 
-    @Override
-    public NoteDto createNoteFromImage(Long deckId, ExtractLanguage language, MultipartFile imageFile) {
-
-        String imageText = extractService.extractTextFromImage(language, imageFile);
-
-        NoteDto noteDto = new NoteDto();
-        noteDto.setContent(imageText);
-
-        return createNote(deckId, noteDto);
-    }
+//    @Override
+//    public NoteDto createNoteFromImage(Long deckId, ExtractLanguage language, MultipartFile imageFile) {
+//
+//        String imageText = extractService.extractTextFromImage(language, imageFile);
+//
+//        NoteDto noteDto = new NoteDto();
+//        noteDto.setContent(imageText);
+//
+//        return createNote(deckId, noteDto);
+//    }
 
     @Override
     @Transactional
