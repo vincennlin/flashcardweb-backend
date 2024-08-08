@@ -19,21 +19,21 @@ public class ExtractController implements ExtractControllerSwagger{
     private final ExtractService extractService;
 
     @PreAuthorize("hasAuthority('CREATE')")
-    @PostMapping("/extract/pdf")
-    public ResponseEntity<String> extractTextFromPdf(@RequestPart("file") MultipartFile file) {
+    @PostMapping("/extract/file")
+    public ResponseEntity<String> extractTextFromFile(@RequestPart("file") MultipartFile file) {
 
-        String text = extractService.extractTextFromPdf(file);
-
-        return new ResponseEntity<>(text, HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasAuthority('CREATE')")
-    @PostMapping("/extract/image/{language}")
-    public ResponseEntity<String> extractTextFromImage(@PathVariable(value = "language") ExtractLanguage language,
-                                                       @RequestPart("file") MultipartFile file) {
-
-        String text = extractService.extractTextFromImage(language, file);
+        String text = extractService.extractTextFromFile(file);
 
         return new ResponseEntity<>(text, HttpStatus.OK);
     }
+
+//    @PreAuthorize("hasAuthority('CREATE')")
+//    @PostMapping("/extract/image/{language}")
+//    public ResponseEntity<String> extractTextFromImage(@PathVariable(value = "language") ExtractLanguage language,
+//                                                       @RequestPart("file") MultipartFile file) {
+//
+//        String text = extractService.extractTextFromImage(language, file);
+//
+//        return new ResponseEntity<>(text, HttpStatus.OK);
+//    }
 }

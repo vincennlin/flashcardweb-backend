@@ -168,3 +168,8 @@ docker pull vincennlin/flashcardweb-frontend
 docker run -d -p 3000:3000 --name flashcardweb-frontend vincennlin/flashcardweb-frontend
 docker network connect flashcardweb-network flashcardweb-frontend
 ````
+--------------------------------------------
+Build Tessearct Docker Image
+````sh
+docker build --tag=tesseract --force-rm=true --platform linux/amd64 .
+````
