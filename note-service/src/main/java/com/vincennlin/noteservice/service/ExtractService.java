@@ -7,5 +7,9 @@ public interface ExtractService {
 
     String extractTextFromPdf(MultipartFile pdfFile);
 
+    String extractTextFromTxt(MultipartFile txtFile);
+
+    String extractTextFromDocx(MultipartFile docxFile);
+
     String extractTextFromImage(ExtractLanguage language, MultipartFile imageFile);
 }

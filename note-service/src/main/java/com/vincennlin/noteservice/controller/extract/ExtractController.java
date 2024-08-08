@@ -20,9 +20,27 @@ public class ExtractController implements ExtractControllerSwagger{
 
     @PreAuthorize("hasAuthority('CREATE')")
     @PostMapping("/extract/pdf")
-    public ResponseEntity<String> extractTextFromPdf(@RequestPart("file") MultipartFile file) {
+    public ResponseEntity<String> extractTextFromPdf(@RequestPart("file") MultipartFile pdfFile) {
 
-        String text = extractService.extractTextFromPdf(file);
+        String text = extractService.extractTextFromPdf(pdfFile);
+
+        return new ResponseEntity<>(text, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('CREATE')")
+    @PostMapping("/extract/txt")
+    public ResponseEntity<String> extractTextFromTxt(@RequestPart("file") MultipartFile txtFile) {
+
+        String text = extractService.extractTextFromTxt(txtFile);
+
+        return new ResponseEntity<>(text, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('CREATE')")
+    @PostMapping("/extract/docx")
+    public ResponseEntity<String> extractTextFromDocx(@RequestPart("file") MultipartFile docxFile) {
+
+        String text = extractService.extractTextFromDocx(docxFile);
 
         return new ResponseEntity<>(text, HttpStatus.OK);
     }
