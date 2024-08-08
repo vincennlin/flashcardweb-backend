@@ -112,25 +112,25 @@ public class NoteController implements NoteControllerSwagger {
     }
 
     @PreAuthorize("hasAuthority('CREATE')")
-    @PostMapping("/decks/{deck_id}/notes/pdf")
-    public ResponseEntity<NoteDto> createNoteFromPdf(@PathVariable(name = "deck_id") @Min(1) Long deckId,
+    @PostMapping("/decks/{deck_id}/notes/file")
+    public ResponseEntity<NoteDto> createNoteFromFile(@PathVariable(name = "deck_id") @Min(1) Long deckId,
                                                      @RequestPart("file") MultipartFile file) {
 
-        NoteDto noteResponse = noteService.createNoteFromPdf(deckId, file);
+        NoteDto noteResponse = noteService.createNoteFromFile(deckId, file);
 
         return new ResponseEntity<>(noteResponse, HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasAuthority('CREATE')")
-    @PostMapping("/decks/{deck_id}/notes/image/{language}")
-    public ResponseEntity<NoteDto> createNoteFromImage(@PathVariable(name = "deck_id") @Min(1) Long deckId,
-                                                       @PathVariable(name = "language") ExtractLanguage language,
-                                                       @RequestPart("file") MultipartFile file) {
-
-        NoteDto noteResponse = noteService.createNoteFromImage(deckId, language, file);
-
-        return new ResponseEntity<>(noteResponse, HttpStatus.CREATED);
-    }
+//    @PreAuthorize("hasAuthority('CREATE')")
+//    @PostMapping("/decks/{deck_id}/notes/image/{language}")
+//    public ResponseEntity<NoteDto> createNoteFromImage(@PathVariable(name = "deck_id") @Min(1) Long deckId,
+//                                                       @PathVariable(name = "language") ExtractLanguage language,
+//                                                       @RequestPart("file") MultipartFile file) {
+//
+//        NoteDto noteResponse = noteService.createNoteFromImage(deckId, language, file);
+//
+//        return new ResponseEntity<>(noteResponse, HttpStatus.CREATED);
+//    }
 
     @PreAuthorize("hasAuthority('UPDATE')")
     @PutMapping("/notes/{note_id}")
