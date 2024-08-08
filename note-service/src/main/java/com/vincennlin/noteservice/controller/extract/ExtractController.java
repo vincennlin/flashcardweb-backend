@@ -36,4 +36,13 @@ public class ExtractController implements ExtractControllerSwagger{
 //
 //        return new ResponseEntity<>(text, HttpStatus.OK);
 //    }
+
+    @PreAuthorize("hasAuthority('CREATE')")
+    @GetMapping("/fetch/wiki")
+    public ResponseEntity<String> fetchTextFromWiki(@RequestParam("keyword") String keyword) {
+
+        String text = extractService.fetchTextFromWiki(keyword);
+
+        return new ResponseEntity<>(text, HttpStatus.OK);
+    }
 }
