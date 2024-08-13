@@ -3,6 +3,7 @@ package com.vincennlin.aiservice.controller;
 import com.vincennlin.aiservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.aiservice.payload.request.GenerateFlashcardRequest;
 import com.vincennlin.aiservice.payload.request.GenerateFlashcardsRequest;
+import com.vincennlin.aiservice.payload.request.GenerateSummaryRequest;
 import com.vincennlin.aiservice.service.AiService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,14 @@ public class AiController implements AiControllerSwagger{
         String generation = aiService.generate(message);
 
         return new ResponseEntity<>(generation, HttpStatus.OK);
+    }
+
+    @PostMapping("/ai/generate/summary")
+    public ResponseEntity<String> generateSummary(@RequestBody GenerateSummaryRequest request) {
+
+        String generatedSummary = aiService.generateSummary(request);
+
+        return new ResponseEntity<>(generatedSummary, HttpStatus.OK);
     }
 
     @PostMapping("/ai/generate/flashcards")
