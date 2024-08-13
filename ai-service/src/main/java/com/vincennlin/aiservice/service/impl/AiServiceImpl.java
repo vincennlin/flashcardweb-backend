@@ -6,6 +6,7 @@ import com.vincennlin.aiservice.payload.flashcard.type.FlashcardType;
 import com.vincennlin.aiservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.aiservice.payload.request.GenerateFlashcardRequest;
 import com.vincennlin.aiservice.payload.request.GenerateFlashcardsRequest;
+import com.vincennlin.aiservice.payload.request.GenerateSummaryRequest;
 import com.vincennlin.aiservice.service.AiService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -32,6 +33,21 @@ public class AiServiceImpl implements AiService {
     @Override
     public String generate(String message) {
         return openAiChatModel.call(message);
+    }
+
+    @Override
+    public String generateSummary(GenerateSummaryRequest request) {
+
+        List<Message> messages = List.of(
+                request.getInitialSystemMessage(),
+                new UserMessage(request.getNoteContent())
+        );
+
+        ChatResponse response = openAiChatModel.call(new Prompt(messages));
+
+        logger.info("response: {}", response.toString());
+
+        return response.getResults().get(0).getOutput().getContent();
     }
 
     @Override
