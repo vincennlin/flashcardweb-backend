@@ -84,4 +84,13 @@ public class UserController implements UserControllerSwagger{
 
         return new ResponseEntity<>(updateAccountInfoResponse, HttpStatus.OK);
     }
+
+    @PreAuthorize("hasAuthority('UPDATE')")
+    @PutMapping("/users/password")
+    public ResponseEntity<UpdateAccountInfoResponse> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
+
+        UpdateAccountInfoResponse updateAccountInfoResponse = userService.changePassword(request);
+
+        return new ResponseEntity<>(updateAccountInfoResponse, HttpStatus.OK);
+    }
 }

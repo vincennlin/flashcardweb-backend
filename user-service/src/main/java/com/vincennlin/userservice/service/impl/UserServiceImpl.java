@@ -153,14 +153,12 @@ public class UserServiceImpl implements UserService {
             user.setUsername(accountInfoDto.getUsername());
         if (accountInfoDto.getEmail() != null)
             user.setEmail(accountInfoDto.getEmail());
-        if (accountInfoDto.getPassword() != null)
-            user.setPassword(passwordEncoder.encode(accountInfoDto.getPassword()));
 
         User updatedUser = userRepository.save(user);
 
         UpdateAccountInfoResponse updateAccountInfoResponse = new UpdateAccountInfoResponse();
 
-        if (accountInfoDto.getUsername() != null || accountInfoDto.getEmail() != null || accountInfoDto.getPassword() != null) {
+        if (accountInfoDto.getUsername() != null || accountInfoDto.getEmail() != null) {
             updateAccountInfoResponse.setMessage("User updated successfully! Please login again.");
         } else {
             updateAccountInfoResponse.setMessage("User updated successfully!");
@@ -168,6 +166,31 @@ public class UserServiceImpl implements UserService {
         updateAccountInfoResponse.setAccountInfo(modelMapper.map(updatedUser, AccountInfoDto.class));
 
         return updateAccountInfoResponse;
+    }
+
+    @Override
+    public UpdateAccountInfoResponse changePassword(ChangePasswordRequest request) {
+
+            Long currentUserId = getCurrentUserId();
+
+            authorizeByUserId(currentUserId);
+
+            User user = userRepository.findById(currentUserId).orElseThrow(() ->
+                    new UserNotFoundException(currentUserId));
+
+            if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+                throw new WebAPIException(HttpStatus.BAD_REQUEST, "Old password is incorrect!");
+            }
+
+            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+
+            User updatedUser = userRepository.save(user);
+
+            UpdateAccountInfoResponse updateAccountInfoResponse = new UpdateAccountInfoResponse();
+            updateAccountInfoResponse.setMessage("Password updated successfully! Please login again.");
+            updateAccountInfoResponse.setAccountInfo(modelMapper.map(updatedUser, AccountInfoDto.class));
+
+            return updateAccountInfoResponse;
     }
 
     private Authentication getAuthentication() {
