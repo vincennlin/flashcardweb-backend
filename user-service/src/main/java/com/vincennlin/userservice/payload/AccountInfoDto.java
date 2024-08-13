@@ -50,14 +50,6 @@ public class AccountInfoDto {
     private String email;
 
     @Schema(
-            name = "password",
-            description = "用戶密碼",
-            example = "password"
-    )
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String password;
-
-    @Schema(
             name = "date_created",
             description = "帳號建立日期",
             example = "2021-08-01T00:00:00"

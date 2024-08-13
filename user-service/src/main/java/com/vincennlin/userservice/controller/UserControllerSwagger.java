@@ -225,4 +225,41 @@ public interface UserControllerSwagger {
                                                                                                    """)
                                                                                )
                                                                        ) AccountInfoDto accountInfoDto);
+
+    @Operation(
+            summary = "更新目前帳號密碼",
+            description = "更新目前帳號密碼"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "更新目前帳號密碼",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                "message": "Password updated successfully! Please login again.",
+                                "account_info": {
+                                    "id": 2,
+                                    "name": "user",
+                                    "username": "user",
+                                    "email": "user@gmail.com",
+                                    "date_created": "2024-07-24T11:58:29.924037",
+                                    "last_updated": "2024-08-13T18:03:30.822299"
+                                }
+                            }
+                            """)
+            )
+    )
+    ResponseEntity<UpdateAccountInfoResponse> changePassword(@Valid @RequestBody
+                                                             @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                                     content = @Content(
+                                                                             mediaType = "application/json",
+                                                                             examples = @ExampleObject(value = """
+                                                                                     {
+                                                                                         "old_password": "user",
+                                                                                         "new_password": "new_user_password"
+                                                                                     }
+                                                                                     """)
+                                                                     )
+                                                             ) ChangePasswordRequest request);
 }

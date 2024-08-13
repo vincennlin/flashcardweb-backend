@@ -18,4 +18,6 @@ public interface UserService extends UserDetailsService {
     List<AccountInfoDto> getAllUsers();
 
     UpdateAccountInfoResponse updateAccountInfo(AccountInfoDto accountInfoDto);
+
+    UpdateAccountInfoResponse changePassword(ChangePasswordRequest request);
 }
