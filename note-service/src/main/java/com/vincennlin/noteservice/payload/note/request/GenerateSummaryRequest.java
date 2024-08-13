@@ -1,4 +1,4 @@
-package com.vincennlin.aiservice.payload.request;
+package com.vincennlin.noteservice.payload.note.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.ai.chat.messages.Message;
-import org.springframework.ai.chat.messages.SystemMessage;
 
 @Getter
 @Setter
@@ -23,13 +21,4 @@ public class GenerateSummaryRequest {
             value = "note_content"
     )
     private String noteContent;
-
-    public Message getInitialSystemMessage() {
-        return new SystemMessage(
-                "你的任務是根據收到的筆記內容，生成一個摘要。\n" +
-                        "接下來你會收到一個筆記的content，請在收到content後，生成一個客觀且讓人馬上能知道該筆記所述的內容的摘要。\n" +
-                        "例如：「鏈表類別及中間節點查找方法的程式碼」、「關於紅黑樹的文字筆記」、「與資料科學相關的英文單字筆記」。\n" +
-                        "請注意，生成的摘要回應請介於10至20個字之間。\n"
-        );
-    }
 }
