@@ -3,6 +3,7 @@ package com.vincennlin.aiservice.controller;
 import com.vincennlin.aiservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.aiservice.payload.request.GenerateFlashcardRequest;
 import com.vincennlin.aiservice.payload.request.GenerateFlashcardsRequest;
+import com.vincennlin.aiservice.payload.request.GenerateSummaryRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -37,6 +38,22 @@ public interface AiControllerSwagger {
     )
     @SecurityRequirement(name = "Bear Authentication")
     ResponseEntity<String> generate(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message);
+
+    @Operation(
+            summary = "生成摘要",
+            description = "根據收到的筆記，生成一個摘要"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "成功生成摘要",
+            content = @Content(
+                    mediaType = "application/text",
+                    examples = @ExampleObject(value = """
+                            紅黑樹的特性及應用介紹
+                            """)
+            )
+    )
+    ResponseEntity<String> generateSummary(@RequestBody GenerateSummaryRequest request);
 
     @Operation(
             summary = "生成一張字卡",

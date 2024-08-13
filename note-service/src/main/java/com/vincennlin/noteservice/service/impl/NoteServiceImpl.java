@@ -14,6 +14,7 @@ import com.vincennlin.noteservice.payload.note.page.NotePageResponse;
 import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.noteservice.payload.flashcard.request.GenerateFlashcardRequest;
 import com.vincennlin.noteservice.payload.flashcard.request.GenerateFlashcardsRequest;
+import com.vincennlin.noteservice.payload.note.request.GenerateSummaryRequest;
 import com.vincennlin.noteservice.repository.DeckRepository;
 import com.vincennlin.noteservice.repository.NoteRepository;
 import com.vincennlin.noteservice.service.AuthService;
@@ -104,6 +105,12 @@ public class NoteServiceImpl implements NoteService {
         Note note = noteMapper.mapToEntity(noteDto);
         note.setDeck(deck);
 
+        if (noteDto.getSummary() == null) {
+            note.setSummary(getGeneratedSummary(noteDto.getContent()));
+        } else {
+            note.setSummary(noteDto.getSummary());
+        }
+
         Note newNote = noteRepository.save(note);
 
         return noteMapper.mapToDto(newNote);
@@ -141,6 +148,12 @@ public class NoteServiceImpl implements NoteService {
         authService.authorizeOwnership(note.getUserId());
 
         note.setContent(noteDto.getContent());
+
+        if (noteDto.getSummary() == null) {
+            note.setSummary(getGeneratedSummary(noteDto.getContent()));
+        } else {
+            note.setSummary(noteDto.getSummary());
+        }
 
         Note updatedNote = noteRepository.save(note);
 
@@ -242,5 +255,11 @@ public class NoteServiceImpl implements NoteService {
         notePageResponse.setLast(pageOfNotes.isLast());
 
         return notePageResponse;
+    }
+
+    private String getGeneratedSummary(String noteContent) {
+        GenerateSummaryRequest request = new GenerateSummaryRequest();
+        request.setNoteContent(noteContent);
+        return aiServiceClient.generateSummary(request, authService.getAuthorization()).getBody();
     }
 }
