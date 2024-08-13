@@ -27,6 +27,9 @@ public class Note {
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Column(name = "summary", nullable = false)
+    private String summary;
+
     @Column(name = "user_id", nullable = false, updatable = false)
     private Long userId;
 
