@@ -469,7 +469,7 @@ public interface NoteControllerSwagger {
 
     @Operation(
             summary = "[EDITED][路由][Response Body] 新增筆記",
-            description = "新增筆記"
+            description = "新增筆記，如果沒有附上 summary ，則由 ChatGPT 生成筆記摘要"
     )
     @ApiResponse(
             responseCode = "201",
@@ -480,6 +480,7 @@ public interface NoteControllerSwagger {
                             {
                                 "id": 1,
                                 "content": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這不僅使它們在時間敏感的應用（如即時應用）中有價值，還使它們成為其他提供最壞情況保證的資料結構的基礎模板。例如，在計算幾何中使用的許多資料結構都可以基於紅黑樹實現。紅黑樹在函數式程式設計中也特別有用。在這裡，它們是最常用的持久資料結構之一，用來構造關聯陣列和集合。每次插入或刪除之後，它們能保持為以前的版本。除了 O(log n) 的時間之外，紅黑樹的持久版本每次插入或刪除還需要 O(log n) 的空間。紅黑樹是2-3-4樹的一種等價結構。換句話說，對於每個2-3-4樹，都存在至少一個數據元素是同樣次序的紅黑樹。在2-3-4樹上的插入和刪除操作也等同於在紅黑樹中的顏色翻轉和旋轉。這使得2-3-4樹成為理解紅黑樹背後邏輯的重要工具，這也是為什麼很多介紹演算法的教科書在介紹紅黑樹之前會先介紹2-3-4樹，儘管2-3-4樹在實踐中不常使用。",
+                                "summary": "紅黑樹的特性與應用概述",
                                 "user_id": 2,
                                 "deck_id": 1,
                                 "flashcards": null,
@@ -499,7 +500,8 @@ public interface NoteControllerSwagger {
                                                        mediaType = "application/json",
                                                        examples = @ExampleObject(value = """
                                                                             {
-                                                                                "content": "This is a note about Java"
+                                                                                "content": "This is a note about Java",
+                                                                                "summary": "A note about Java"
                                                                             }
                                                                             """)
                                                )
@@ -519,6 +521,7 @@ public interface NoteControllerSwagger {
                             {
                                 "id": 7,
                                 "content": "package com.vincennlin.misc.findmiddlenode; \\n \\npublic class LinkedList { \\n \\n    private Node head; \\n    private Node tail; \\n \\n    class Node { \\n        int value; \\n        Node next; \\n \\n        Node(int value) { \\n            this.value = value; \\n        } \\n    } \\n \\n    public LinkedList(int value) { \\n        Node newNode = new Node(value); \\n        head = newNode; \\n        tail = newNode; \\n    } \\n \\n    public Node getHead() { \\n        return head; \\n    } \\n \\n    public Node getTail() { \\n        return tail; \\n    } \\n \\n    public void printList() { \\n        Node temp = head; \\n        while (temp != null) { \\n            System.out.println(temp.value); \\n            temp = temp.next; \\n        } \\n    } \\n \\n    public void printAll() { \\n        if (head == null) { \\n            System.out.println(\\"Head: null\\"); \\n            System.out.println(\\"Tail: null\\"); \\n        } else { \\n            System.out.println(\\"Head: \\" + head.value); \\n            System.out.println(\\"Tail: \\" + tail.value); \\n        } \\n        System.out.println(\\"\\\\nLinked List:\\"); \\n        if (head == null) { \\n            System.out.println(\\"empty\\"); \\n        } else { \\n            printList(); \\n        } \\n    } \\n \\n    public void makeEmpty() { \\n        head = null; \\n        tail = null; \\n    } \\n \\n    public void append(int value) { \\n        Node newNode = new Node(value); \\n        if (head == null) { \\n            head = newNode; \\n            tail = newNode; \\n        } else { \\n            tail.next = newNode; \\n            tail = newNode; \\n        } \\n    } \\n     \\n    public Node findMiddleNode() { \\n        Node slow = head; \\n        Node fast = head; \\n        while (fast != null && fast.next != null) { \\n            slow = slow.next; \\n            fast = fast.next.next; \\n        } \\n        return slow; \\n    } \\n} \\n",
+                                "summary": "鏈表類別及中間節點查找方法的程式碼",
                                 "user_id": 2,
                                 "deck_id": 6,
                                 "total_flashcard_count": 0,
@@ -589,6 +592,7 @@ public interface NoteControllerSwagger {
                             {
                                 "id": 1,
                                 "content": "(已更新) 紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這不僅使它們在時間敏感的應用（如即時應用）中有價值，還使它們成為其他提供最壞情況保證的資料結構的基礎模板。例如，在計算幾何中使用的許多資料結構都可以基於紅黑樹實現。紅黑樹在函數式程式設計中也特別有用。在這裡，它們是最常用的持久資料結構之一，用來構造關聯陣列和集合。每次插入或刪除之後，它們能保持為以前的版本。除了 O(log n) 的時間之外，紅黑樹的持久版本每次插入或刪除還需要 O(log n) 的空間。紅黑樹是2-3-4樹的一種等價結構。換句話說，對於每個2-3-4樹，都存在至少一個數據元素是同樣次序的紅黑樹。在2-3-4樹上的插入和刪除操作也等同於在紅黑樹中的顏色翻轉和旋轉。這使得2-3-4樹成為理解紅黑樹背後邏輯的重要工具，這也是為什麼很多介紹演算法的教科書在介紹紅黑樹之前會先介紹2-3-4樹，儘管2-3-4樹在實踐中不常使用。",
+                                "summary": "紅黑樹的特性與應用概述",
                                 "user_id": 2,
                                 "deck_id": 1,
                                 "total_flashcard_count": 4,

@@ -41,6 +41,13 @@ public class NoteDto {
     private String content;
 
     @Schema(
+            name = "summary",
+            description = "筆記摘要",
+            example = "A note about Java"
+    )
+    private String summary;
+
+    @Schema(
             name = "user_id",
             description = "筆記所屬的使用者 id",
             example = "1"
