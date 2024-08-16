@@ -39,19 +39,44 @@ public class GenerateFlashcardsRequest {
     private List<TypeQuantity> typeQuantities;
 
     public Message getInitialSystemMessage() {
-        return new SystemMessage(
-                "你的任務是根據收到的筆記，生成「簡答題」、「填充題」、「選擇題」、「是非題」四種題型的字卡。\n" +
-                        "你會收到一個筆記的content，請先參考以下各種題型的json範例格式，並在收到content後，生成" +
-                        "簡答題字卡" + getQuantityFor(FlashcardType.SHORT_ANSWER) + "張、" +
-                        "填充題字卡" + getQuantityFor(FlashcardType.FILL_IN_THE_BLANK) + "張、" +
-                        "選擇題字卡" + getQuantityFor(FlashcardType.MULTIPLE_CHOICE) + "張、" +
-                        "是非題字卡" + getQuantityFor(FlashcardType.TRUE_FALSE) + "張。\n" +
-                        "並以json陣列的格式回傳字卡。\n\n" +
-                        FlashcardType.SHORT_ANSWER.getFormatExampleString() + "\n\n" +
-                        FlashcardType.FILL_IN_THE_BLANK.getFormatExampleString() + "\n\n" +
-                        FlashcardType.MULTIPLE_CHOICE.getFormatExampleString() + "\n\n" +
-                        FlashcardType.TRUE_FALSE.getFormatExampleString() + "\n\n"
-        );
+
+        int shortAnswerQuantity = getQuantityFor(FlashcardType.SHORT_ANSWER);
+        int fillInTheBlankQuantity = getQuantityFor(FlashcardType.FILL_IN_THE_BLANK);
+        int multipleChoiceQuantity = getQuantityFor(FlashcardType.MULTIPLE_CHOICE);
+        int trueFalseQuantity = getQuantityFor(FlashcardType.TRUE_FALSE);
+
+        String message = "你的任務是根據收到的筆記，生成「簡答題」、「填充題」、「選擇題」、「是非題」四種題型的字卡。\\n\" +\n" +
+                "你會收到一個筆記的content，請先參考以下各種題型的json範例格式，並在收到content後，生成";
+
+        if (shortAnswerQuantity > 0) {
+            message += "簡答題字卡" + shortAnswerQuantity + "張、";
+        }
+        if (fillInTheBlankQuantity > 0) {
+            message += "填充題字卡" + fillInTheBlankQuantity + "張、";
+        }
+        if (multipleChoiceQuantity > 0) {
+            message += "選擇題字卡" + multipleChoiceQuantity + "張、";
+        }
+        if (trueFalseQuantity > 0) {
+            message += "是非題字卡" + trueFalseQuantity + "張、";
+        }
+
+        message += "並以json陣列的格式回傳字卡。\n\n";
+
+        if (shortAnswerQuantity > 0) {
+            message += FlashcardType.SHORT_ANSWER.getFormatExampleString() + "\n\n";
+        }
+        if (fillInTheBlankQuantity > 0) {
+            message += FlashcardType.FILL_IN_THE_BLANK.getFormatExampleString() + "\n\n";
+        }
+        if (multipleChoiceQuantity > 0) {
+            message += FlashcardType.MULTIPLE_CHOICE.getFormatExampleString() + "\n\n";
+        }
+        if (trueFalseQuantity > 0) {
+            message += FlashcardType.TRUE_FALSE.getFormatExampleString() + "\n\n";
+        }
+
+        return new SystemMessage(message);
     }
 
     public Message getResponseFormatExampleSystemMessage() {
@@ -59,6 +84,17 @@ public class GenerateFlashcardsRequest {
                 "以下是一個範例的json格式回應：\n\n" +
                         getResponseExampleString() + "\n\n" +
                         "請注意，以上json回應僅為格式範例，實際生成的字卡內容請依照收到的content生成。\n\n"
+        );
+    }
+
+    public Message getRequirementSystemMessage() {
+        return new SystemMessage(
+                "以下是生成字卡題目內容的要求，請務必遵守：\n" +
+                        "1. 題目內容必須依照收到的筆記生成，且不偏離筆記的主題。\n" +
+                        "2. 生成的題目應該有一定的挑戰性，不過於簡單。\n" +
+                        "3. 你可以根據你的知識適當地變化題目、選項和填空的內容，使題目更具挑戰性，但請務必保持題目與筆記的主要內容一致，不要偏離筆記的主題。\n" +
+                        "4. 請確保生成的答案、選項正確。\n" +
+                        "5. 填空題(FILL_IN_THE_BLANK)應至少包含3個空格(___)與同樣數量的填空答案(in_blank_answers)，這是最重要的要求。\n\n"
         );
     }
 
