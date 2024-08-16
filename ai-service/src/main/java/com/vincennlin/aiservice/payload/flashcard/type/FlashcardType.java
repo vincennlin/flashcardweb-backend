@@ -114,9 +114,10 @@ public enum FlashcardType implements AbstractFlashcardType {
 
         @Override
         public String getFormatExampleString() {
-            return "以下是一個「填充題」字卡的json範例格式：\n" +
+            return "以下是一個「填空題」字卡的json範例格式：\n" +
                     getFlashcardExampleJsonString() + "\n" +
-                    "請注意，同一題的空格 (in_blank_answers) 數量請介於 3 ~ 5 個之間，且與題目中的底線（___）數量匹配，這是最重要的要求。" +
+                    "請注意，填空題應「至少包含三個」空格(___)與對應的填空答案(in_blank_answers)，空格與填空答案的數量必須一致。" +
+                    "且必須合理地填充，避免生成無空格或少於三個空格與填空答案的題目，這是最重要的要求。" +
                     "答案順序請依照題目空格做排序。\n";
         }
 
@@ -148,7 +149,7 @@ public enum FlashcardType implements AbstractFlashcardType {
         public String getFormatExampleString() {
             return "以下是一個「是非題」字卡的json範例格式：\n" +
                     getFlashcardExampleJsonString() + "\n" +
-                    "請注意，答案請填入 true 或 false，請平均分配 true 與 false 出現的頻率。\n";
+                    "請注意，答案請填入 true 或 false，且平均分配 true 和 false 的出現次數\n";
         }
 
         @Override
