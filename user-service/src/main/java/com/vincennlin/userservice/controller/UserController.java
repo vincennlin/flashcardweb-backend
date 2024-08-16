@@ -5,10 +5,13 @@ import com.vincennlin.userservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -67,6 +70,19 @@ public class UserController implements UserControllerSwagger{
         return new ResponseEntity<>(accountInfo, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('READ')")
+    @GetMapping("/users/profile-picture")
+    public ResponseEntity<byte[]> getProfilePicture() {
+
+        byte[] profilePicture = userService.getProfilePicture();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG);
+        headers.setContentLength(profilePicture.length);
+
+        return new ResponseEntity<>(profilePicture, headers, HttpStatus.OK);
+    }
+
     @PreAuthorize("hasAuthority('ADVANCED')")
     @GetMapping("/users/all")
     public ResponseEntity<List<AccountInfoDto>> getAllUsers() {
@@ -90,6 +106,15 @@ public class UserController implements UserControllerSwagger{
     public ResponseEntity<UpdateAccountInfoResponse> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
 
         UpdateAccountInfoResponse updateAccountInfoResponse = userService.changePassword(request);
+
+        return new ResponseEntity<>(updateAccountInfoResponse, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('UPDATE')")
+    @PutMapping("/users/profile-picture")
+    public ResponseEntity<UpdateAccountInfoResponse> updateProfilePicture(@RequestPart("file") MultipartFile profilePicture) {
+
+        UpdateAccountInfoResponse updateAccountInfoResponse = userService.updateProfilePicture(profilePicture);
 
         return new ResponseEntity<>(updateAccountInfoResponse, HttpStatus.OK);
     }

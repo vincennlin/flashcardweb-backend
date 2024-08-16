@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -187,6 +188,21 @@ public interface UserControllerSwagger {
     ResponseEntity<List<AccountInfoDto>> getAllUsers();
 
     @Operation(
+            summary = "[NEW] 取得目前帳號頭貼",
+            description = "取得目前帳號頭貼"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "取得目前帳號頭貼",
+            content = @Content(
+                    mediaType = "image/jpeg",
+                    examples = @ExampleObject(value = "照片")
+            )
+    )
+    @SecurityRequirement(name = "Bear Authentication")
+    ResponseEntity<byte[]> getProfilePicture();
+
+    @Operation(
             summary = "更新目前帳號資訊",
             description = "更新目前帳號資訊"
     )
@@ -262,4 +278,43 @@ public interface UserControllerSwagger {
                                                                                      """)
                                                                      )
                                                              ) ChangePasswordRequest request);
+
+    @Operation(
+            summary = "[NEW] 更新個人頭貼",
+            description = "更新個人頭貼。必須指定 mediaType 為 multipart/form-data。Request body 必須是照片，其中 key 為 'file'，value 為該照片"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "更新個人頭貼",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                "message": "Profile picture updated successfully!",
+                                "account_info": {
+                                    "id": 2,
+                                    "name": "user",
+                                    "username": "user",
+                                    "email": "user@gmail.com",
+                                    "date_created": "2024-07-24T11:58:29.924037",
+                                    "last_updated": "2024-08-16T21:51:18.499018"
+                                }
+                            }
+                    """)
+            )
+    )
+    @SecurityRequirement(name = "Bear Authentication")
+    ResponseEntity<UpdateAccountInfoResponse> updateProfilePicture(@RequestPart("file")
+                                                                   @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                                           description = "照片檔案",
+                                                                           required = true,
+                                                                           content = @Content(
+                                                                                   mediaType = "multipart/form-data",
+                                                                                   examples = @ExampleObject(value = """
+                                                                    {
+                                                                        "file": "照片"
+                                                                    }
+                                                                    """)
+                                                                           )
+                                                                   ) MultipartFile profilePicture);
 }

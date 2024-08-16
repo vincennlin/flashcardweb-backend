@@ -23,12 +23,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -108,6 +109,17 @@ public class UserServiceImpl implements UserService {
 
         return new FlashcardwebUserDetails(user.getUsername(), user.getEmail(),
                 user.getPassword(), authorities, user.getId());
+    }
+
+    @Override
+    public byte[] getProfilePicture() {
+
+        Long currentUserId = getCurrentUserId();
+
+        User user = userRepository.findById(currentUserId).orElseThrow(() ->
+                new UserNotFoundException(currentUserId));
+
+        return user.getProfilePicture();
     }
 
     @Override
@@ -191,6 +203,33 @@ public class UserServiceImpl implements UserService {
             updateAccountInfoResponse.setAccountInfo(modelMapper.map(updatedUser, AccountInfoDto.class));
 
             return updateAccountInfoResponse;
+    }
+
+    @Override
+    public UpdateAccountInfoResponse updateProfilePicture(MultipartFile profilePicture) {
+
+        Long currentUserId = getCurrentUserId();
+
+        authorizeByUserId(currentUserId);
+
+        User user = userRepository.findById(currentUserId).orElseThrow(() ->
+                new UserNotFoundException(currentUserId));
+
+        try {
+            byte[] profilePictureBytes = profilePicture.getBytes();
+
+            user.setProfilePicture(profilePictureBytes);
+
+            User updatedUser = userRepository.save(user);
+
+            UpdateAccountInfoResponse updateAccountInfoResponse = new UpdateAccountInfoResponse();
+            updateAccountInfoResponse.setMessage("Profile picture updated successfully!");
+            updateAccountInfoResponse.setAccountInfo(modelMapper.map(updatedUser, AccountInfoDto.class));
+
+            return updateAccountInfoResponse;
+        } catch (IOException e) {
+            throw new WebAPIException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to upload profile picture!");
+        }
     }
 
     private Authentication getAuthentication() {
