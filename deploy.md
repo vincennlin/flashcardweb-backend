@@ -161,3 +161,8 @@ docker pull vincennlin/flashcardweb-frontend
 docker run -d -p 3000:3000 --name flashcardweb-frontend vincennlin/flashcardweb-frontend
 docker network connect flashcardweb-network flashcardweb-frontend
 ````
+---
+### Connect to Aws EC2
+````sh
+ssh -i "flashcardweb-key-pair.pem" ec2-user@ec2-54-180-176-32.ap-northeast-2.compute.amazonaws.com
+````
