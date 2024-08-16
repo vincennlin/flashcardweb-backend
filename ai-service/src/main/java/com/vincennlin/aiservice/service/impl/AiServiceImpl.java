@@ -74,11 +74,14 @@ public class AiServiceImpl implements AiService {
 
         List<Message> messages = List.of(
                 request.getInitialSystemMessage(),
+                request.getRequirementSystemMessage(),
                 request.getResponseFormatExampleSystemMessage(),
-                new UserMessage(getGenerateFlashcardsRequestJsonString(request))
+                new UserMessage(request.getNote().getContent())
         );
 
-        ChatResponse response = openAiChatModel.call(new Prompt(messages));
+        Prompt prompt = new Prompt(messages);
+
+        ChatResponse response = openAiChatModel.call(prompt);
 
         logger.info("response: {}", response.toString());
 
@@ -104,14 +107,6 @@ public class AiServiceImpl implements AiService {
             return objectMapper.readValue(preProcessJson(responseContent), objectMapper.getTypeFactory().constructCollectionType(List.class, FlashcardDto.class));
         } catch (Exception e) {
             throw new JsonFormatException("Failed to parse response content to FlashcardDto", e.getMessage());
-        }
-    }
-
-    private String getGenerateFlashcardsRequestJsonString(GenerateFlashcardsRequest request) {
-        try {
-            return objectMapper.writeValueAsString(request);
-        } catch (Exception e) {
-            throw new JsonFormatException("Failed to generate GenerateFlashcardsRequest Json String", e.getMessage());
         }
     }
 
