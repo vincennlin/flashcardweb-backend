@@ -36,7 +36,7 @@ public class User {
     private String password;
 
     @Lob
-    @Column(name = "profile_picture", columnDefinition = "BLOB")
+    @Column(name = "profile_picture", columnDefinition = "LONGBLOB")
     private byte[] profilePicture;
 
     @CreationTimestamp
