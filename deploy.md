@@ -154,6 +154,10 @@ docker-compose version
 ````sh
 docker-compose up -d
 ````
+### 啟動 mysql 容器
+````sh
+docker-compose -f docker-compose-mysql.yml up -d
+````
 ---
 ### 在 AWS EC2 上運行前端
 ````sh

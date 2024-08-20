@@ -81,16 +81,35 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
+    public NotePageResponse findNotesByContent(String content, Pageable pageable) {
+
+        Long userId = authService.getCurrentUserId();
+
+        return getNotePageResponse(noteRepository.findByUserIdAndContentContaining(userId, content, pageable));
+    }
+
+    @Override
+    public NotePageResponse findNotesByDeckIdAndContent(Long deckId, String content, Pageable pageable) {
+
+        Deck deck = deckRepository.findById(deckId).orElseThrow(() ->
+                new ResourceNotFoundException("Deck", "id", deckId.toString()));
+
+        authService.authorizeOwnership(deck.getUserId());
+
+        return getNotePageResponse(noteRepository.findByDeckIdAndContentContaining(deck, content, pageable));
+    }
+
+    @Override
     public NoteDto getNoteById(Long noteId) {
 
         Note note = noteRepository.findById(noteId).orElseThrow(() ->
                 new ResourceNotFoundException("Note", "id", noteId.toString()));
 
-        List<FlashcardDto> flashcardDtoList = getFlashcardsByNoteId(noteId);
+//        List<FlashcardDto> flashcardDtoList = getFlashcardsByNoteId(noteId);
 
         NoteDto noteDto = noteMapper.mapToDto(note, deckService.getFlashcardCountInfo());
 
-        noteDto.setFlashcards(flashcardDtoList);
+//        noteDto.setFlashcards(flashcardDtoList);
 
         return noteDto;
     }
@@ -159,7 +178,7 @@ public class NoteServiceImpl implements NoteService {
 
         NoteDto updatedNoteDto = noteMapper.mapToDto(updatedNote, deckService.getFlashcardCountInfo());
 
-        updatedNoteDto.setFlashcards(getFlashcardsByNoteId(noteId));
+//        updatedNoteDto.setFlashcards(getFlashcardsByNoteId(noteId));
 
         return updatedNoteDto;
     }
@@ -219,7 +238,7 @@ public class NoteServiceImpl implements NoteService {
 
     private List<FlashcardDto> getFlashcardsByNoteId(Long noteId) {
         try{
-            return flashcardServiceClient.getFlashcardsByNoteId(noteId, authService.getAuthorization()).getBody();
+            return flashcardServiceClient.getFlashcardsByNoteId(noteId, authService.getAuthorization()).getBody().getContent();
         } catch (FeignException e) {
             logger.error(e.getLocalizedMessage());
             if (e.status() == HttpStatus.NOT_FOUND.value()){
@@ -241,10 +260,10 @@ public class NoteServiceImpl implements NoteService {
             return noteMapper.mapToDto(note, flashcardCountInfo);
         }).toList();
 
-        for (NoteDto noteDto : NoteDtoList) {
-            List<FlashcardDto> flashcardDtoList = getFlashcardsByNoteId(noteDto.getId());
-            noteDto.setFlashcards(flashcardDtoList);
-        }
+//        for (NoteDto noteDto : NoteDtoList) {
+//            List<FlashcardDto> flashcardDtoList = getFlashcardsByNoteId(noteDto.getId());
+//            noteDto.setFlashcards(flashcardDtoList);
+//        }
 
         NotePageResponse notePageResponse = new NotePageResponse();
         notePageResponse.setContent(NoteDtoList);
