@@ -6,6 +6,7 @@ import com.vincennlin.flashcardservice.entity.tag.Tag;
 import com.vincennlin.flashcardservice.mapper.FlashcardMapper;
 import com.vincennlin.flashcardservice.payload.deck.FlashcardCountInfo;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.*;
+import com.vincennlin.flashcardservice.payload.flashcard.page.FlashcardPageResponse;
 import com.vincennlin.flashcardservice.payload.flashcard.type.FlashcardType;
 import com.vincennlin.flashcardservice.entity.flashcard.Flashcard;
 import com.vincennlin.flashcardservice.entity.flashcard.impl.*;
@@ -22,6 +23,8 @@ import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -48,27 +51,23 @@ public class FlashcardServiceImpl implements FlashcardService {
     private final NoteServiceClient noteServiceClient;
 
     @Override
-    public List<FlashcardDto> getFlashcardsByDeckId(Long deckId) {
+    public FlashcardPageResponse getFlashcardsByDeckId(Long deckId, Pageable pageable) {
 
         authorizeOwnershipByDeckId(deckId);
 
         List<Long> noteIds = getNoteIdsByDeckId(deckId);
 
-        return noteIds.stream().map(this::getFlashcardsByNoteId)
-                .flatMap(List::stream).toList();
+        return getFlashcardPageResponse(flashcardRepository.findByNoteIdIn(noteIds, pageable));
     }
 
     @Override
-    public List<FlashcardDto> getFlashcardsByNoteId(Long noteId) {
+    public FlashcardPageResponse getFlashcardsByNoteId(Long noteId, Pageable pageable) {
 
         authorizeOwnershipByNoteId(noteId);
 
-        List<Flashcard> flashcards = flashcardRepository.findByNoteId(noteId);
+        Page<Flashcard> pageOfFlashcards = flashcardRepository.findByNoteId(noteId, pageable);
 
-        return flashcards.stream().map(flashcard -> {
-            authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
-            return flashcardMapper.mapToDto(flashcard);
-        }).toList();
+        return getFlashcardPageResponse(pageOfFlashcards);
     }
 
     @Override
@@ -78,13 +77,13 @@ public class FlashcardServiceImpl implements FlashcardService {
     }
 
     @Override
-    public List<FlashcardDto> getFlashcardsByTagNames(List<String> tagNames) {
+    public FlashcardPageResponse getFlashcardsByTagNames(List<String> tagNames, Pageable pageable) {
 
         List<Tag> tagEntities = tagNames.stream().map(tagName ->
                 tagRepository.findByTagNameAndUserId(tagName, getCurrentUserId()).orElseThrow(() ->
                         new ResourceNotFoundException("Tag", "tagName", tagName))).toList();
 
-        return flashcardRepository.findByTags(tagEntities).stream().map(flashcardMapper::mapToDto).toList();
+        return getFlashcardPageResponse(flashcardRepository.findByTags(tagEntities, pageable));
     }
 
     @Override
@@ -126,6 +125,24 @@ public class FlashcardServiceImpl implements FlashcardService {
         flashcardCountInfo.setNoteIdReviewFlashcardCountMap(noteIdReviewFlashcardCountMap);
 
         return flashcardCountInfo;
+    }
+
+    @Override
+    public FlashcardPageResponse findFlashcardsByKeyword(String keyword, Pageable pageable) {
+
+        Long userId = getCurrentUserId();
+
+        return getFlashcardPageResponse(flashcardRepository.findByUserIdAndContentContaining(userId, keyword, pageable));
+    }
+
+    @Override
+    public FlashcardPageResponse findFlashcardsByDeckIdAndKeyword(Long deckId, String keyword, Pageable pageable) {
+
+        authorizeOwnershipByDeckId(deckId);
+
+        List<Long> noteIds = getNoteIdsByDeckId(deckId);
+
+        return getFlashcardPageResponse(flashcardRepository.findByNoteIdInAndContentContaining(noteIds, keyword, pageable));
     }
 
     @Transactional
@@ -378,5 +395,21 @@ public class FlashcardServiceImpl implements FlashcardService {
             throw e;
         }
         return response.getBody();
+    }
+
+    private FlashcardPageResponse getFlashcardPageResponse(Page<Flashcard> pageOfFlashcards) {
+        List<Flashcard> listOfFlashcards = pageOfFlashcards.getContent();
+
+        List<FlashcardDto> FlashcardDtoList = listOfFlashcards.stream().map(flashcardMapper::mapToDto).toList();
+
+        FlashcardPageResponse flashcardPageResponse = new FlashcardPageResponse();
+        flashcardPageResponse.setContent(FlashcardDtoList);
+        flashcardPageResponse.setPageNo(pageOfFlashcards.getNumber());
+        flashcardPageResponse.setPageSize(pageOfFlashcards.getSize());
+        flashcardPageResponse.setTotalElements(pageOfFlashcards.getTotalElements());
+        flashcardPageResponse.setTotalPages(pageOfFlashcards.getTotalPages());
+        flashcardPageResponse.setLast(pageOfFlashcards.isLast());
+
+        return flashcardPageResponse;
     }
 }
