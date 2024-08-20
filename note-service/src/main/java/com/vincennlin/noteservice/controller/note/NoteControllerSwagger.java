@@ -8,6 +8,7 @@ import com.vincennlin.noteservice.payload.note.page.NotePageResponse;
 import com.vincennlin.noteservice.payload.flashcard.request.GenerateFlashcardRequest;
 import com.vincennlin.noteservice.payload.flashcard.request.GenerateFlashcardsRequest;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -45,7 +46,13 @@ public interface NoteControllerSwagger {
 
     @Operation(
             summary = "取得所有筆記",
-            description = "取得所有筆記，並且可以加入分頁、排序等參數"
+            description = "取得所有筆記，並且可以加入分頁、排序等參數，例如想要每頁數量為 100，可以送出 /api/v1/notes?pageNo=0&pageSize=100",
+            parameters = {
+                    @Parameter(name = "pageNo", description = "頁碼", example = "0"),
+                    @Parameter(name = "pageSize", description = "每頁筆記數量", example = "10"),
+                    @Parameter(name = "sortBy", description = "排序欄位", example = "dateCreated"),
+                    @Parameter(name = "sortDir", description = "排序方向", example = "desc")
+            }
     )
     @ApiResponse(
             responseCode = "200",
@@ -156,8 +163,14 @@ public interface NoteControllerSwagger {
 
 
     @Operation(
-            summary = "[EDITED][路由名稱] 取得特定使用者的筆記",
-            description = "根據 user_id 取得特定使用者的筆記，並且可以加入分頁、排序等參數"
+            summary = "取得特定使用者的筆記",
+            description = "根據 user_id 取得特定使用者的筆記，並且可以加入分頁、排序等參數，例如想要每頁數量為 100，可以送出 /api/v1/notes/user/{user_id}?pageNo=0&pageSize=100",
+            parameters = {
+                    @Parameter(name = "pageNo", description = "頁碼", example = "0"),
+                    @Parameter(name = "pageSize", description = "每頁筆記數量", example = "10"),
+                    @Parameter(name = "sortBy", description = "排序欄位", example = "dateCreated"),
+                    @Parameter(name = "sortDir", description = "排序方向", example = "desc")
+            }
     )
     @ApiResponse(
             responseCode = "200",
@@ -269,7 +282,13 @@ public interface NoteControllerSwagger {
 
     @Operation(
             summary = "取得特定牌組的筆記",
-            description = "根據 deck_id 取得特定牌組的筆記，取得的筆記會包含所有子牌組的筆記。"
+            description = "根據 deck_id 取得特定牌組的筆記，取得的筆記會包含所有子牌組的筆記，並且可以加入分頁、排序等參數，例如想要每頁數量為 100，可以送出 /api/v1/notes/deck/{deck_id}?pageNo=0&pageSize=100",
+            parameters = {
+                    @Parameter(name = "pageNo", description = "頁碼", example = "0"),
+                    @Parameter(name = "pageSize", description = "每頁筆記數量", example = "10"),
+                    @Parameter(name = "sortBy", description = "排序欄位", example = "dateCreated"),
+                    @Parameter(name = "sortDir", description = "排序方向", example = "desc")
+            }
     )
     @ApiResponse(
             responseCode = "200",
@@ -381,8 +400,83 @@ public interface NoteControllerSwagger {
 
     @Operation(
             summary = "[NEW] 根據關鍵字搜尋筆記",
-            description = "根據 content 欄位搜尋筆記，並且可以加入分頁、排序等參數"
+            description = "根據 content 欄位搜尋筆記，並且可以加入分頁、排序等參數，例如想要每頁數量為 100，可以送出 /api/v1/notes/search?content=紅黑樹&pageNo=0&pageSize=100",
+            parameters = {
+                    @Parameter(
+                            name = "content",
+                            description = "要查詢的內容，例如 api/v1/notes/search?content=紅黑樹",
+                            required = true,
+                            example = "紅黑樹"
+                    ),
+                    @Parameter(name = "pageNo", description = "頁碼", example = "0"),
+                    @Parameter(name = "pageSize", description = "每頁筆記數量", example = "10"),
+                    @Parameter(name = "sortBy", description = "排序欄位", example = "dateCreated"),
+                    @Parameter(name = "sortDir", description = "排序方向", example = "desc")
+            }
     )
+    @ApiResponse(
+            responseCode = "200",
+            description = "成功取得特定筆記",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                "content": [
+                                    {
+                                        "id": 8,
+                                        "content": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這不僅使它們在時間敏感的應用（如即時應用）中有價值，還使它們成為其他提供最壞情況保證的資料結構的基礎模板。例如，在計算幾何中使用的許多資料結構都可以基於紅黑樹實現。紅黑樹在函數式程式設計中也特別有用。在這裡，它們是最常用的持久資料結構之一，用來構造關聯陣列和集合。每次插入或刪除之後，它們能保持為以前的版本。除了 O(log n) 的時間之外，紅黑樹的持久版本每次插入或刪除還需要 O(log n) 的空間。紅黑樹是2-3-4樹的一種等價結構。換句話說，對於每個2-3-4樹，都存在至少一個數據元素是同樣次序的紅黑樹。在2-3-4樹上的插入和刪除操作也等同於在紅黑樹中的顏色翻轉和旋轉。這使得2-3-4樹成為理解紅黑樹背後邏輯的重要工具，這也是為什麼很多介紹演算法的教科書在介紹紅黑樹之前會先介紹2-3-4樹，儘管2-3-4樹在實踐中不常使用。",
+                                        "summary": "紅黑樹的特性及應用概述",
+                                        "user_id": 2,
+                                        "deck_id": 7,
+                                        "total_flashcard_count": 0,
+                                        "review_flashcard_count": 0,
+                                        "date_created": "2024-08-13T18:36:58.955852",
+                                        "last_updated": "2024-08-13T18:36:58.959129"
+                                    },
+                                    {
+                                        "id": 9,
+                                        "content": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這不僅使它們在時間敏感的應用（如即時應用）中有價值，還使它們成為其他提供最壞情況保證的資料結構的基礎模板。例如，在計算幾何中使用的許多資料結構都可以基於紅黑樹實現。紅黑樹在函數式程式設計中也特別有用。在這裡，它們是最常用的持久資料結構之一，用來構造關聯陣列和集合。每次插入或刪除之後，它們能保持為以前的版本。除了 O(log n) 的時間之外，紅黑樹的持久版本每次插入或刪除還需要 O(log n) 的空間。紅黑樹是2-3-4樹的一種等價結構。換句話說，對於每個2-3-4樹，都存在至少一個數據元素是同樣次序的紅黑樹。在2-3-4樹上的插入和刪除操作也等同於在紅黑樹中的顏色翻轉和旋轉。這使得2-3-4樹成為理解紅黑樹背後邏輯的重要工具，這也是為什麼很多介紹演算法的教科書在介紹紅黑樹之前會先介紹2-3-4樹，儘管2-3-4樹在實踐中不常使用。",
+                                        "summary": "紅黑樹概述",
+                                        "user_id": 2,
+                                        "deck_id": 7,
+                                        "total_flashcard_count": 73,
+                                        "review_flashcard_count": 73,
+                                        "date_created": "2024-08-13T18:37:33.632308",
+                                        "last_updated": "2024-08-13T18:37:33.632827"
+                                    },
+                                    {
+                                        "id": 10,
+                                        "content": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這不僅使它們在時間敏感的應用（如即時應用）中有價值，還使它們成為其他提供最壞情況保證的資料結構的基礎模板。例如，在計算幾何中使用的許多資料結構都可以基於紅黑樹實現。紅黑樹在函數式程式設計中也特別有用。在這裡，它們是最常用的持久資料結構之一，用來構造關聯陣列和集合。每次插入或刪除之後，它們能保持為以前的版本。除了 O(log n) 的時間之外，紅黑樹的持久版本每次插入或刪除還需要 O(log n) 的空間。紅黑樹是2-3-4樹的一種等價結構。換句話說，對於每個2-3-4樹，都存在至少一個數據元素是同樣次序的紅黑樹。在2-3-4樹上的插入和刪除操作也等同於在紅黑樹中的顏色翻轉和旋轉。這使得2-3-4樹成為理解紅黑樹背後邏輯的重要工具，這也是為什麼很多介紹演算法的教科書在介紹紅黑樹之前會先介紹2-3-4樹，儘管2-3-4樹在實踐中不常使用。",
+                                        "summary": "紅黑樹的特性與應用概述",
+                                        "user_id": 2,
+                                        "deck_id": 7,
+                                        "total_flashcard_count": 0,
+                                        "review_flashcard_count": 0,
+                                        "date_created": "2024-08-13T18:37:40.896449",
+                                        "last_updated": "2024-08-13T18:37:40.896585"
+                                    },
+                                    {
+                                        "id": 16,
+                                        "content": "紅黑樹和AVL樹一樣，都在插入時間、刪除時間和搜尋時間方面提供了最好的最壞情況保證。這不僅使它們在時間敏感的應用（如即時應用）中有價值，還使它們成為其他提供最壞情況保證的資料結構的基礎模板。例如，在計算幾何中使用的許多資料結構都可以基於紅黑樹實現。紅黑樹在函數式程式設計中也特別有用。在這裡，它們是最常用的持久資料結構之一，用來構造關聯陣列和集合。每次插入或刪除之後，它們能保持為以前的版本。除了 O(log n) 的時間之外，紅黑樹的持久版本每次插入或刪除還需要 O(log n) 的空間。紅黑樹是2-3-4樹的一種等價結構。換句話說，對於每個2-3-4樹，都存在至少一個數據元素是同樣次序的紅黑樹。在2-3-4樹上的插入和刪除操作也等同於在紅黑樹中的顏色翻轉和旋轉。這使得2-3-4樹成為理解紅黑樹背後邏輯的重要工具，這也是為什麼很多介紹演算法的教科書在介紹紅黑樹之前會先介紹2-3-4樹，儘管2-3-4樹在實踐中不常使用。",
+                                        "summary": "紅黑樹特性及其與2-3-4樹的關聯。",
+                                        "user_id": 2,
+                                        "deck_id": 7,
+                                        "total_flashcard_count": 0,
+                                        "review_flashcard_count": 0,
+                                        "date_created": "2024-08-13T18:52:12.902822",
+                                        "last_updated": "2024-08-13T18:52:12.903964"
+                                    }
+                                ],
+                                "pageNo": 0,
+                                "pageSize": 10,
+                                "totalElements": 4,
+                                "totalPages": 1,
+                                "last": true
+                            }
+                            """)
+            )
+    )
+    @SecurityRequirement(name = "Bear Authentication")
     ResponseEntity<NotePageResponse> findNotesByContent(
             @RequestParam(name = "content") String content,
             @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) @Min(0) Integer pageNo,
@@ -391,9 +485,22 @@ public interface NoteControllerSwagger {
             @RequestParam(name = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir);
 
     @Operation(
-            summary = "[NEW] 根據牌組 ID 和關鍵字搜尋筆記",
-            description = "根據 deck_id 和 content 欄位搜尋筆記，並且可以加入分頁、排序等參數"
+            summary = "[NEW] 根據牌組 id 和關鍵字搜尋筆記",
+            description = "根據 deck_id 和 content 欄位搜尋筆記，並且可以加入分頁、排序等參數，例如想要每頁數量為 100，可以送出 /api/v1/notes/decks/{deck_id}/notes/search?content=紅黑樹&pageNo=0&pageSize=100",
+            parameters = {
+                    @Parameter(
+                            name = "content",
+                            description = "要查詢的內容，例如 api/v1/notes/decks/1/notes/search?content=紅黑樹",
+                            required = true,
+                            example = "紅黑樹"
+                    ),
+                    @Parameter(name = "pageNo", description = "頁碼", example = "0"),
+                    @Parameter(name = "pageSize", description = "每頁筆記數量", example = "10"),
+                    @Parameter(name = "sortBy", description = "排序欄位", example = "dateCreated"),
+                    @Parameter(name = "sortDir", description = "排序方向", example = "desc")
+            }
     )
+    @SecurityRequirement(name = "Bear Authentication")
     ResponseEntity<NotePageResponse> findNotesByDeckIdAndContent(
             @PathVariable(name = "deck_id") @Min(1) Long deckId,
             @RequestParam(name = "content") String content,
@@ -489,9 +596,8 @@ public interface NoteControllerSwagger {
     @SecurityRequirement(name = "Bear Authentication")
     ResponseEntity<NoteDto> getNoteById(@PathVariable(name = "note_id") @Min(1) Long id);
 
-
     @Operation(
-            summary = "[EDITED][路由][Response Body] 新增筆記",
+            summary = "新增筆記",
             description = "新增筆記，如果沒有附上 summary ，則由 ChatGPT 生成筆記摘要"
     )
     @ApiResponse(
@@ -531,7 +637,7 @@ public interface NoteControllerSwagger {
                                        ) NoteDto noteDto);
 
     @Operation(
-            summary = "[NEW] 根據檔案新增筆記",
+            summary = "根據檔案新增筆記",
             description = "根據檔案新增筆記並存進資料庫。 目前支援 .pdf .txt .docx 三種格式。必須指定 mediaType 為 multipart/form-data。 " +
                     "Request body 必須是檔案，其中 key 為 'file'，value 為該檔案"
     )
@@ -728,7 +834,7 @@ public interface NoteControllerSwagger {
     ResponseEntity<Boolean> isNoteOwner(@PathVariable(name = "note_id") @Min(1) Long id);
 
     @Operation(
-            summary = "[EDITED][路由名稱] 生成一個字卡",
+            summary = "生成一個字卡",
             description = "根據 note_id，將筆記內容傳給 ChatGPT，生成一個簡答題字卡並存進資料庫"
     )
     @ApiResponse(
@@ -764,7 +870,7 @@ public interface NoteControllerSwagger {
                                                            ) GenerateFlashcardRequest request);
 
     @Operation(
-            summary = "[EDITED][路由名稱] 生成多張字卡",
+            summary = "生成多張字卡",
             description = "根據 note_id，自訂要生成的字卡題目數量，將筆記內容傳給 ChatGPT，生成相對應數量的字卡並存進資料庫"
     )
     @ApiResponse(
@@ -867,5 +973,3 @@ public interface NoteControllerSwagger {
                                                                           )
                                                                   ) GenerateFlashcardsRequest request);
 }
-
-

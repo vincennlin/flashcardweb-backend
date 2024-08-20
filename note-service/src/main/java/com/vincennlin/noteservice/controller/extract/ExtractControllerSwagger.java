@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 @Tag(
-        name = "[NEW] Extract Controller",
+        name = "Extract Controller",
         description = "從檔案提取文字相關的 API ，前端不會直接用到"
 )
 public interface ExtractControllerSwagger {

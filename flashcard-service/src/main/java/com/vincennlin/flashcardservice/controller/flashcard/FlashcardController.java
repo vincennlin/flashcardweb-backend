@@ -38,20 +38,34 @@ public class FlashcardController implements FlashcardControllerSwagger {
 
     @PreAuthorize("hasAuthority('READ')")
     @GetMapping("/decks/{deck_id}/flashcards")
-    public ResponseEntity<List<FlashcardDto>> getFlashcardsByDeckId(@PathVariable(name = "deck_id") @Min(1) Long deckId) {
+    public ResponseEntity<FlashcardPageResponse> getFlashcardsByDeckId(
+            @PathVariable(name = "deck_id") @Min(1) Long deckId,
+            @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) @Min(0) Integer pageNo,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) @Max(100) @Min(1) Integer pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir) {
 
-        List<FlashcardDto> flashcardsResponse = flashcardService.getFlashcardsByDeckId(deckId);
+        Pageable pageable = getPageable(pageNo, pageSize, sortBy, sortDir);
 
-        return new ResponseEntity<>(flashcardsResponse, HttpStatus.OK);
+        FlashcardPageResponse flashcardPageResponse = flashcardService.getFlashcardsByDeckId(deckId, pageable);
+
+        return new ResponseEntity<>(flashcardPageResponse, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('READ')")
     @GetMapping("/notes/{note_id}/flashcards")
-    public ResponseEntity<List<FlashcardDto>> getFlashcardsByNoteId(@PathVariable(name = "note_id") @Min(1) Long noteId) {
+    public ResponseEntity<FlashcardPageResponse> getFlashcardsByNoteId(
+            @PathVariable(name = "note_id") @Min(1) Long noteId,
+            @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) @Min(0) Integer pageNo,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) @Max(100) @Min(1) Integer pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir) {
 
-        List<FlashcardDto> flashcardsResponse = flashcardService.getFlashcardsByNoteId(noteId);
+        Pageable pageable = getPageable(pageNo, pageSize, sortBy, sortDir);
 
-        return new ResponseEntity<>(flashcardsResponse, HttpStatus.OK);
+        FlashcardPageResponse flashcardPageResponse = flashcardService.getFlashcardsByNoteId(noteId, pageable);
+
+        return new ResponseEntity<>(flashcardPageResponse, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('READ')")
@@ -65,11 +79,18 @@ public class FlashcardController implements FlashcardControllerSwagger {
 
     @PreAuthorize("hasAuthority('READ')")
     @GetMapping("/flashcards/tags")
-    public ResponseEntity<List<FlashcardDto>> getFlashcardsByTagNames(@RequestParam(name = "tag") List<String> tagNames) {
+    public ResponseEntity<FlashcardPageResponse> getFlashcardsByTagNames(
+            @RequestParam(name = "tag") List<String> tagNames,
+            @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) @Min(0) Integer pageNo,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) @Max(100) @Min(1) Integer pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir) {
 
-        List<FlashcardDto> flashcardsResponse = flashcardService.getFlashcardsByTagNames(tagNames);
+        Pageable pageable = getPageable(pageNo, pageSize, sortBy, sortDir);
 
-        return new ResponseEntity<>(flashcardsResponse, HttpStatus.OK);
+        FlashcardPageResponse flashcardPageResponse = flashcardService.getFlashcardsByTagNames(tagNames, pageable);
+
+        return new ResponseEntity<>(flashcardPageResponse, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('READ')")
@@ -163,5 +184,10 @@ public class FlashcardController implements FlashcardControllerSwagger {
         flashcardService.deleteFlashcardsByNoteId(noteId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    private Pageable getPageable(Integer pageNo, Integer pageSize, String sortBy, String sortDir) {
+        return PageRequest.of(pageNo, pageSize,
+                sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending());
     }
 }
