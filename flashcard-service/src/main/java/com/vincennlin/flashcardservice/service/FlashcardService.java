@@ -22,6 +22,8 @@ public interface FlashcardService {
 
     FlashcardCountInfo getFlashcardCountInfo();
 
+    FlashcardPageResponse findFlashcardsByDeckIdAndKeyword(Long deckId, String keyword, Pageable pageable);
+
     FlashcardPageResponse findFlashcardsByKeyword(String keyword, Pageable pageable);
 
     FlashcardDto createFlashcard(Long noteId, FlashcardDto flashcardDto);

@@ -98,6 +98,24 @@ public class FlashcardController implements FlashcardControllerSwagger {
         return new ResponseEntity<>(flashcardsResponse, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('READ')")
+    @GetMapping("/decks/{deck_id}/flashcards/search")
+    public ResponseEntity<FlashcardPageResponse> findFlashcardsByDeckIdAndKeyword(
+            @PathVariable(name = "deck_id") @Min(1) Long deckId,
+            @RequestParam(name = "keyword") String keyword,
+            @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) @Min(0) Integer pageNo,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) @Max(100) @Min(1) Integer pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir) {
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize,
+                sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending());
+
+        FlashcardPageResponse flashcardsResponse = flashcardService.findFlashcardsByDeckIdAndKeyword(deckId, keyword, pageable);
+
+        return new ResponseEntity<>(flashcardsResponse, HttpStatus.OK);
+    }
+
 
     @PreAuthorize("hasAuthority('CREATE')")
     @PostMapping("/notes/{note_id}/flashcards")
