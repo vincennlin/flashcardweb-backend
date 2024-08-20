@@ -1,5 +1,6 @@
 package com.vincennlin.noteservice.payload.note.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vincennlin.noteservice.payload.deck.response.FlashcardCountInfo;
 import com.vincennlin.noteservice.payload.flashcard.dto.FlashcardDto;
@@ -79,6 +80,7 @@ public class NoteDto {
             value = "flashcards",
             access = JsonProperty.Access.READ_ONLY
     )
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<? extends FlashcardDto> flashcards;
 
     @Schema(

@@ -12,10 +12,12 @@ import java.util.List;
 
 public interface FlashcardRepository extends JpaRepository<Flashcard, Long> {
 
-    List<Flashcard> findByNoteId(Long noteId);
+    Page<Flashcard> findByNoteId(Long noteId, Pageable pageable);
+
+    Page<Flashcard> findByNoteIdIn(List<Long> noteIds, Pageable pageable);
 
     @Query("SELECT f FROM Flashcard f JOIN f.tags t WHERE t IN :tags")
-    List<Flashcard> findByTags(@Param("tags") List<Tag> tags);
+    Page<Flashcard> findByTags(@Param("tags") List<Tag> tags, Pageable pageable);
 
     @Query("SELECT f.noteId, COUNT(f) FROM Flashcard f WHERE f.userId = :userId GROUP BY f.noteId")
     List<Object[]> findNoteIdAndFlashcardCountByUserId(@Param("userId") Long userId);

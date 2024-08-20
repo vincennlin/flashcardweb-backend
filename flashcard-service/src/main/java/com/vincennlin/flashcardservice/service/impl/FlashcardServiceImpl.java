@@ -51,27 +51,23 @@ public class FlashcardServiceImpl implements FlashcardService {
     private final NoteServiceClient noteServiceClient;
 
     @Override
-    public List<FlashcardDto> getFlashcardsByDeckId(Long deckId) {
+    public FlashcardPageResponse getFlashcardsByDeckId(Long deckId, Pageable pageable) {
 
         authorizeOwnershipByDeckId(deckId);
 
         List<Long> noteIds = getNoteIdsByDeckId(deckId);
 
-        return noteIds.stream().map(this::getFlashcardsByNoteId)
-                .flatMap(List::stream).toList();
+        return getFlashcardPageResponse(flashcardRepository.findByNoteIdIn(noteIds, pageable));
     }
 
     @Override
-    public List<FlashcardDto> getFlashcardsByNoteId(Long noteId) {
+    public FlashcardPageResponse getFlashcardsByNoteId(Long noteId, Pageable pageable) {
 
         authorizeOwnershipByNoteId(noteId);
 
-        List<Flashcard> flashcards = flashcardRepository.findByNoteId(noteId);
+        Page<Flashcard> pageOfFlashcards = flashcardRepository.findByNoteId(noteId, pageable);
 
-        return flashcards.stream().map(flashcard -> {
-            authorizeOwnershipByFlashcardOwnerId(flashcard.getUserId());
-            return flashcardMapper.mapToDto(flashcard);
-        }).toList();
+        return getFlashcardPageResponse(pageOfFlashcards);
     }
 
     @Override
@@ -81,13 +77,13 @@ public class FlashcardServiceImpl implements FlashcardService {
     }
 
     @Override
-    public List<FlashcardDto> getFlashcardsByTagNames(List<String> tagNames) {
+    public FlashcardPageResponse getFlashcardsByTagNames(List<String> tagNames, Pageable pageable) {
 
         List<Tag> tagEntities = tagNames.stream().map(tagName ->
                 tagRepository.findByTagNameAndUserId(tagName, getCurrentUserId()).orElseThrow(() ->
                         new ResourceNotFoundException("Tag", "tagName", tagName))).toList();
 
-        return flashcardRepository.findByTags(tagEntities).stream().map(flashcardMapper::mapToDto).toList();
+        return getFlashcardPageResponse(flashcardRepository.findByTags(tagEntities, pageable));
     }
 
     @Override

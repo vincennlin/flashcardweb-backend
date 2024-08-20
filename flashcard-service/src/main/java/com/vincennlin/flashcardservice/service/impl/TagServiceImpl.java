@@ -13,6 +13,9 @@ import com.vincennlin.flashcardservice.repository.TagRepository;
 import com.vincennlin.flashcardservice.service.TagService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -165,7 +168,9 @@ public class TagServiceImpl implements TagService {
 
         authorizeOwnershipByTagOwnerId(tag.getUserId());
 
-        List<Flashcard> flashcards = flashcardRepository.findByTags(List.of(tag));
+        Pageable pageable = PageRequest.of(0, 1000);
+
+        List<Flashcard> flashcards = flashcardRepository.findByTags(List.of(tag), pageable).getContent();
 
         flashcards.forEach(flashcard -> flashcard.getTags().remove(tag));
 

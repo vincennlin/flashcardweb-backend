@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Tag(
-        name = "[NEW] Deck Controller",
+        name = "Deck Controller",
         description = "牌組相關的 API"
 )
 public interface DeckControllerSwagger {

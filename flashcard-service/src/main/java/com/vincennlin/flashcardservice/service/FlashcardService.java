@@ -10,15 +10,15 @@ import java.util.List;
 
 public interface FlashcardService {
 
-    List<FlashcardDto> getFlashcardsByDeckId(Long deckId);
+    FlashcardPageResponse getFlashcardsByDeckId(Long deckId, Pageable pageable);
 
-    List<FlashcardDto> getFlashcardsByNoteId(Long noteId);
+    FlashcardPageResponse getFlashcardsByNoteId(Long noteId, Pageable pageable);
 
     FlashcardDto getFlashcardById(Long flashcardId);
 
     Flashcard getFlashcardEntityById(Long flashcardId);
 
-    List<FlashcardDto> getFlashcardsByTagNames(List<String> tagNames);
+    FlashcardPageResponse getFlashcardsByTagNames(List<String> tagNames, Pageable pageable);
 
     FlashcardCountInfo getFlashcardCountInfo();
 
