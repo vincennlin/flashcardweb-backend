@@ -380,6 +380,29 @@ public interface NoteControllerSwagger {
             @RequestParam(name = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir);
 
     @Operation(
+            summary = "[NEW] 根據關鍵字搜尋筆記",
+            description = "根據 content 欄位搜尋筆記，並且可以加入分頁、排序等參數"
+    )
+    ResponseEntity<NotePageResponse> findNotesByContent(
+            @RequestParam(name = "content") String content,
+            @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) @Min(0) Integer pageNo,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) @Max(100) @Min(1) Integer pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir);
+
+    @Operation(
+            summary = "[NEW] 根據牌組 ID 和關鍵字搜尋筆記",
+            description = "根據 deck_id 和 content 欄位搜尋筆記，並且可以加入分頁、排序等參數"
+    )
+    ResponseEntity<NotePageResponse> findNotesByDeckIdAndContent(
+            @PathVariable(name = "deck_id") @Min(1) Long deckId,
+            @RequestParam(name = "content") String content,
+            @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) @Min(0) Integer pageNo,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) @Max(100) @Min(1) Integer pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir);
+
+    @Operation(
             summary = "取得特定筆記",
             description = "根據 note_id 取得特定筆記"
     )
