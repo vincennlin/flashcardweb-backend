@@ -384,6 +384,18 @@ public interface FlashcardControllerSwagger {
             @RequestParam(name = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir);
 
     @Operation(
+            summary = "[NEW] 搜尋特定牌組的字卡",
+            description = "根據 deck_id 和關鍵字搜尋字卡，並且可以加入分頁、排序等參數"
+    )
+    ResponseEntity<FlashcardPageResponse> findFlashcardsByDeckIdAndKeyword(
+            @PathVariable(name = "deck_id") @Min(1) Long deckId,
+            @RequestParam(name = "keyword") String keyword,
+            @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) @Min(0) Integer pageNo,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) @Max(100) @Min(1) Integer pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir);
+
+    @Operation(
             summary = "[EDITED][路由名稱] 新增字卡",
             description = "根據 note_id 新增字卡"
     )
