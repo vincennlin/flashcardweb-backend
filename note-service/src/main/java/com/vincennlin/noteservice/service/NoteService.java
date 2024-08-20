@@ -20,6 +20,10 @@ public interface NoteService {
 
     NotePageResponse getNotesByDeckId(Long deckId, Pageable pageable);
 
+    NotePageResponse findNotesByContent(String content, Pageable pageable);
+
+    NotePageResponse findNotesByDeckIdAndContent(Long deckId, String content, Pageable pageable);
+
     NoteDto getNoteById(Long noteId);
 
     NoteDto createNote(Long deckId, NoteDto noteDto);

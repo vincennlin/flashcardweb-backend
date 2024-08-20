@@ -81,6 +81,25 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
+    public NotePageResponse findNotesByContent(String content, Pageable pageable) {
+
+        Long userId = authService.getCurrentUserId();
+
+        return getNotePageResponse(noteRepository.findByUserIdAndContentContaining(userId, content, pageable));
+    }
+
+    @Override
+    public NotePageResponse findNotesByDeckIdAndContent(Long deckId, String content, Pageable pageable) {
+
+        Deck deck = deckRepository.findById(deckId).orElseThrow(() ->
+                new ResourceNotFoundException("Deck", "id", deckId.toString()));
+
+        authService.authorizeOwnership(deck.getUserId());
+
+        return getNotePageResponse(noteRepository.findByDeckIdAndContentContaining(deck, content, pageable));
+    }
+
+    @Override
     public NoteDto getNoteById(Long noteId) {
 
         Note note = noteRepository.findById(noteId).orElseThrow(() ->

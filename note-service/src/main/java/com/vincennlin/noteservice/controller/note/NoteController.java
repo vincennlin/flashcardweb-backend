@@ -92,6 +92,41 @@ public class NoteController implements NoteControllerSwagger {
     }
 
     @PreAuthorize("hasAuthority('READ')")
+    @GetMapping("/notes/search")
+    public ResponseEntity<NotePageResponse> findNotesByContent(
+            @RequestParam(name = "content") String content,
+            @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) @Min(0) Integer pageNo,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) @Max(100) @Min(1) Integer pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir) {
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize,
+                sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending());
+
+        NotePageResponse notePageResponse = noteService.findNotesByContent(content, pageable);
+
+        return new ResponseEntity<>(notePageResponse, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('READ')")
+    @GetMapping("/decks/{deck_id}/notes/search")
+    public ResponseEntity<NotePageResponse> findNotesByDeckIdAndContent(
+            @PathVariable(name = "deck_id") @Min(1) Long deckId,
+            @RequestParam(name = "content") String content,
+            @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) @Min(0) Integer pageNo,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) @Max(100) @Min(1) Integer pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir) {
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize,
+                sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending());
+
+        NotePageResponse notePageResponse = noteService.findNotesByDeckIdAndContent(deckId, content, pageable);
+
+        return new ResponseEntity<>(notePageResponse, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('READ')")
     @PostAuthorize("returnObject.body.userId == principal or hasAuthority('ADVANCED')")
     @GetMapping("/notes/{note_id}")
     public ResponseEntity<NoteDto> getNoteById(@PathVariable(name = "note_id") @Min(1) Long id) {
