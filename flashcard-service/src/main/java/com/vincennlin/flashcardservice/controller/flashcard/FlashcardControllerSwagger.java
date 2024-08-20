@@ -1,7 +1,9 @@
 package com.vincennlin.flashcardservice.controller.flashcard;
 
+import com.vincennlin.flashcardservice.constant.AppConstants;
 import com.vincennlin.flashcardservice.payload.deck.FlashcardCountInfo;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.page.FlashcardPageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -10,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -368,6 +371,17 @@ public interface FlashcardControllerSwagger {
     )
     @SecurityRequirement(name = "Bear Authentication")
     ResponseEntity<FlashcardCountInfo> getFlashcardCountInfo();
+
+    @Operation(
+            summary = "[NEW] 搜尋字卡",
+            description = "根據關鍵字搜尋字卡，並且可以加入分頁、排序等參數"
+    )
+    ResponseEntity<FlashcardPageResponse> findFlashcardsByKeyword(
+            @RequestParam(name = "keyword") String keyword,
+            @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) @Min(0) Integer pageNo,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) @Max(100) @Min(1) Integer pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir);
 
     @Operation(
             summary = "[EDITED][路由名稱] 新增字卡",

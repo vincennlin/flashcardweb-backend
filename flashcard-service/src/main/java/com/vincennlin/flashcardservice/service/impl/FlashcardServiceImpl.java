@@ -6,6 +6,7 @@ import com.vincennlin.flashcardservice.entity.tag.Tag;
 import com.vincennlin.flashcardservice.mapper.FlashcardMapper;
 import com.vincennlin.flashcardservice.payload.deck.FlashcardCountInfo;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.*;
+import com.vincennlin.flashcardservice.payload.flashcard.page.FlashcardPageResponse;
 import com.vincennlin.flashcardservice.payload.flashcard.type.FlashcardType;
 import com.vincennlin.flashcardservice.entity.flashcard.Flashcard;
 import com.vincennlin.flashcardservice.entity.flashcard.impl.*;
@@ -22,6 +23,8 @@ import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -126,6 +129,14 @@ public class FlashcardServiceImpl implements FlashcardService {
         flashcardCountInfo.setNoteIdReviewFlashcardCountMap(noteIdReviewFlashcardCountMap);
 
         return flashcardCountInfo;
+    }
+
+    @Override
+    public FlashcardPageResponse findFlashcardsByKeyword(String keyword, Pageable pageable) {
+
+        Long userId = getCurrentUserId();
+
+        return getFlashcardPageResponse(flashcardRepository.findByUserIdAndContentContaining(userId, keyword, pageable));
     }
 
     @Transactional
@@ -378,5 +389,21 @@ public class FlashcardServiceImpl implements FlashcardService {
             throw e;
         }
         return response.getBody();
+    }
+
+    private FlashcardPageResponse getFlashcardPageResponse(Page<Flashcard> pageOfFlashcards) {
+        List<Flashcard> listOfFlashcards = pageOfFlashcards.getContent();
+
+        List<FlashcardDto> FlashcardDtoList = listOfFlashcards.stream().map(flashcardMapper::mapToDto).toList();
+
+        FlashcardPageResponse flashcardPageResponse = new FlashcardPageResponse();
+        flashcardPageResponse.setContent(FlashcardDtoList);
+        flashcardPageResponse.setPageNo(pageOfFlashcards.getNumber());
+        flashcardPageResponse.setPageSize(pageOfFlashcards.getSize());
+        flashcardPageResponse.setTotalElements(pageOfFlashcards.getTotalElements());
+        flashcardPageResponse.setTotalPages(pageOfFlashcards.getTotalPages());
+        flashcardPageResponse.setLast(pageOfFlashcards.isLast());
+
+        return flashcardPageResponse;
     }
 }

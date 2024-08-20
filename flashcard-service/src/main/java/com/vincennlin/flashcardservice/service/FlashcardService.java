@@ -3,6 +3,8 @@ package com.vincennlin.flashcardservice.service;
 import com.vincennlin.flashcardservice.entity.flashcard.Flashcard;
 import com.vincennlin.flashcardservice.payload.deck.FlashcardCountInfo;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.page.FlashcardPageResponse;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -19,6 +21,8 @@ public interface FlashcardService {
     List<FlashcardDto> getFlashcardsByTagNames(List<String> tagNames);
 
     FlashcardCountInfo getFlashcardCountInfo();
+
+    FlashcardPageResponse findFlashcardsByKeyword(String keyword, Pageable pageable);
 
     FlashcardDto createFlashcard(Long noteId, FlashcardDto flashcardDto);
 

@@ -1,12 +1,18 @@
 package com.vincennlin.flashcardservice.controller.flashcard;
 
+import com.vincennlin.flashcardservice.constant.AppConstants;
 import com.vincennlin.flashcardservice.payload.deck.FlashcardCountInfo;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.page.FlashcardPageResponse;
 import com.vincennlin.flashcardservice.service.FlashcardService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -73,6 +79,23 @@ public class FlashcardController implements FlashcardControllerSwagger {
         FlashcardCountInfo flashcardCountInfo = flashcardService.getFlashcardCountInfo();
 
         return new ResponseEntity<>(flashcardCountInfo, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('READ')")
+    @GetMapping("/flashcards/search")
+    public ResponseEntity<FlashcardPageResponse> findFlashcardsByKeyword(
+            @RequestParam(name = "keyword") String keyword,
+            @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) @Min(0) Integer pageNo,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) @Max(100) @Min(1) Integer pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir) {
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize,
+                sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending());
+
+        FlashcardPageResponse flashcardsResponse = flashcardService.findFlashcardsByKeyword(keyword, pageable);
+
+        return new ResponseEntity<>(flashcardsResponse, HttpStatus.OK);
     }
 
 
