@@ -1,6 +1,8 @@
 package com.vincennlin.aiservice.controller;
 
+import com.vincennlin.aiservice.payload.evaluate.EvaluateShortAnswerResponse;
 import com.vincennlin.aiservice.payload.flashcard.dto.FlashcardDto;
+import com.vincennlin.aiservice.payload.evaluate.EvaluateShortAnswerRequest;
 import com.vincennlin.aiservice.payload.request.GenerateFlashcardRequest;
 import com.vincennlin.aiservice.payload.request.GenerateFlashcardsRequest;
 import com.vincennlin.aiservice.payload.request.GenerateSummaryRequest;
@@ -49,5 +51,13 @@ public class AiController implements AiControllerSwagger{
         List<FlashcardDto> generatedFlashcards = aiService.generateFlashcards(request);
 
         return new ResponseEntity<>(generatedFlashcards, HttpStatus.OK);
+    }
+
+    @PostMapping("/ai/evaluate/short-answer")
+    public ResponseEntity<EvaluateShortAnswerResponse> evaluateShortAnswer(@RequestBody EvaluateShortAnswerRequest request) {
+
+        EvaluateShortAnswerResponse response = aiService.evaluateShortAnswer(request);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

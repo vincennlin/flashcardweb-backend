@@ -3,6 +3,8 @@ package com.vincennlin.flashcardservice.controller.flashcard;
 import com.vincennlin.flashcardservice.constant.AppConstants;
 import com.vincennlin.flashcardservice.payload.deck.FlashcardCountInfo;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.evaluate.EvaluateShortAnswerRequest;
+import com.vincennlin.flashcardservice.payload.flashcard.evaluate.EvaluateShortAnswerResponse;
 import com.vincennlin.flashcardservice.payload.flashcard.page.FlashcardPageResponse;
 import com.vincennlin.flashcardservice.service.FlashcardService;
 import jakarta.validation.Valid;
@@ -184,6 +186,25 @@ public class FlashcardController implements FlashcardControllerSwagger {
         flashcardService.deleteFlashcardsByNoteId(noteId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PreAuthorize("hasAuthority('READ')")
+    @PostMapping("/flashcards/evaluate/short-answer")
+    public ResponseEntity<EvaluateShortAnswerResponse> evaluateShortAnswer(@RequestBody EvaluateShortAnswerRequest request){
+
+        EvaluateShortAnswerResponse response = flashcardService.evaluateShortAnswerByFlashcardId(null, request);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('READ')")
+    @PostMapping("/flashcards/{flashcard_id}/evaluate/short-answer")
+    public ResponseEntity<EvaluateShortAnswerResponse> evaluateShortAnswerFlashcardByFlashcardId(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
+                                                                    @RequestBody EvaluateShortAnswerRequest request){
+
+        EvaluateShortAnswerResponse response = flashcardService.evaluateShortAnswerByFlashcardId(flashcardId, request);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     private Pageable getPageable(Integer pageNo, Integer pageSize, String sortBy, String sortDir) {
