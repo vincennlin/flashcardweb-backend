@@ -3,6 +3,7 @@ package com.vincennlin.flashcardservice.controller.flashcard;
 import com.vincennlin.flashcardservice.constant.AppConstants;
 import com.vincennlin.flashcardservice.payload.deck.FlashcardCountInfo;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.evaluate.EvaluateShortAnswerRequest;
 import com.vincennlin.flashcardservice.payload.flashcard.page.FlashcardPageResponse;
 import com.vincennlin.flashcardservice.service.FlashcardService;
 import jakarta.validation.Valid;
@@ -184,6 +185,15 @@ public class FlashcardController implements FlashcardControllerSwagger {
         flashcardService.deleteFlashcardsByNoteId(noteId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/flashcards/{flashcard_id}/evaluate/short-answer")
+    public ResponseEntity<Boolean> evaluateShortAnswerFlashcard(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
+                                                                    @RequestBody EvaluateShortAnswerRequest request){
+
+        boolean result = flashcardService.evaluateShortAnswer(flashcardId, request);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     private Pageable getPageable(Integer pageNo, Integer pageSize, String sortBy, String sortDir) {

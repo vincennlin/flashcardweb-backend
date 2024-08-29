@@ -3,6 +3,7 @@ package com.vincennlin.flashcardservice.service;
 import com.vincennlin.flashcardservice.entity.flashcard.Flashcard;
 import com.vincennlin.flashcardservice.payload.deck.FlashcardCountInfo;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.evaluate.EvaluateShortAnswerRequest;
 import com.vincennlin.flashcardservice.payload.flashcard.page.FlashcardPageResponse;
 import org.springframework.data.domain.Pageable;
 
@@ -35,6 +36,8 @@ public interface FlashcardService {
     void deleteFlashcardById(Long flashcardId);
 
     void deleteFlashcardsByNoteId(Long noteId);
+
+    boolean evaluateShortAnswer(Long flashcardId, EvaluateShortAnswerRequest request);
 
     Long getCurrentUserId();
 }
