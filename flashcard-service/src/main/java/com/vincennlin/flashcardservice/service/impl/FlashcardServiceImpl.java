@@ -8,6 +8,7 @@ import com.vincennlin.flashcardservice.mapper.FlashcardMapper;
 import com.vincennlin.flashcardservice.payload.deck.FlashcardCountInfo;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.*;
 import com.vincennlin.flashcardservice.payload.flashcard.evaluate.EvaluateShortAnswerRequest;
+import com.vincennlin.flashcardservice.payload.flashcard.evaluate.EvaluateShortAnswerResponse;
 import com.vincennlin.flashcardservice.payload.flashcard.page.FlashcardPageResponse;
 import com.vincennlin.flashcardservice.payload.flashcard.type.FlashcardType;
 import com.vincennlin.flashcardservice.entity.flashcard.Flashcard;
@@ -320,7 +321,7 @@ public class FlashcardServiceImpl implements FlashcardService {
     }
 
     @Override
-    public boolean evaluateShortAnswer(Long flashcardId, EvaluateShortAnswerRequest request) {
+    public EvaluateShortAnswerResponse evaluateShortAnswer(Long flashcardId, EvaluateShortAnswerRequest request) {
 
 //        Flashcard flashcard = getFlashcardEntityById(flashcardId);
 //
@@ -332,7 +333,7 @@ public class FlashcardServiceImpl implements FlashcardService {
 //        request.setQuestion(shortAnswerFlashcard.getQuestion());
 //        request.setAnswer(shortAnswerFlashcard.getShortAnswer());
 
-        ResponseEntity<Boolean> response = null;
+        ResponseEntity<EvaluateShortAnswerResponse> response = null;
 
         try {
             response = aiServiceClient.evaluateShortAnswer(request, getAuthorization());
@@ -341,7 +342,7 @@ public class FlashcardServiceImpl implements FlashcardService {
             throw new WebAPIException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
         }
 
-        return Boolean.TRUE.equals(response.getBody());
+        return response.getBody();
     }
 
     @Override
