@@ -321,17 +321,20 @@ public class FlashcardServiceImpl implements FlashcardService {
     }
 
     @Override
-    public EvaluateShortAnswerResponse evaluateShortAnswer(Long flashcardId, EvaluateShortAnswerRequest request) {
+    public EvaluateShortAnswerResponse evaluateShortAnswerByFlashcardId(Long flashcardId, EvaluateShortAnswerRequest request) {
 
-//        Flashcard flashcard = getFlashcardEntityById(flashcardId);
-//
-//        if (flashcard.getType() != FlashcardType.SHORT_ANSWER) {
-//            throw new FlashcardTypeException(flashcardId, flashcard.getType(), FlashcardType.SHORT_ANSWER);
-//        }
-//
-//        ShortAnswerFlashcard shortAnswerFlashcard = (ShortAnswerFlashcard) flashcard;
-//        request.setQuestion(shortAnswerFlashcard.getQuestion());
-//        request.setAnswer(shortAnswerFlashcard.getShortAnswer());
+        if (flashcardId != null) {
+
+            Flashcard flashcard = getFlashcardEntityById(flashcardId);
+
+            if (flashcard.getType() != FlashcardType.SHORT_ANSWER) {
+                throw new FlashcardTypeException(flashcardId, flashcard.getType(), FlashcardType.SHORT_ANSWER);
+            }
+
+            ShortAnswerFlashcard shortAnswerFlashcard = (ShortAnswerFlashcard) flashcard;
+            request.setQuestion(shortAnswerFlashcard.getQuestion());
+            request.setAnswer(shortAnswerFlashcard.getShortAnswer());
+        }
 
         ResponseEntity<EvaluateShortAnswerResponse> response = null;
 

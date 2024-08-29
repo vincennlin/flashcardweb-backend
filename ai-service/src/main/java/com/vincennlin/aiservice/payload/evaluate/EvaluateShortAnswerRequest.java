@@ -37,7 +37,7 @@ public class EvaluateShortAnswerRequest {
                         "你會收到 question、answer、user_answer 三個欄位，請根據這三個欄位來判斷用戶答案是否正確，同時打分數(score)與給予回饋(feedback)。\n" +
                         "請注意，user_answer 只要大概與 answer 相同就可以視為正確，批改不需要太過嚴苛。\n" +
                         "分數請介於 0 ~ 100 分，回饋字數請不要超過 50 字，" +
-                        "如果你打的分數超過 60 分，請在 is_correct 的部分回傳 true；否則，請回傳 false。\n" +
+                        "如果你打的分數大於或等於 60 分，請在 is_correct 的部分回傳 true；否則，請回傳 false。\n" +
                         "請參考以下範例 request 與 response：\n\n"
         );
     }
