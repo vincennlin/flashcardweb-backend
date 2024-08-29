@@ -188,11 +188,19 @@ public class FlashcardController implements FlashcardControllerSwagger {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PostMapping("/flashcards/evaluate/short-answer")
+    public ResponseEntity<EvaluateShortAnswerResponse> evaluateShortAnswer(@RequestBody EvaluateShortAnswerRequest request){
+
+        EvaluateShortAnswerResponse response = flashcardService.evaluateShortAnswerByFlashcardId(null, request);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @PostMapping("/flashcards/{flashcard_id}/evaluate/short-answer")
-    public ResponseEntity<EvaluateShortAnswerResponse> evaluateShortAnswerFlashcard(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
+    public ResponseEntity<EvaluateShortAnswerResponse> evaluateShortAnswerFlashcardByFlashcardId(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
                                                                     @RequestBody EvaluateShortAnswerRequest request){
 
-        EvaluateShortAnswerResponse response = flashcardService.evaluateShortAnswer(flashcardId, request);
+        EvaluateShortAnswerResponse response = flashcardService.evaluateShortAnswerByFlashcardId(flashcardId, request);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

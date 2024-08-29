@@ -38,7 +38,7 @@ public interface FlashcardService {
 
     void deleteFlashcardsByNoteId(Long noteId);
 
-    EvaluateShortAnswerResponse evaluateShortAnswer(Long flashcardId, EvaluateShortAnswerRequest request);
+    EvaluateShortAnswerResponse evaluateShortAnswerByFlashcardId(Long flashcardId, EvaluateShortAnswerRequest request);
 
     Long getCurrentUserId();
 }
