@@ -3,6 +3,8 @@ package com.vincennlin.flashcardservice.controller.flashcard;
 import com.vincennlin.flashcardservice.constant.AppConstants;
 import com.vincennlin.flashcardservice.payload.deck.FlashcardCountInfo;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
+import com.vincennlin.flashcardservice.payload.flashcard.evaluate.EvaluateShortAnswerRequest;
+import com.vincennlin.flashcardservice.payload.flashcard.evaluate.EvaluateShortAnswerResponse;
 import com.vincennlin.flashcardservice.payload.flashcard.page.FlashcardPageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -1015,4 +1018,69 @@ public interface FlashcardControllerSwagger {
     )
     @SecurityRequirement(name = "Bear Authentication")
     ResponseEntity<Void> deleteFlashcardsByNoteId(@PathVariable(name = "note_id") @Min(1) Long noteId);
+
+    @Operation(
+            summary = "[NEW] 評估簡答題正確性",
+            description = "根據 question, answer, user_answer 評估簡答題正確性，同時打上分數與給予回饋"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "成功評估簡答題正確性",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                "is_correct": true,
+                                "score": 80,
+                                "feedback": "答案涵蓋了主要概念，但缺少控制損失的部分。"
+                            }
+                            """)
+            )
+    )
+    @SecurityRequirement(name = "Bear Authentication")
+    ResponseEntity<EvaluateShortAnswerResponse> evaluateShortAnswer(@RequestBody
+                                                                    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                                            content = @Content(
+                                                                                    mediaType = "application/json",
+                                                                                    examples = @ExampleObject(value = """
+                                                                                            {
+                                                                                                "question": "風險管理的基本概念是什麼？",
+                                                                                                "answer": "風險管理的基本概念是透過系統化的方法來辨識、評估及應對資訊安全的風險，以控制可能造成的損失。",
+                                                                                                "user_answer": "透過系統化的方法來辨識、評估及應對資訊安全的風險"
+                                                                                            }
+                                                                                            """)
+                                                                            )
+                                                                    ) EvaluateShortAnswerRequest request);
+
+    @Operation(
+            summary = "[NEW] 根據 flashcard_id 評估簡答題正確性",
+            description = "根據 flashcard_id 與 user_answer 評估簡答題正確性，同時打上分數與給予回饋"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "成功評估簡答題正確性",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                "is_correct": true,
+                                "score": 80,
+                                "feedback": "答案涵蓋了主要概念，但缺少控制損失的部分。"
+                            }
+                            """)
+            )
+    )
+    @SecurityRequirement(name = "Bear Authentication")
+    public ResponseEntity<EvaluateShortAnswerResponse> evaluateShortAnswerFlashcardByFlashcardId(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
+                                                                                                 @RequestBody
+                                                                                                 @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                                                                         content = @Content(
+                                                                                                                 mediaType = "application/json",
+                                                                                                                 examples = @ExampleObject(value = """
+                                                                                                                         {
+                                                                                                                             "user_answer": "透過系統化的方法來辨識、評估及應對資訊安全的風險"
+                                                                                                                         }
+                                                                                                                         """)
+                                                                                                         )
+                                                                                                 ) EvaluateShortAnswerRequest request);
 }
