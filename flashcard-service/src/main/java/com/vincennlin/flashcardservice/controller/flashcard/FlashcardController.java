@@ -188,6 +188,7 @@ public class FlashcardController implements FlashcardControllerSwagger {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PreAuthorize("hasAuthority('READ')")
     @PostMapping("/flashcards/evaluate/short-answer")
     public ResponseEntity<EvaluateShortAnswerResponse> evaluateShortAnswer(@RequestBody EvaluateShortAnswerRequest request){
 
@@ -196,6 +197,7 @@ public class FlashcardController implements FlashcardControllerSwagger {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('READ')")
     @PostMapping("/flashcards/{flashcard_id}/evaluate/short-answer")
     public ResponseEntity<EvaluateShortAnswerResponse> evaluateShortAnswerFlashcardByFlashcardId(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,
                                                                     @RequestBody EvaluateShortAnswerRequest request){
