@@ -1,11 +1,13 @@
 package com.vincennlin.flashcardservice.service.impl;
 
+import com.vincennlin.flashcardservice.client.AiServiceClient;
 import com.vincennlin.flashcardservice.client.NoteServiceClient;
 import com.vincennlin.flashcardservice.entity.review.ReviewInfo;
 import com.vincennlin.flashcardservice.entity.tag.Tag;
 import com.vincennlin.flashcardservice.mapper.FlashcardMapper;
 import com.vincennlin.flashcardservice.payload.deck.FlashcardCountInfo;
 import com.vincennlin.flashcardservice.payload.flashcard.dto.impl.*;
+import com.vincennlin.flashcardservice.payload.flashcard.evaluate.EvaluateShortAnswerRequest;
 import com.vincennlin.flashcardservice.payload.flashcard.page.FlashcardPageResponse;
 import com.vincennlin.flashcardservice.payload.flashcard.type.FlashcardType;
 import com.vincennlin.flashcardservice.entity.flashcard.Flashcard;
@@ -49,6 +51,7 @@ public class FlashcardServiceImpl implements FlashcardService {
     private final TagRepository tagRepository;
 
     private final NoteServiceClient noteServiceClient;
+    private final AiServiceClient aiServiceClient;
 
     @Override
     public FlashcardPageResponse getFlashcardsByDeckId(Long deckId, Pageable pageable) {
@@ -314,6 +317,31 @@ public class FlashcardServiceImpl implements FlashcardService {
         authorizeOwnershipByNoteId(noteId);
 
         flashcardRepository.deleteByNoteId(noteId);
+    }
+
+    @Override
+    public boolean evaluateShortAnswer(Long flashcardId, EvaluateShortAnswerRequest request) {
+
+//        Flashcard flashcard = getFlashcardEntityById(flashcardId);
+//
+//        if (flashcard.getType() != FlashcardType.SHORT_ANSWER) {
+//            throw new FlashcardTypeException(flashcardId, flashcard.getType(), FlashcardType.SHORT_ANSWER);
+//        }
+//
+//        ShortAnswerFlashcard shortAnswerFlashcard = (ShortAnswerFlashcard) flashcard;
+//        request.setQuestion(shortAnswerFlashcard.getQuestion());
+//        request.setAnswer(shortAnswerFlashcard.getShortAnswer());
+
+        ResponseEntity<Boolean> response = null;
+
+        try {
+            response = aiServiceClient.evaluateShortAnswer(request, getAuthorization());
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+            throw new WebAPIException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+        }
+
+        return Boolean.TRUE.equals(response.getBody());
     }
 
     @Override

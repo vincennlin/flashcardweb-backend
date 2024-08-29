@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vincennlin.aiservice.exception.JsonFormatException;
 import com.vincennlin.aiservice.payload.flashcard.type.FlashcardType;
 import com.vincennlin.aiservice.payload.flashcard.dto.FlashcardDto;
+import com.vincennlin.aiservice.payload.request.EvaluateShortAnswerRequest;
 import com.vincennlin.aiservice.payload.request.GenerateFlashcardRequest;
 import com.vincennlin.aiservice.payload.request.GenerateFlashcardsRequest;
 import com.vincennlin.aiservice.payload.request.GenerateSummaryRequest;
@@ -90,6 +91,25 @@ public class AiServiceImpl implements AiService {
         List<FlashcardDto> generatedFlashcards = parseGeneratedFlashcardsJson(responseContent);
 
         return generatedFlashcards;
+    }
+
+    @Override
+    public boolean evaluateShortAnswer(EvaluateShortAnswerRequest request) {
+
+        List<Message> messages = List.of(
+                request.getInitialSystemMessage(),
+                new UserMessage(request.getRequestString())
+        );
+
+        Prompt prompt = new Prompt(messages);
+
+        ChatResponse response = openAiChatModel.call(prompt);
+
+        logger.info("response: {}", response.toString());
+
+        String responseContent = response.getResults().get(0).getOutput().getContent();
+
+        return responseContent.equals("true");
     }
 
     private FlashcardDto parseGeneratedFlashcardJson(String responseContent, FlashcardType flashcardType) {

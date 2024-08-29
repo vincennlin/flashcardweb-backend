@@ -1,6 +1,7 @@
 package com.vincennlin.aiservice.service;
 
 import com.vincennlin.aiservice.payload.flashcard.dto.FlashcardDto;
+import com.vincennlin.aiservice.payload.request.EvaluateShortAnswerRequest;
 import com.vincennlin.aiservice.payload.request.GenerateFlashcardRequest;
 import com.vincennlin.aiservice.payload.request.GenerateFlashcardsRequest;
 import com.vincennlin.aiservice.payload.request.GenerateSummaryRequest;
@@ -16,4 +17,6 @@ public interface AiService {
     FlashcardDto generateFlashcard(GenerateFlashcardRequest request);
 
     List<FlashcardDto> generateFlashcards(GenerateFlashcardsRequest request);
+
+    boolean evaluateShortAnswer(EvaluateShortAnswerRequest request);
 }
