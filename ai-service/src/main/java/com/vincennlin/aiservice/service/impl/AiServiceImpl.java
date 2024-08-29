@@ -2,8 +2,10 @@ package com.vincennlin.aiservice.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vincennlin.aiservice.exception.JsonFormatException;
+import com.vincennlin.aiservice.payload.evaluate.EvaluateShortAnswerResponse;
 import com.vincennlin.aiservice.payload.flashcard.type.FlashcardType;
 import com.vincennlin.aiservice.payload.flashcard.dto.FlashcardDto;
+import com.vincennlin.aiservice.payload.evaluate.EvaluateShortAnswerRequest;
 import com.vincennlin.aiservice.payload.request.GenerateFlashcardRequest;
 import com.vincennlin.aiservice.payload.request.GenerateFlashcardsRequest;
 import com.vincennlin.aiservice.payload.request.GenerateSummaryRequest;
@@ -92,6 +94,31 @@ public class AiServiceImpl implements AiService {
         return generatedFlashcards;
     }
 
+    @Override
+    public EvaluateShortAnswerResponse evaluateShortAnswer(EvaluateShortAnswerRequest request) {
+
+        EvaluateShortAnswerResponse evaluateShortAnswerResponse = new EvaluateShortAnswerResponse();
+
+        List<Message> messages = List.of(
+                request.getInitialSystemMessage(),
+                request.getExampleResponseString(),
+                evaluateShortAnswerResponse.getExampleResponseString(),
+                new UserMessage(request.toString())
+        );
+
+        Prompt prompt = new Prompt(messages);
+
+        ChatResponse response = openAiChatModel.call(prompt);
+
+        logger.info("response: {}", response.toString());
+
+        String responseContent = response.getResults().get(0).getOutput().getContent();
+
+        evaluateShortAnswerResponse = parseEvaluateShortAnswerResponseJson(responseContent);
+
+        return evaluateShortAnswerResponse;
+    }
+
     private FlashcardDto parseGeneratedFlashcardJson(String responseContent, FlashcardType flashcardType) {
         responseContent = preProcessJson(responseContent);
         try {
@@ -115,5 +142,14 @@ public class AiServiceImpl implements AiService {
             return json.substring(7, json.length() - 3).trim();
         }
         return json;
+    }
+
+    private EvaluateShortAnswerResponse parseEvaluateShortAnswerResponseJson(String responseContent) {
+        responseContent = preProcessJson(responseContent);
+        try {
+            return objectMapper.readValue(preProcessJson(responseContent), EvaluateShortAnswerResponse.class);
+        } catch (Exception e) {
+            throw new JsonFormatException("Failed to parse response content to EvaluateShortAnswerResponse", e.getMessage());
+        }
     }
 }

@@ -1,5 +1,7 @@
 package com.vincennlin.aiservice.controller;
 
+import com.vincennlin.aiservice.payload.evaluate.EvaluateShortAnswerRequest;
+import com.vincennlin.aiservice.payload.evaluate.EvaluateShortAnswerResponse;
 import com.vincennlin.aiservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.aiservice.payload.request.GenerateFlashcardRequest;
 import com.vincennlin.aiservice.payload.request.GenerateFlashcardsRequest;
@@ -173,4 +175,10 @@ public interface AiControllerSwagger {
                                                                                                      """)
                                                                                  )
                                                                          ) GenerateFlashcardsRequest request);
+
+    @Operation(
+            summary = "評估簡答題",
+            description = "根據收到的用戶答案、題目以及標準答案，來批改並評估簡答題的正確性"
+    )
+    ResponseEntity<EvaluateShortAnswerResponse> evaluateShortAnswer(@RequestBody EvaluateShortAnswerRequest request);
 }
