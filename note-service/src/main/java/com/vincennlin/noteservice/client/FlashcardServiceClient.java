@@ -23,6 +23,10 @@ public interface FlashcardServiceClient {
     ResponseEntity<Void> deleteFlashcardsByNoteId(@PathVariable("note_id") Long noteId,
                                                   @RequestHeader("Authorization") String authorization);
 
+    @DeleteMapping("api/v1/decks/{deck_id}/flashcards")
+    ResponseEntity<Void> deleteFlashcardsByDeckId(@PathVariable("deck_id") Long deckId,
+                                                  @RequestHeader("Authorization") String authorization);
+
     @PostMapping("/api/v1/notes/{note_id}/flashcards")
     ResponseEntity<FlashcardDto> createFlashcard(@PathVariable("note_id") Long noteId,
                                                  @RequestBody FlashcardDto flashcardDto,
