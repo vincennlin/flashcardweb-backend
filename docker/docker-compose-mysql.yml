@@ -1,0 +1,23 @@
+services:
+  mysql:
+    image: mysql:latest
+    container_name: flashcardweb-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: FlashcardwebRootPassw0rd
+      MYSQL_DATABASE: flashcardweb
+      MYSQL_USER: FlashcardwebUser
+      MYSQL_PASSWORD: FlashcardwebUserPassw0rd
+      TZ: "Asia/Taipei"
+    ports:
+      - "3306:3306"
+    networks:
+      - flashcardweb-network
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+networks:
+  flashcardweb-network:
+    external: true
+
+volumes:
+  mysql_data:
