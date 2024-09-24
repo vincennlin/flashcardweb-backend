@@ -35,3 +35,4 @@ build/
 
 /misc
 *.jks
+*.DS_Store
