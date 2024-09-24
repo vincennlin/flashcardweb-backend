@@ -320,6 +320,17 @@ public class FlashcardServiceImpl implements FlashcardService {
         flashcardRepository.deleteByNoteId(noteId);
     }
 
+    @Transactional
+    @Override
+    public void deleteFlashcardsByDeckId(Long deckId) {
+
+        authorizeOwnershipByDeckId(deckId);
+
+        List<Long> noteIds = getNoteIdsByDeckId(deckId);
+
+        flashcardRepository.deleteByNoteIdIn(noteIds);
+    }
+
     @Override
     public EvaluateShortAnswerResponse evaluateShortAnswerByFlashcardId(Long flashcardId, EvaluateShortAnswerRequest request) {
 

@@ -62,4 +62,6 @@ public interface FlashcardRepository extends JpaRepository<Flashcard, Long> {
     Page<Flashcard> findByNoteIdInAndContentContaining(@Param("noteIds") List<Long> noteIds, @Param("keyword") String keyword, Pageable pageable);
 
     void deleteByNoteId(Long noteId);
+
+    void deleteByNoteIdIn(List<Long> noteIds);
 }
