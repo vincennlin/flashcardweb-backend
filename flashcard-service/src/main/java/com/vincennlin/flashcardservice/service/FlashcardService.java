@@ -38,6 +38,8 @@ public interface FlashcardService {
 
     void deleteFlashcardsByNoteId(Long noteId);
 
+    void deleteFlashcardsByDeckId(Long deckId);
+
     EvaluateShortAnswerResponse evaluateShortAnswerByFlashcardId(Long flashcardId, EvaluateShortAnswerRequest request);
 
     Long getCurrentUserId();
