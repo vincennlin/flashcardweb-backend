@@ -188,6 +188,15 @@ public class FlashcardController implements FlashcardControllerSwagger {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PreAuthorize("hasAuthority('DELETE')")
+    @DeleteMapping("/decks/{deck_id}/flashcards")
+    public ResponseEntity<Void> deleteFlashcardsByDeckId(@PathVariable(name = "deck_id") @Min(1) Long deckId) {
+
+        flashcardService.deleteFlashcardsByDeckId(deckId);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @PreAuthorize("hasAuthority('READ')")
     @PostMapping("/flashcards/evaluate/short-answer")
     public ResponseEntity<EvaluateShortAnswerResponse> evaluateShortAnswer(@RequestBody EvaluateShortAnswerRequest request){

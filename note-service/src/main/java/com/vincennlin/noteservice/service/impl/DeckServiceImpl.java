@@ -134,7 +134,7 @@ public class DeckServiceImpl implements DeckService {
 
         authService.authorizeOwnership(deck.getUserId());
 
-        // TODO: 刪除 flashcard-ws 中，note_Id 為空的字卡
+        flashcardServiceClient.deleteFlashcardsByDeckId(deckId, authService.getAuthorization());
 
         deckRepository.delete(deck);
     }
