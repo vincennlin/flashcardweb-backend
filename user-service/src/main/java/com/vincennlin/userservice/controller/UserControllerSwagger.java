@@ -188,7 +188,7 @@ public interface UserControllerSwagger {
     ResponseEntity<List<AccountInfoDto>> getAllUsers();
 
     @Operation(
-            summary = "[NEW] 取得目前帳號頭貼",
+            summary = "取得目前帳號頭貼",
             description = "取得目前帳號頭貼"
     )
     @ApiResponse(
@@ -280,7 +280,7 @@ public interface UserControllerSwagger {
                                                              ) ChangePasswordRequest request);
 
     @Operation(
-            summary = "[NEW] 更新個人頭貼",
+            summary = "更新個人頭貼",
             description = "更新個人頭貼。必須指定 mediaType 為 multipart/form-data。Request body 必須是照片，其中 key 為 'file'，value 為該照片"
     )
     @ApiResponse(
