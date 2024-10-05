@@ -57,4 +57,16 @@ public class Course {
         }
         return flashcardIds.size();
     }
+
+    public boolean containsUser(Long userId) {
+        return userIds.contains(userId);
+    }
+
+    public void addUser(Long userId) {
+        userIds.add(userId);
+    }
+
+    public void removeUser(Long userId) {
+        userIds.remove(userId);
+    }
 }
