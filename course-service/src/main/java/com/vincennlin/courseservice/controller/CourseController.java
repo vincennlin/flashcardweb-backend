@@ -77,4 +77,22 @@ public class CourseController implements CourseControllerSwagger {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @PreAuthorize("hasAuthority('UPDATE')")
+    @PutMapping("/courses/{course_id}/enroll")
+    public ResponseEntity<CourseDto> enrollCourse(@PathVariable(name = "course_id") @Min(1) Long courseId) {
+
+        CourseDto updatedCourse = courseService.enrollCourse(courseId);
+
+        return new ResponseEntity<>(updatedCourse, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('UPDATE')")
+    @PutMapping("/courses/{course_id}/leave")
+    public ResponseEntity<CourseDto> leaveCourse(@PathVariable(name = "course_id") @Min(1) Long courseId) {
+
+        CourseDto updatedCourse = courseService.leaveCourse(courseId);
+
+        return new ResponseEntity<>(updatedCourse, HttpStatus.OK);
+    }
 }

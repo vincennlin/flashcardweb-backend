@@ -2,6 +2,7 @@ package com.vincennlin.courseservice.service.impl;
 
 import com.vincennlin.courseservice.entity.Course;
 import com.vincennlin.courseservice.exception.ResourceNotFoundException;
+import com.vincennlin.courseservice.exception.WebAPIException;
 import com.vincennlin.courseservice.mapper.CourseMapper;
 import com.vincennlin.courseservice.payload.course.dto.CourseDto;
 import com.vincennlin.courseservice.payload.course.page.CoursePageResponse;
@@ -12,6 +13,7 @@ import com.vincennlin.courseservice.service.CourseService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -72,6 +74,42 @@ public class CourseServiceImpl implements CourseService {
         authService.authorizeOwnership(course.getCreatorId());
 
         courseRepository.delete(course);
+    }
+
+    @Override
+    public CourseDto enrollCourse(Long courseId) {
+
+        Course course = getCourseEntityById(courseId);
+
+        Long userId = authService.getCurrentUserId();
+
+        if (course.containsUser(userId)) {
+            throw new WebAPIException(HttpStatus.BAD_REQUEST, "User already enrolled in course");
+        }
+
+        course.addUser(userId);
+
+        Course updatedCourse = courseRepository.save(course);
+
+        return courseMapper.mapToDto(updatedCourse);
+    }
+
+    @Override
+    public CourseDto leaveCourse(Long courseId) {
+
+        Course course = getCourseEntityById(courseId);
+
+        Long userId = authService.getCurrentUserId();
+
+        if (!course.containsUser(userId)) {
+            throw new WebAPIException(HttpStatus.BAD_REQUEST, "User not enrolled in course");
+        }
+
+        course.removeUser(userId);
+
+        Course updatedCourse = courseRepository.save(course);
+
+        return courseMapper.mapToDto(updatedCourse);
     }
 
     private Course getCourseEntityById(Long courseId) {
