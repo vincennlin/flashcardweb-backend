@@ -4,6 +4,7 @@ import com.vincennlin.courseservice.constant.AppConstants;
 import com.vincennlin.courseservice.payload.course.dto.CourseDto;
 import com.vincennlin.courseservice.payload.course.page.CoursePageResponse;
 import com.vincennlin.courseservice.payload.request.CreateCourseRequest;
+import com.vincennlin.courseservice.payload.request.FlashcardIdsRequest;
 import com.vincennlin.courseservice.service.CourseService;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -92,6 +93,26 @@ public class CourseController implements CourseControllerSwagger {
     public ResponseEntity<CourseDto> leaveCourse(@PathVariable(name = "course_id") @Min(1) Long courseId) {
 
         CourseDto updatedCourse = courseService.leaveCourse(courseId);
+
+        return new ResponseEntity<>(updatedCourse, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('UPDATE')")
+    @PutMapping("/courses/{course_id}/flashcards/add")
+    public ResponseEntity<CourseDto> addFlashcardsToCourse(@PathVariable(name = "course_id") @Min(1) Long courseId,
+                                                           @RequestBody FlashcardIdsRequest request) {
+
+        CourseDto updatedCourse = courseService.addFlashcardsToCourse(courseId, request);
+
+        return new ResponseEntity<>(updatedCourse, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('UPDATE')")
+    @PutMapping("/courses/{course_id}/flashcards/remove")
+    public ResponseEntity<CourseDto> removeFlashcardsFromCourse(@PathVariable(name = "course_id") @Min(1) Long courseId,
+                                                                @RequestBody FlashcardIdsRequest request) {
+
+        CourseDto updatedCourse = courseService.removeFlashcardsFromCourse(courseId, request);
 
         return new ResponseEntity<>(updatedCourse, HttpStatus.OK);
     }
