@@ -6,8 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -20,8 +20,8 @@ public class Course {
     public Course(String name, Long creatorId) {
         this.name = name;
         this.creatorId = creatorId;
-        this.userIds = List.of(creatorId);
-        this.flashcardIds = new ArrayList<>();
+        this.userIds = Set.of(creatorId);
+        this.flashcardIds = new HashSet<>();
     }
 
     @Id
@@ -37,12 +37,12 @@ public class Course {
     @ElementCollection
     @CollectionTable(name = "course_users", joinColumns = @JoinColumn(name = "course_id"))
     @Column(name = "user_id")
-    private List<Long> userIds;
+    private Set<Long> userIds;
 
     @ElementCollection
     @CollectionTable(name = "course_flashcards", joinColumns = @JoinColumn(name = "course_id"))
     @Column(name = "flashcard_id")
-    private List<Long> flashcardIds;
+    private Set<Long> flashcardIds;
 
     public int getUserCount() {
         if (userIds == null) {

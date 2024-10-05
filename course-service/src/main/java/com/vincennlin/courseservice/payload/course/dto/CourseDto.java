@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -27,11 +27,11 @@ public class CourseDto {
     private Integer userCount;
 
     @JsonProperty(value = "user_ids")
-    private List<Long> userIds;
+    private Set<Long> userIds;
 
     @JsonProperty(value = "flashcard_count")
     private Integer flashcardCount;
 
     @JsonProperty(value = "flashcard_ids")
-    private List<Long> flashcardIds;
+    private Set<Long> flashcardIds;
 }
