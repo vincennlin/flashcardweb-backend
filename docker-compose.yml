@@ -147,6 +147,29 @@ services:
       start_period: 30s
     restart: always
 
+  course-service:
+    image: vincennlin/flashcardweb-course-service
+    environment:
+      - spring.profiles.active=prod
+      - config.server.ip=config-server
+      - spring.rabbitmq.host=rabbitmq
+      - eureka.server.ip=discovery-service
+      - TZ=Asia/Taipei
+    ports:
+      - "8085:8085"
+    depends_on:
+      config-server:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "--quiet", "http://localhost:8085/actuator/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 100
+      start_period: 30s
+    restart: always
+
   api-gateway:
     image: vincennlin/flashcardweb-api-gateway
     environment:
@@ -165,6 +188,8 @@ services:
       flashcard-service:
         condition: service_healthy
       ai-service:
+        condition: service_healthy
+      course-service:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "wget", "--spider", "--quiet", "http://localhost:8765/actuator/health"]
