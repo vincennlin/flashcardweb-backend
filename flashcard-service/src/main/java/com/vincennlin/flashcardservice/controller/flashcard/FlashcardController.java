@@ -6,6 +6,7 @@ import com.vincennlin.flashcardservice.payload.flashcard.dto.FlashcardDto;
 import com.vincennlin.flashcardservice.payload.flashcard.evaluate.EvaluateShortAnswerRequest;
 import com.vincennlin.flashcardservice.payload.flashcard.evaluate.EvaluateShortAnswerResponse;
 import com.vincennlin.flashcardservice.payload.flashcard.page.FlashcardPageResponse;
+import com.vincennlin.flashcardservice.payload.request.FlashcardIdsRequest;
 import com.vincennlin.flashcardservice.service.FlashcardService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -139,6 +140,14 @@ public class FlashcardController implements FlashcardControllerSwagger {
         return new ResponseEntity<>(flashcardsResponse, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('READ')")
+    @PostMapping("/flashcards/ids")
+    public ResponseEntity<List<Long>> getFlashcardIdsByCurrentUserIdAndIds(@RequestBody FlashcardIdsRequest request) {
+
+        List<Long> flashcardIdsResponse = flashcardService.getFlashcardIdsByUserIdAndIds(request.getFlashcardIds());
+
+        return new ResponseEntity<>(flashcardIdsResponse, HttpStatus.OK);
+    }
 
     @PreAuthorize("hasAuthority('CREATE')")
     @PostMapping("/notes/{note_id}/flashcards")

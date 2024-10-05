@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -68,5 +69,13 @@ public class Course {
 
     public void removeUser(Long userId) {
         userIds.remove(userId);
+    }
+
+    public void addFlashcardIds(List<Long> flashcardIds) {
+        this.flashcardIds.addAll(flashcardIds);
+    }
+
+    public void removeFlashcardIds(List<Long> flashcardIds) {
+        flashcardIds.forEach(this.flashcardIds::remove);
     }
 }

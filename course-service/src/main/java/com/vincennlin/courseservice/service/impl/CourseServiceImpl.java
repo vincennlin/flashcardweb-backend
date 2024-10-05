@@ -1,5 +1,6 @@
 package com.vincennlin.courseservice.service.impl;
 
+import com.vincennlin.courseservice.client.FlashcardServiceClient;
 import com.vincennlin.courseservice.entity.Course;
 import com.vincennlin.courseservice.exception.ResourceNotFoundException;
 import com.vincennlin.courseservice.exception.WebAPIException;
@@ -7,6 +8,7 @@ import com.vincennlin.courseservice.mapper.CourseMapper;
 import com.vincennlin.courseservice.payload.course.dto.CourseDto;
 import com.vincennlin.courseservice.payload.course.page.CoursePageResponse;
 import com.vincennlin.courseservice.payload.request.CreateCourseRequest;
+import com.vincennlin.courseservice.payload.request.FlashcardIdsRequest;
 import com.vincennlin.courseservice.repository.CourseRepository;
 import com.vincennlin.courseservice.service.AuthService;
 import com.vincennlin.courseservice.service.CourseService;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,6 +26,8 @@ import java.util.List;
 public class CourseServiceImpl implements CourseService {
 
     private final CourseMapper courseMapper;
+
+    private final FlashcardServiceClient flashcardServiceClient;
 
     private final AuthService authService;
 
@@ -42,6 +47,7 @@ public class CourseServiceImpl implements CourseService {
         return courseMapper.mapToDto(course);
     }
 
+    @Transactional
     @Override
     public CourseDto createCourse(CreateCourseRequest request) {
 
@@ -54,6 +60,7 @@ public class CourseServiceImpl implements CourseService {
         return courseMapper.mapToDto(savedCourse);
     }
 
+    @Transactional
     @Override
     public CourseDto updateCourse(Long courseId, CourseDto courseDto) {
 
@@ -66,6 +73,7 @@ public class CourseServiceImpl implements CourseService {
         return courseMapper.mapToDto(updatedCourse);
     }
 
+    @Transactional
     @Override
     public void deleteCourse(Long courseId) {
 
@@ -76,6 +84,7 @@ public class CourseServiceImpl implements CourseService {
         courseRepository.delete(course);
     }
 
+    @Transactional
     @Override
     public CourseDto enrollCourse(Long courseId) {
 
@@ -94,6 +103,7 @@ public class CourseServiceImpl implements CourseService {
         return courseMapper.mapToDto(updatedCourse);
     }
 
+    @Transactional
     @Override
     public CourseDto leaveCourse(Long courseId) {
 
@@ -106,6 +116,40 @@ public class CourseServiceImpl implements CourseService {
         }
 
         course.removeUser(userId);
+
+        Course updatedCourse = courseRepository.save(course);
+
+        return courseMapper.mapToDto(updatedCourse);
+    }
+
+    @Transactional
+    @Override
+    public CourseDto addFlashcardsToCourse(Long courseId, FlashcardIdsRequest request) {
+
+        Course course = getCourseEntityById(courseId);
+
+        List<Long> flashcardIdsToAdd = flashcardServiceClient.getFlashcardIdsByCurrentUserIdAndIds(request, authService.getAuthorization()).getBody();
+
+        course.addFlashcardIds(flashcardIdsToAdd);
+
+        Course updatedCourse = courseRepository.save(course);
+
+        return courseMapper.mapToDto(updatedCourse);
+    }
+
+    @Transactional
+    @Override
+    public CourseDto removeFlashcardsFromCourse(Long courseId, FlashcardIdsRequest request) {
+
+        Course course = getCourseEntityById(courseId);
+
+        List<Long> flashcardIdsToRemove = flashcardServiceClient.getFlashcardIdsByCurrentUserIdAndIds(request, authService.getAuthorization()).getBody();
+
+        if (flashcardIdsToRemove == null || flashcardIdsToRemove.isEmpty()) {
+            throw new WebAPIException(HttpStatus.BAD_REQUEST, "Flashcards not found");
+        }
+
+        course.removeFlashcardIds(flashcardIdsToRemove);
 
         Course updatedCourse = courseRepository.save(course);
 

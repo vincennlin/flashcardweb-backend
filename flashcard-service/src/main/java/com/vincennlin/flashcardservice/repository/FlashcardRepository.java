@@ -61,5 +61,8 @@ public interface FlashcardRepository extends JpaRepository<Flashcard, Long> {
             "OR LOWER(f.type) LIKE LOWER(CONCAT('%', :keyword, '%'))) ")
     Page<Flashcard> findByNoteIdInAndContentContaining(@Param("noteIds") List<Long> noteIds, @Param("keyword") String keyword, Pageable pageable);
 
+    @Query("SELECT f.id FROM Flashcard f WHERE f.userId = :userId AND f.id IN :ids")
+    List<Long> getIdsByUserIdAndIdIn(@Param("userId") Long userId, @Param("ids") List<Long> ids);
+
     void deleteByNoteId(Long noteId);
 }

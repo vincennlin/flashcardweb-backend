@@ -149,6 +149,14 @@ public class FlashcardServiceImpl implements FlashcardService {
         return getFlashcardPageResponse(flashcardRepository.findByNoteIdInAndContentContaining(noteIds, keyword, pageable));
     }
 
+    @Override
+    public List<Long> getFlashcardIdsByUserIdAndIds(List<Long> flashcardIds) {
+
+        Long userId = getCurrentUserId();
+
+        return flashcardRepository.getIdsByUserIdAndIdIn(userId, flashcardIds);
+    }
+
     @Transactional
     @Override
     public FlashcardDto createFlashcard(Long noteId, FlashcardDto flashcardDto) {
