@@ -399,7 +399,7 @@ public interface NoteControllerSwagger {
             @RequestParam(name = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir);
 
     @Operation(
-            summary = "[NEW] 根據關鍵字搜尋筆記",
+            summary = "根據關鍵字搜尋筆記",
             description = "根據 content 欄位搜尋筆記，並且可以加入分頁、排序等參數，例如想要每頁數量為 100，可以送出 /api/v1/notes/search?content=紅黑樹&pageNo=0&pageSize=100",
             parameters = {
                     @Parameter(
@@ -485,7 +485,7 @@ public interface NoteControllerSwagger {
             @RequestParam(name = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir);
 
     @Operation(
-            summary = "[NEW] 根據牌組 id 和關鍵字搜尋筆記",
+            summary = "根據牌組 id 和關鍵字搜尋筆記",
             description = "根據 deck_id 和 content 欄位搜尋筆記，並且可以加入分頁、排序等參數，例如想要每頁數量為 100，可以送出 /api/v1/notes/decks/{deck_id}/notes/search?content=紅黑樹&pageNo=0&pageSize=100",
             parameters = {
                     @Parameter(
@@ -679,7 +679,7 @@ public interface NoteControllerSwagger {
                                               ) MultipartFile file);
 
 //    @Operation(
-//            summary = "[NEW] 根據圖片新增筆記",
+//            summary = "根據圖片新增筆記",
 //            description = "根據圖片新增筆記並存進資料庫。 必須指定 mediaType 為 multipart/form-data。 " +
 //                    "Request body 必須是圖片檔案，其中 key 為 'file'，value 為該圖片"
 //    )
