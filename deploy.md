@@ -143,7 +143,7 @@ scp -i /Users/vincennlin/Repository/flashcardweb-backend/misc/flashcardweb-key-p
 ````
 ### 將 docker-compose-mysql.yml 檔案上傳至 AWS EC2
 ````sh
-scp -i /Users/vincennlin/Repository/flashcardweb-backend/misc/flashcardweb-key-pair.pem /Users/vincennlin/Repository/flashcardweb-backend/misc/docker-compose-mysql.yml ec2-user@54.180.176.32:/home/ec2-user/
+scp -i /Users/vincennlin/Repository/flashcardweb-backend/misc/flashcardweb-key-pair.pem /Users/vincennlin/Repository/flashcardweb-backend/docker-compose-mysql.yml ec2-user@54.180.176.32:/home/ec2-user/
 ````
 ### 在 AWS EC2 上安裝 Docker Compose
 ````sh
