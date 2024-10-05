@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -15,6 +16,13 @@ import java.util.List;
 @Entity
 @Table(name = "courses")
 public class Course {
+
+    public Course(String name, Long creatorId) {
+        this.name = name;
+        this.creatorId = creatorId;
+        this.userIds = List.of(creatorId);
+        this.flashcardIds = new ArrayList<>();
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,4 +43,18 @@ public class Course {
     @CollectionTable(name = "course_flashcards", joinColumns = @JoinColumn(name = "course_id"))
     @Column(name = "flashcard_id")
     private List<Long> flashcardIds;
+
+    public int getUserCount() {
+        if (userIds == null) {
+            return 0;
+        }
+        return userIds.size();
+    }
+
+    public int getFlashcardCount() {
+        if (flashcardIds == null) {
+            return 0;
+        }
+        return flashcardIds.size();
+    }
 }
