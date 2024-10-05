@@ -44,7 +44,7 @@ public interface FlashcardControllerSwagger {
     ResponseEntity<String> status();
 
     @Operation(
-            summary = "[EDITED] 取得特定牌組的所有字卡",
+            summary = "取得特定牌組的所有字卡",
             description = "根據 deck_id 取得特定牌組的所有字卡，取得的字卡會包含所有子牌組的字卡，並且可以加入分頁、排序等參數，例如想要每頁數量為 100，可以送出 /api/v1/flashcards/decks/{deck_id}/flashcards?pageSize=100",
             parameters = {
                     @Parameter(name = "pageNo", description = "頁碼", example = "0"),
@@ -285,7 +285,7 @@ public interface FlashcardControllerSwagger {
             @RequestParam(name = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir);
 
     @Operation(
-            summary = "[EDITED] 取得特定筆記的所有字卡",
+            summary = "取得特定筆記的所有字卡",
             description = "根據 note_id 取得特定筆記的所有字卡，並且可以加入分頁、排序等參數，例如想要每頁數量為 100，可以送出 /api/v1/flashcards/notes/{note_id}/flashcards?pageSize=100",
             parameters = {
                     @Parameter(name = "pageNo", description = "頁碼", example = "0"),
@@ -447,7 +447,7 @@ public interface FlashcardControllerSwagger {
     ResponseEntity<FlashcardDto> getFlashcardById(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId);
 
     @Operation(
-            summary = "[EDITED] 利用標籤查詢字卡",
+            summary = "利用標籤查詢字卡",
             description = "根據多個標籤名稱取查詢字卡，並且可以加入分頁、排序等參數，例如想要每頁數量為 100，可以送出 /api/v1/flashcards/tags?tag=台科大&tag=資料結構&pageSize=100",
             parameters = {
                     @Parameter(
@@ -536,7 +536,7 @@ public interface FlashcardControllerSwagger {
     ResponseEntity<FlashcardCountInfo> getFlashcardCountInfo();
 
     @Operation(
-            summary = "[NEW] 搜尋字卡",
+            summary = "搜尋字卡",
             description = "根據關鍵字搜尋字卡，並且可以加入分頁、排序等參數，例如想要每頁數量為 100，可以送出 /api/v1/flashcards/search?keyword=紅黑樹&pageSize=100",
             parameters = {
                     @Parameter(
@@ -714,7 +714,7 @@ public interface FlashcardControllerSwagger {
             @RequestParam(name = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir);
 
     @Operation(
-            summary = "[NEW] 搜尋特定牌組的字卡",
+            summary = "搜尋特定牌組的字卡",
             description = "根據 deck_id 和關鍵字搜尋字卡，並且可以加入分頁、排序等參數，例如想要每頁數量為 100，可以送出 /api/v1/flashcards/decks/1/flashcards/search?keyword=紅黑樹&pageSize=100",
             parameters = {
                     @Parameter(
@@ -1020,7 +1020,7 @@ public interface FlashcardControllerSwagger {
     ResponseEntity<Void> deleteFlashcardsByNoteId(@PathVariable(name = "note_id") @Min(1) Long noteId);
 
     @Operation(
-            summary = "[NEW] 評估簡答題正確性",
+            summary = "評估簡答題正確性",
             description = "根據 question, answer, user_answer 評估簡答題正確性，同時打上分數與給予回饋"
     )
     @ApiResponse(
@@ -1053,7 +1053,7 @@ public interface FlashcardControllerSwagger {
                                                                     ) EvaluateShortAnswerRequest request);
 
     @Operation(
-            summary = "[NEW] 根據 flashcard_id 評估簡答題正確性",
+            summary = "根據 flashcard_id 評估簡答題正確性",
             description = "根據 flashcard_id 與 user_answer 評估簡答題正確性，同時打上分數與給予回饋"
     )
     @ApiResponse(

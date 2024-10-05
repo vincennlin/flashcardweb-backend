@@ -24,6 +24,8 @@ public interface FlashcardService {
 
     FlashcardCountInfo getFlashcardCountInfo();
 
+    List<Long> getFlashcardIdsByUserIdAndIds(List<Long> flashcardIds);
+
     FlashcardPageResponse findFlashcardsByDeckIdAndKeyword(Long deckId, String keyword, Pageable pageable);
 
     FlashcardPageResponse findFlashcardsByKeyword(String keyword, Pageable pageable);
