@@ -66,6 +66,8 @@ public class CourseServiceImpl implements CourseService {
 
         Course course = getCourseEntityById(courseId);
 
+        authService.authorizeOwnership(course.getCreatorId());
+
         course.setName(courseDto.getName());
 
         Course updatedCourse = courseRepository.save(course);
@@ -157,13 +159,8 @@ public class CourseServiceImpl implements CourseService {
     }
 
     private Course getCourseEntityById(Long courseId) {
-
-        Course course = courseRepository.findById(courseId)
+        return courseRepository.findById(courseId)
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", courseId.toString()));
-
-        authService.authorizeOwnership(course.getCreatorId());
-
-        return course;
     }
 
     private CoursePageResponse getCoursePageResponse(Page<Course> pageOfCourses) {
