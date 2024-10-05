@@ -145,6 +145,26 @@ jobs:
           tags: vincennlin/flashcardweb-ai-service:latest
           labels: ${{ steps.meta-ai-service.outputs.labels }}
 
+      # Build and push course-service
+      - name: Build course-service with Maven
+        run: mvn -B package --file course-service/pom.xml
+
+      - name: Extract metadata for course-service
+        id: meta-course-service
+        uses: docker/metadata-action@v3
+        with:
+          images: |
+            flashcardweb-course-service
+
+      - name: Build and push Docker image for course-service
+        id: push-course-service
+        uses: docker/build-push-action@v3
+        with:
+          context: course-service
+          push: true
+          tags: vincennlin/flashcardweb-course-service:latest
+          labels: ${{ steps.meta-course-service.outputs.labels }}
+
       # Build and push api-gateway
       - name: Build api-gateway with Maven
         run: mvn -B package --file api-gateway/pom.xml
