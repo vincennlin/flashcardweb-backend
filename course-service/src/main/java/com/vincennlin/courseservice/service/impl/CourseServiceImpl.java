@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @Service
@@ -51,6 +52,14 @@ public class CourseServiceImpl implements CourseService {
         Course course = getCourseEntityById(courseId);
 
         return courseMapper.mapToDto(course);
+    }
+
+    @Override
+    public Set<Long> getFlashcardIdsByCourseId(Long courseId) {
+
+        Course course = getCourseEntityById(courseId);
+
+        return course.getFlashcardIds();
     }
 
     @Transactional

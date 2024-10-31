@@ -9,12 +9,15 @@ import com.vincennlin.courseservice.payload.request.CopyFlashcardsToDeckRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Set;
 
 public interface CourseService {
 
     CoursePageResponse getAllCourses(Pageable pageable);
 
     CourseDto getCourseById(Long courseId);
+
+    Set<Long> getFlashcardIdsByCourseId(Long courseId);
 
     CourseDto createCourse(CreateCourseRequest request);
 
