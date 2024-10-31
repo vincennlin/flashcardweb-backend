@@ -329,7 +329,7 @@ public interface CourseControllerSwagger {
                                                                 ) FlashcardIdsRequest request);
 
     @Operation(
-            summary = "儲存字卡到牌組",
+            summary = "[NEW] 儲存字卡到牌組",
             description = "將分享至課程的字卡，根據課程 id 與字卡 id 複製字卡到牌組"
     )
     @ApiResponse(

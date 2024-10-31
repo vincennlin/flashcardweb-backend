@@ -188,12 +188,12 @@ public interface UserControllerSwagger {
     ResponseEntity<List<AccountInfoDto>> getAllUsers();
 
     @Operation(
-            summary = "取得目前帳號頭貼",
-            description = "取得目前帳號頭貼"
+            summary = "取得目前用戶頭貼",
+            description = "取得目前用戶頭貼"
     )
     @ApiResponse(
             responseCode = "200",
-            description = "取得目前帳號頭貼",
+            description = "取得目前用戶頭貼",
             content = @Content(
                     mediaType = "image/jpeg",
                     examples = @ExampleObject(value = "照片")
@@ -203,12 +203,12 @@ public interface UserControllerSwagger {
     ResponseEntity<byte[]> getCurrentUserProfilePicture();
 
     @Operation(
-            summary = "取得用戶頭貼",
+            summary = "[NEW] 取得用戶頭貼",
             description = "根據用戶 id 取得用戶頭貼"
     )
     @ApiResponse(
             responseCode = "200",
-            description = "取得目前帳號頭貼",
+            description = "取得目前用戶頭貼",
             content = @Content(
                     mediaType = "image/jpeg",
                     examples = @ExampleObject(value = "照片")
