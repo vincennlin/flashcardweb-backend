@@ -21,6 +21,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @RestController
@@ -53,6 +54,15 @@ public class CourseController implements CourseControllerSwagger {
         CourseDto course = courseService.getCourseById(courseId);
 
         return new ResponseEntity<>(course, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('READ')")
+    @GetMapping("/courses/{course_id}/flashcards/ids")
+    public ResponseEntity<Set<Long>> getFlashcardIdsByCourseId(@PathVariable(name = "course_id") @Min(1) Long courseId) {
+
+        Set<Long> flashcardIds = courseService.getFlashcardIdsByCourseId(courseId);
+
+        return new ResponseEntity<>(flashcardIds, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('CREATE')")

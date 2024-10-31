@@ -1,6 +1,7 @@
 package com.vincennlin.flashcardservice.service.impl;
 
 import com.vincennlin.flashcardservice.client.AiServiceClient;
+import com.vincennlin.flashcardservice.client.CourseServiceClient;
 import com.vincennlin.flashcardservice.client.NoteServiceClient;
 import com.vincennlin.flashcardservice.entity.review.ReviewInfo;
 import com.vincennlin.flashcardservice.entity.tag.Tag;
@@ -38,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @AllArgsConstructor
 @Service
@@ -53,6 +55,7 @@ public class FlashcardServiceImpl implements FlashcardService {
 
     private final NoteServiceClient noteServiceClient;
     private final AiServiceClient aiServiceClient;
+    private final CourseServiceClient courseServiceClient;
 
     @Override
     public FlashcardPageResponse getFlashcardsByDeckId(Long deckId, Pageable pageable) {
@@ -155,6 +158,14 @@ public class FlashcardServiceImpl implements FlashcardService {
         Long userId = getCurrentUserId();
 
         return flashcardRepository.getIdsByUserIdAndIdIn(userId, flashcardIds);
+    }
+
+    @Override
+    public FlashcardPageResponse getFlashcardsByCourseId(Long courseId, Pageable pageable) {
+
+        Set<Long> flashcardIds = courseServiceClient.getFlashcardIdsByCourseId(courseId, getAuthorization()).getBody();
+
+        return getFlashcardPageResponse(flashcardRepository.findByIdIn(flashcardIds, pageable));
     }
 
     @Transactional

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Set;
 
 public interface FlashcardRepository extends JpaRepository<Flashcard, Long> {
 
@@ -17,6 +18,8 @@ public interface FlashcardRepository extends JpaRepository<Flashcard, Long> {
     Page<Flashcard> findByNoteIdIn(List<Long> noteIds, Pageable pageable);
 
     List<Flashcard> findByIdIn(List<Long> ids);
+
+    Page<Flashcard> findByIdIn(Set<Long> ids, Pageable pageable);
 
     @Query("SELECT f FROM Flashcard f JOIN f.tags t WHERE t IN :tags")
     Page<Flashcard> findByTags(@Param("tags") List<Tag> tags, Pageable pageable);
