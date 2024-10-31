@@ -34,6 +34,8 @@ public interface FlashcardService {
 
     List<FlashcardDto> createFlashcards(Long noteId, List<FlashcardDto> flashcardDtoList);
 
+    List<FlashcardDto> copyFlashcardsToNote(Long noteId, List<Long> flashcardIds);
+
     FlashcardDto updateFlashcard(Long flashcardId, FlashcardDto flashcardDto);
 
     void deleteFlashcardById(Long flashcardId);

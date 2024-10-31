@@ -169,6 +169,16 @@ public class FlashcardController implements FlashcardControllerSwagger {
         return new ResponseEntity<>(createdFlashcards, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAuthority('CREATE')")
+    @PostMapping("/notes/{note_id}/flashcards/copy")
+    public ResponseEntity<List<FlashcardDto>> copyFlashcardsToNote(@PathVariable(name = "note_id") @Min(1) Long noteId,
+                                                                  @RequestBody List<Long> flashcardIds) {
+
+        List<FlashcardDto> copiedFlashcards = flashcardService.copyFlashcardsToNote(noteId, flashcardIds);
+
+        return new ResponseEntity<>(copiedFlashcards, HttpStatus.CREATED);
+    }
+
     @PreAuthorize("hasAuthority('UPDATE')")
     @PutMapping("/flashcards/{flashcard_id}")
     public ResponseEntity<FlashcardDto> updateFlashcard(@PathVariable(name = "flashcard_id") @Min(1) Long flashcardId,

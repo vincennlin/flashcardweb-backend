@@ -16,6 +16,8 @@ public interface FlashcardRepository extends JpaRepository<Flashcard, Long> {
 
     Page<Flashcard> findByNoteIdIn(List<Long> noteIds, Pageable pageable);
 
+    List<Flashcard> findByIdIn(List<Long> ids);
+
     @Query("SELECT f FROM Flashcard f JOIN f.tags t WHERE t IN :tags")
     Page<Flashcard> findByTags(@Param("tags") List<Tag> tags, Pageable pageable);
 
