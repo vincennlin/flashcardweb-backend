@@ -200,7 +200,7 @@ public interface UserControllerSwagger {
             )
     )
     @SecurityRequirement(name = "Bear Authentication")
-    ResponseEntity<byte[]> getProfilePicture();
+    ResponseEntity<byte[]> getCurrentUserProfilePicture();
 
     @Operation(
             summary = "更新目前帳號資訊",
