@@ -149,6 +149,22 @@ public class FlashcardController implements FlashcardControllerSwagger {
         return new ResponseEntity<>(flashcardIdsResponse, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('READ')")
+    @GetMapping("/courses/{course_id}/flashcards")
+    public ResponseEntity<FlashcardPageResponse> getFlashcardsByCourseId(
+            @PathVariable(name = "course_id") @Min(1) Long courseId,
+            @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) @Min(0) Integer pageNo,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) @Max(100) @Min(1) Integer pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir) {
+
+        Pageable pageable = getPageable(pageNo, pageSize, sortBy, sortDir);
+
+        FlashcardPageResponse flashcardPageResponse = flashcardService.getFlashcardsByCourseId(courseId, pageable);
+
+        return new ResponseEntity<>(flashcardPageResponse, HttpStatus.OK);
+    }
+
     @PreAuthorize("hasAuthority('CREATE')")
     @PostMapping("/notes/{note_id}/flashcards")
     public ResponseEntity<FlashcardDto> createFlashcard(@PathVariable(name = "note_id") @Min(1) Long noteId,
@@ -167,6 +183,16 @@ public class FlashcardController implements FlashcardControllerSwagger {
         List<FlashcardDto> createdFlashcards = flashcardService.createFlashcards(noteId, flashcardDtoList);
 
         return new ResponseEntity<>(createdFlashcards, HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasAuthority('CREATE')")
+    @PostMapping("/notes/{note_id}/flashcards/copy")
+    public ResponseEntity<List<FlashcardDto>> copyFlashcardsToNote(@PathVariable(name = "note_id") @Min(1) Long noteId,
+                                                                  @RequestBody List<Long> flashcardIds) {
+
+        List<FlashcardDto> copiedFlashcards = flashcardService.copyFlashcardsToNote(noteId, flashcardIds);
+
+        return new ResponseEntity<>(copiedFlashcards, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasAuthority('UPDATE')")

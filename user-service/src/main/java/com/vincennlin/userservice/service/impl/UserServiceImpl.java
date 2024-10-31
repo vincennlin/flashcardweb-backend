@@ -80,12 +80,15 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(user, UserDto.class);
     }
 
-    @PostAuthorize("returnObject.id == principal or hasAuthority('ADVANCED')")
     @Override
     public UserDto getUserByUserId(Long userId) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new WebAPIException(HttpStatus.NOT_FOUND, "User not found with id: " + userId));
+
+        if (!getCurrentUserId().equals(userId)) {
+            user.hideSensitiveData();
+        }
 
         return modelMapper.map(user, UserDto.class);
     }
@@ -112,14 +115,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public byte[] getProfilePicture() {
+    public byte[] getCurrentUserProfilePicture() {
 
-        Long currentUserId = getCurrentUserId();
+        return getProfilePictureByUserId(getCurrentUserId());
+    }
 
-        User user = userRepository.findById(currentUserId).orElseThrow(() ->
-                new UserNotFoundException(currentUserId));
+    @Override
+    public byte[] getProfilePictureByUserId(Long userId) {
 
-        return user.getProfilePicture();
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new UserNotFoundException(userId));
+
+        byte[] profilePicture = user.getProfilePicture();
+
+        if (profilePicture == null) {
+            throw new WebAPIException(HttpStatus.NOT_FOUND, "Profile picture not set");
+        }
+        return profilePicture;
     }
 
     @Override
