@@ -3,6 +3,8 @@ package com.vincennlin.courseservice.controller;
 import com.vincennlin.courseservice.constant.AppConstants;
 import com.vincennlin.courseservice.payload.course.dto.CourseDto;
 import com.vincennlin.courseservice.payload.course.page.CoursePageResponse;
+import com.vincennlin.courseservice.payload.flashcard.FlashcardDto;
+import com.vincennlin.courseservice.payload.request.CopyFlashcardsToDeckRequest;
 import com.vincennlin.courseservice.payload.request.CreateCourseRequest;
 import com.vincennlin.courseservice.payload.request.FlashcardIdsRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +17,8 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(
         name = "Course Controller",
@@ -323,4 +327,100 @@ public interface CourseControllerSwagger {
                                                                                         """)
                                                                         )
                                                                 ) FlashcardIdsRequest request);
+
+    @Operation(
+            summary = "儲存字卡到牌組",
+            description = "將分享至課程的字卡，根據課程 id 與字卡 id 複製字卡到牌組"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "成功儲存字卡到牌組",
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            [
+                                {
+                                    "id": 183,
+                                    "question": "什麼是紅黑樹的主要特性？",
+                                    "type": "SHORT_ANSWER",
+                                    "note_id": 40,
+                                    "user_id": 2,
+                                    "short_answer": "紅黑樹在插入、刪除和搜尋操作上提供最好的最壞情況保證，並且支持持久資料結構。"
+                                },
+                                {
+                                    "id": 184,
+                                    "question": "紅黑樹的時間複雜度在插入和刪除操作中是 O(log n)，而持久版本在插入或刪除還需要 O(log n) 的___。",
+                                    "type": "FILL_IN_THE_BLANK",
+                                    "note_id": 40,
+                                    "user_id": 2,
+                                    "in_blank_answers": [
+                                        {
+                                            "id": 130,
+                                            "text": "空間"
+                                        },
+                                        {
+                                            "id": 131,
+                                            "text": "時間"
+                                        },
+                                        {
+                                            "id": 132,
+                                            "text": "性能"
+                                        }
+                                    ],
+                                    "full_answer": "紅黑樹的時間複雜度在插入和刪除操作中是 O(log n)，而持久版本在插入或刪除還需要 O(log n) 的空間。"
+                                },
+                                {
+                                    "id": 185,
+                                    "question": "紅黑樹和哪種樹結構是等價的？",
+                                    "type": "MULTIPLE_CHOICE",
+                                    "options": [
+                                        {
+                                            "id": 149,
+                                            "text": "AVL 樹"
+                                        },
+                                        {
+                                            "id": 150,
+                                            "text": "2-3-4 樹"
+                                        },
+                                        {
+                                            "id": 151,
+                                            "text": "B 樹"
+                                        },
+                                        {
+                                            "id": 152,
+                                            "text": "線性樹"
+                                        }
+                                    ],
+                                    "note_id": 40,
+                                    "user_id": 2,
+                                    "answer_option": {
+                                        "id": 150,
+                                        "text": "2-3-4 樹"
+                                    }
+                                },
+                                {
+                                    "id": 186,
+                                    "question": "紅黑樹不適用於即時應用。",
+                                    "type": "TRUE_FALSE",
+                                    "note_id": 40,
+                                    "user_id": 2,
+                                    "true_false_answer": false
+                                }
+                            ]
+                            """)
+            )
+    )
+    @SecurityRequirement(name = "Bear Authentication")
+    ResponseEntity<List<FlashcardDto>> copyFlashcardsToDeck(@PathVariable(name = "course_id") @Min(1) Long courseId,
+                                                            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                                    content = @Content(
+                                                                            mediaType = "application/json",
+                                                                            examples = @ExampleObject(value = """
+                                                                                    {
+                                                                                        "flashcard_ids": [135, 136, 137, 138],
+                                                                                        "deck_id": 9
+                                                                                    }
+                                                                                    """)
+                                                                    )
+                                                            ) CopyFlashcardsToDeckRequest request);
 }

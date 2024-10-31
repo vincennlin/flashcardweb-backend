@@ -203,6 +203,21 @@ public interface UserControllerSwagger {
     ResponseEntity<byte[]> getCurrentUserProfilePicture();
 
     @Operation(
+            summary = "取得用戶頭貼",
+            description = "根據用戶 id 取得用戶頭貼"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "取得目前帳號頭貼",
+            content = @Content(
+                    mediaType = "image/jpeg",
+                    examples = @ExampleObject(value = "照片")
+            )
+    )
+    @SecurityRequirement(name = "Bear Authentication")
+    ResponseEntity<byte[]> getProfilePictureByUserId(@PathVariable("user_id") Long userId);
+
+    @Operation(
             summary = "更新目前帳號資訊",
             description = "更新目前帳號資訊"
     )
