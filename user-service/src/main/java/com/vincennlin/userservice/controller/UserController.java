@@ -72,9 +72,22 @@ public class UserController implements UserControllerSwagger{
 
     @PreAuthorize("hasAuthority('READ')")
     @GetMapping("/users/profile-picture")
-    public ResponseEntity<byte[]> getProfilePicture() {
+    public ResponseEntity<byte[]> getCurrentUserProfilePicture() {
 
-        byte[] profilePicture = userService.getProfilePicture();
+        byte[] profilePicture = userService.getCurrentUserProfilePicture();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG);
+        headers.setContentLength(profilePicture.length);
+
+        return new ResponseEntity<>(profilePicture, headers, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('READ')")
+    @GetMapping("/users/{user_id}/profile-picture")
+    public ResponseEntity<byte[]> getProfilePictureByUserId(@PathVariable("user_id") Long userId) {
+
+        byte[] profilePicture = userService.getProfilePictureByUserId(userId);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_JPEG);

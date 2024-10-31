@@ -1,14 +1,19 @@
 package com.vincennlin.courseservice.service.impl;
 
 import com.vincennlin.courseservice.client.FlashcardServiceClient;
+import com.vincennlin.courseservice.client.NoteServiceClient;
 import com.vincennlin.courseservice.entity.Course;
 import com.vincennlin.courseservice.exception.ResourceNotFoundException;
 import com.vincennlin.courseservice.exception.WebAPIException;
 import com.vincennlin.courseservice.mapper.CourseMapper;
 import com.vincennlin.courseservice.payload.course.dto.CourseDto;
 import com.vincennlin.courseservice.payload.course.page.CoursePageResponse;
+import com.vincennlin.courseservice.payload.flashcard.FlashcardDto;
+import com.vincennlin.courseservice.payload.note.CreateNoteRequest;
+import com.vincennlin.courseservice.payload.note.NoteClientResponse;
 import com.vincennlin.courseservice.payload.request.CreateCourseRequest;
 import com.vincennlin.courseservice.payload.request.FlashcardIdsRequest;
+import com.vincennlin.courseservice.payload.request.CopyFlashcardsToDeckRequest;
 import com.vincennlin.courseservice.repository.CourseRepository;
 import com.vincennlin.courseservice.service.AuthService;
 import com.vincennlin.courseservice.service.CourseService;
@@ -20,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @Service
@@ -27,6 +33,7 @@ public class CourseServiceImpl implements CourseService {
 
     private final CourseMapper courseMapper;
 
+    private final NoteServiceClient noteServiceClient;
     private final FlashcardServiceClient flashcardServiceClient;
 
     private final AuthService authService;
@@ -45,6 +52,14 @@ public class CourseServiceImpl implements CourseService {
         Course course = getCourseEntityById(courseId);
 
         return courseMapper.mapToDto(course);
+    }
+
+    @Override
+    public Set<Long> getFlashcardIdsByCourseId(Long courseId) {
+
+        Course course = getCourseEntityById(courseId);
+
+        return course.getFlashcardIds();
     }
 
     @Transactional
@@ -156,6 +171,31 @@ public class CourseServiceImpl implements CourseService {
         Course updatedCourse = courseRepository.save(course);
 
         return courseMapper.mapToDto(updatedCourse);
+    }
+
+    @Transactional
+    @Override
+    public List<FlashcardDto> copyFlashcardsToDeck(Long courseId, CopyFlashcardsToDeckRequest request) {
+
+        Course course = getCourseEntityById(courseId);
+
+        List<Long> flashcardIds = request.getFlashcardIds();
+        flashcardIds.forEach(flashcardId -> {
+            if (!course.getFlashcardIds().contains(flashcardId)) {
+                throw new WebAPIException(HttpStatus.BAD_REQUEST, "Flashcard with id " + flashcardId + " not found in course");
+            }
+        });
+
+        Long deckId = request.getDeckId();
+
+        CreateNoteRequest createNoteRequest = new CreateNoteRequest();
+        createNoteRequest.setSummary("Flashcards copied from course with id " + courseId + " to deck with id " + deckId);
+        createNoteRequest.setContent("This note is automatically created when copying flashcards from course with id " + courseId + " to deck with id " + deckId);
+
+        NoteClientResponse noteClientResponse = noteServiceClient.createNote(deckId, createNoteRequest, authService.getAuthorization()).getBody();
+        Long noteId = noteClientResponse.getId();
+
+        return flashcardServiceClient.copyFlashcardsToNote(noteId, flashcardIds, authService.getAuthorization()).getBody();
     }
 
     private Course getCourseEntityById(Long courseId) {

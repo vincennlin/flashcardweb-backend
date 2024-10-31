@@ -26,6 +26,8 @@ public interface FlashcardService {
 
     List<Long> getFlashcardIdsByUserIdAndIds(List<Long> flashcardIds);
 
+    FlashcardPageResponse getFlashcardsByCourseId(Long courseId, Pageable pageable);
+
     FlashcardPageResponse findFlashcardsByDeckIdAndKeyword(Long deckId, String keyword, Pageable pageable);
 
     FlashcardPageResponse findFlashcardsByKeyword(String keyword, Pageable pageable);
@@ -33,6 +35,8 @@ public interface FlashcardService {
     FlashcardDto createFlashcard(Long noteId, FlashcardDto flashcardDto);
 
     List<FlashcardDto> createFlashcards(Long noteId, List<FlashcardDto> flashcardDtoList);
+
+    List<FlashcardDto> copyFlashcardsToNote(Long noteId, List<Long> flashcardIds);
 
     FlashcardDto updateFlashcard(Long flashcardId, FlashcardDto flashcardDto);
 

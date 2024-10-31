@@ -57,4 +57,14 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
     private Set<Role> roles;
+
+    public void hideSensitiveData() {
+        this.id = null;
+        this.username = null;
+        this.email = null;
+        this.password = null;
+        this.roles = null;
+        this.dateCreated = null;
+        this.lastUpdated = null;
+    }
 }

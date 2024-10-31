@@ -1,6 +1,7 @@
 package com.vincennlin.flashcardservice.service.impl;
 
 import com.vincennlin.flashcardservice.client.AiServiceClient;
+import com.vincennlin.flashcardservice.client.CourseServiceClient;
 import com.vincennlin.flashcardservice.client.NoteServiceClient;
 import com.vincennlin.flashcardservice.entity.review.ReviewInfo;
 import com.vincennlin.flashcardservice.entity.tag.Tag;
@@ -38,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @AllArgsConstructor
 @Service
@@ -53,6 +55,7 @@ public class FlashcardServiceImpl implements FlashcardService {
 
     private final NoteServiceClient noteServiceClient;
     private final AiServiceClient aiServiceClient;
+    private final CourseServiceClient courseServiceClient;
 
     @Override
     public FlashcardPageResponse getFlashcardsByDeckId(Long deckId, Pageable pageable) {
@@ -157,6 +160,14 @@ public class FlashcardServiceImpl implements FlashcardService {
         return flashcardRepository.getIdsByUserIdAndIdIn(userId, flashcardIds);
     }
 
+    @Override
+    public FlashcardPageResponse getFlashcardsByCourseId(Long courseId, Pageable pageable) {
+
+        Set<Long> flashcardIds = courseServiceClient.getFlashcardIdsByCourseId(courseId, getAuthorization()).getBody();
+
+        return getFlashcardPageResponse(flashcardRepository.findByIdIn(flashcardIds, pageable));
+    }
+
     @Transactional
     @Override
     public FlashcardDto createFlashcard(Long noteId, FlashcardDto flashcardDto) {
@@ -191,8 +202,10 @@ public class FlashcardServiceImpl implements FlashcardService {
 
         FillInTheBlankFlashcard fillInTheBlankFlashcard = (FillInTheBlankFlashcard) flashcardMapper.mapToEntity(fillInTheBlankFlashcardDto);
 
-        fillInTheBlankFlashcard.getInBlankAnswers().forEach(
-                inBlankAnswers -> inBlankAnswers.setFlashcard(fillInTheBlankFlashcard));
+        fillInTheBlankFlashcard.getInBlankAnswers().forEach(inBlankAnswers -> {
+            inBlankAnswers.setFlashcard(fillInTheBlankFlashcard);
+            inBlankAnswers.setId(null);
+        });
 
         return fillInTheBlankFlashcard;
     }
@@ -200,25 +213,42 @@ public class FlashcardServiceImpl implements FlashcardService {
     @Transactional
     public Flashcard mapMultipleChoiceFlashcardToEntity(MultipleChoiceFlashcardDto multipleChoiceFlashcardDto) {
 
-        if (multipleChoiceFlashcardDto.getAnswerIndex() > multipleChoiceFlashcardDto.getOptions().size()) {
+        if (multipleChoiceFlashcardDto.getAnswerIndex() != null && multipleChoiceFlashcardDto.getAnswerIndex() > multipleChoiceFlashcardDto.getOptions().size()) {
             throw new IllegalArgumentException("Answer index is out of range of options");
         }
 
         MultipleChoiceFlashcard multipleChoiceFlashcard = (MultipleChoiceFlashcard) multipleChoiceFlashcardDto.mapToEntity();
 
         List<Option> options = multipleChoiceFlashcard.getOptions();
+        options.forEach(option -> option.setId(null));
+
+        multipleChoiceFlashcard.setAnswerOption(null);
+
+        MultipleChoiceFlashcard savedFlashcard = flashcardRepository.save(multipleChoiceFlashcard);
+
+        options.forEach(option -> option.setFlashcard(savedFlashcard));
+
         List<Option> savedOptions = optionRepository.saveAll(options);
 
-        multipleChoiceFlashcard.setAnswerOption(savedOptions.get(multipleChoiceFlashcardDto.getAnswerIndex() - 1));
+        if (multipleChoiceFlashcardDto.getAnswerIndex() != null) {
+            savedFlashcard.setAnswerOption(savedOptions.get(multipleChoiceFlashcardDto.getAnswerIndex() - 1));
+        } else {
+            Option answerOption = null;
+            for (Option option : savedOptions) {
+                if (option.getText().equals(multipleChoiceFlashcardDto.getAnswerOption().getText())) {
+                    answerOption = option;
+                    break;
+                }
+            }
+            if (answerOption == null) {
+                throw new IllegalArgumentException("Answer option not found in options");
+            }
+            savedFlashcard.setAnswerOption(answerOption);
+        }
 
-//        MultipleChoiceFlashcard newFlashcard = flashcardRepository.save(multipleChoiceFlashcard);
-//        options.forEach(option -> option.setFlashcard(newFlashcard));
-        options.forEach(option -> option.setFlashcard(multipleChoiceFlashcard));
-
-        optionRepository.saveAll(options);
-
-        return multipleChoiceFlashcard;
+        return flashcardRepository.save(savedFlashcard);
     }
+
 
     @Transactional
     @Override
@@ -226,6 +256,36 @@ public class FlashcardServiceImpl implements FlashcardService {
 
         return flashcardDtoList.stream().map(flashcardDto ->
                 createFlashcard(noteId, flashcardDto)).toList();
+    }
+
+    @Transactional
+    @Override
+    public List<FlashcardDto> copyFlashcardsToNote(Long noteId, List<Long> flashcardIds) {
+
+        authorizeOwnershipByNoteId(noteId);
+
+        List<FlashcardDto> flashcardDtoList = flashcardRepository.findByIdIn(flashcardIds)
+                .stream().map(flashcard -> {
+                    FlashcardDto flashcardDto = flashcardMapper.mapToDto(flashcard);
+                    flashcardDto.setId(null);
+                    resetRelatedEntityIds(flashcardDto);
+                    return flashcardDto;
+                }).toList();
+
+        return createFlashcards(noteId, flashcardDtoList);
+    }
+
+    private void resetRelatedEntityIds(FlashcardDto flashcardDto) {
+        if (flashcardDto instanceof MultipleChoiceFlashcardDto) {
+            MultipleChoiceFlashcardDto mcFlashcardDto = (MultipleChoiceFlashcardDto) flashcardDto;
+            mcFlashcardDto.getOptions().forEach(option -> option.setId(null));
+            if (mcFlashcardDto.getAnswerOption() != null) {
+                mcFlashcardDto.getAnswerOption().setId(null);
+            }
+        } else if (flashcardDto instanceof FillInTheBlankFlashcardDto) {
+            FillInTheBlankFlashcardDto fitbFlashcardDto = (FillInTheBlankFlashcardDto) flashcardDto;
+            fitbFlashcardDto.getInBlankAnswers().forEach(answer -> answer.setId(null));
+        }
     }
 
     @Override

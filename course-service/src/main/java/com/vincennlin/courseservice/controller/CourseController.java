@@ -3,6 +3,8 @@ package com.vincennlin.courseservice.controller;
 import com.vincennlin.courseservice.constant.AppConstants;
 import com.vincennlin.courseservice.payload.course.dto.CourseDto;
 import com.vincennlin.courseservice.payload.course.page.CoursePageResponse;
+import com.vincennlin.courseservice.payload.flashcard.FlashcardDto;
+import com.vincennlin.courseservice.payload.request.CopyFlashcardsToDeckRequest;
 import com.vincennlin.courseservice.payload.request.CreateCourseRequest;
 import com.vincennlin.courseservice.payload.request.FlashcardIdsRequest;
 import com.vincennlin.courseservice.service.CourseService;
@@ -17,6 +19,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @RestController
@@ -49,6 +54,15 @@ public class CourseController implements CourseControllerSwagger {
         CourseDto course = courseService.getCourseById(courseId);
 
         return new ResponseEntity<>(course, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('READ')")
+    @GetMapping("/courses/{course_id}/flashcards/ids")
+    public ResponseEntity<Set<Long>> getFlashcardIdsByCourseId(@PathVariable(name = "course_id") @Min(1) Long courseId) {
+
+        Set<Long> flashcardIds = courseService.getFlashcardIdsByCourseId(courseId);
+
+        return new ResponseEntity<>(flashcardIds, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('CREATE')")
@@ -115,5 +129,13 @@ public class CourseController implements CourseControllerSwagger {
         CourseDto updatedCourse = courseService.removeFlashcardsFromCourse(courseId, request);
 
         return new ResponseEntity<>(updatedCourse, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('CREATE')")
+    @PostMapping("/courses/{course_id}/flashcards/copy")
+    public ResponseEntity<List<FlashcardDto>> copyFlashcardsToDeck(@PathVariable(name = "course_id") @Min(1) Long courseId,
+                                                                   @RequestBody CopyFlashcardsToDeckRequest request) {
+
+        return new ResponseEntity<>(courseService.copyFlashcardsToDeck(courseId, request), HttpStatus.OK);
     }
 }
