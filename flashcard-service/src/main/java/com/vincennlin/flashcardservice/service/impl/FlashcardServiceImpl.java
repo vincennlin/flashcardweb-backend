@@ -300,29 +300,36 @@ public class FlashcardServiceImpl implements FlashcardService {
             throw new FlashcardTypeException(flashcardId, flashcard.getType(), flashcardDto.getType());
         }
 
-        flashcardDto.setId(flashcard.getId());
-        flashcardDto.setUserId(flashcard.getUserId());
-        flashcardDto.setNoteId(flashcard.getNoteId());
-
-        Flashcard newFlashcard = null;
-
-        if (flashcardDto.getType() == FlashcardType.FILL_IN_THE_BLANK) {
-            newFlashcard = updateFillInTheBlankFlashcard((FillInTheBlankFlashcard) flashcard,
-                                                            (FillInTheBlankFlashcard) flashcardDto.mapToEntity());
-        } else if (flashcardDto.getType() == FlashcardType.MULTIPLE_CHOICE) {
-            newFlashcard = updateMultipleChoiceFlashcard((MultipleChoiceFlashcard) flashcard,
-                                                            (MultipleChoiceFlashcardDto) flashcardDto);
-        } else {
-            newFlashcard = flashcardDto.mapToEntity();
+        // 更新 flashcard 實體的屬性
+        if (flashcardDto.getQuestion() != null) {
+            flashcard.setQuestion(flashcardDto.getQuestion());
+        }
+        if (flashcardDto.getExtraInfo() != null) {
+            flashcard.setExtraInfo(flashcardDto.getExtraInfo());
+        }
+        if (flashcardDto.getNoteId() != null) {
+            flashcard.setNoteId(flashcardDto.getNoteId());
         }
 
-        Flashcard updatedFlashcard = flashcardRepository.save(newFlashcard);
+        if (flashcardDto.getType() == FlashcardType.FILL_IN_THE_BLANK) {
+            FillInTheBlankFlashcard fillInTheBlankFlashcardDtoEntity = (FillInTheBlankFlashcard) flashcardDto.mapToEntity();
+            if (fillInTheBlankFlashcardDtoEntity.getInBlankAnswers() != null) {
+                updateFillInTheBlankFlashcard((FillInTheBlankFlashcard) flashcard, fillInTheBlankFlashcardDtoEntity);
+            }
+        } else if (flashcardDto.getType() == FlashcardType.MULTIPLE_CHOICE) {
+            MultipleChoiceFlashcard multipleChoiceFlashcardDtoEntity = (MultipleChoiceFlashcard) flashcardDto.mapToEntity();
+            if (multipleChoiceFlashcardDtoEntity.getOptions() != null) {
+                updateMultipleChoiceFlashcard((MultipleChoiceFlashcard) flashcard, (MultipleChoiceFlashcardDto) flashcardDto);
+            }
+        }
+
+        Flashcard updatedFlashcard = flashcardRepository.save(flashcard);
 
         return flashcardMapper.mapToDto(updatedFlashcard);
     }
 
-    public Flashcard updateFillInTheBlankFlashcard(FillInTheBlankFlashcard flashcard,
-                                                   FillInTheBlankFlashcard newFlashcard) {
+    public void updateFillInTheBlankFlashcard(FillInTheBlankFlashcard flashcard,
+                                              FillInTheBlankFlashcard newFlashcard) {
 
         List<InBlankAnswer> inBlankAnswers = flashcard.getInBlankAnswers();
         int blankAnswerSize = inBlankAnswers.size();
@@ -333,16 +340,13 @@ public class FlashcardServiceImpl implements FlashcardService {
 
         for (int i = 0; i < blankAnswerSize; i++) {
             inBlankAnswers.get(i).setText(newFlashcard.getInBlankAnswers().get(i).getText());
-            inBlankAnswers.get(i).setFlashcard(flashcard);
         }
 
-        newFlashcard.setInBlankAnswers(inBlankAnswers);
-
-        return newFlashcard;
+        flashcard.setInBlankAnswers(inBlankAnswers);
     }
 
-    public Flashcard updateMultipleChoiceFlashcard(MultipleChoiceFlashcard flashcard,
-                                                   MultipleChoiceFlashcardDto flashcardDto) {
+    public void updateMultipleChoiceFlashcard(MultipleChoiceFlashcard flashcard,
+                                              MultipleChoiceFlashcardDto flashcardDto) {
 
         List<Option> options = flashcard.getOptions();
         int optionSize = options.size();
@@ -353,19 +357,15 @@ public class FlashcardServiceImpl implements FlashcardService {
             throw new IllegalArgumentException("Answer index is out of range of options");
         }
 
-        MultipleChoiceFlashcard newFlashcard = (MultipleChoiceFlashcard) flashcardDto.mapToEntity();
-
         for (int i = 0; i < optionSize; i++) {
             options.get(i).setText(flashcardDto.getOptions().get(i).getText());
-            options.get(i).setFlashcard(newFlashcard);
         }
 
         List<Option> savedOptions = optionRepository.saveAll(options);
-        newFlashcard.setOptions(savedOptions);
-        newFlashcard.setAnswerOption(savedOptions.get(flashcardDto.getAnswerIndex() - 1));
-
-        return newFlashcard;
+        flashcard.setOptions(savedOptions);
+        flashcard.setAnswerOption(savedOptions.get(flashcardDto.getAnswerIndex() - 1));
     }
+
 
     @Transactional
     @Override
