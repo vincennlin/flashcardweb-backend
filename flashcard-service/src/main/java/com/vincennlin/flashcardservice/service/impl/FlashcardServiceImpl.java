@@ -321,6 +321,14 @@ public class FlashcardServiceImpl implements FlashcardService {
             if (multipleChoiceFlashcardDtoEntity.getOptions() != null) {
                 updateMultipleChoiceFlashcard((MultipleChoiceFlashcard) flashcard, (MultipleChoiceFlashcardDto) flashcardDto);
             }
+        } else if (flashcardDto.getType() == FlashcardType.SHORT_ANSWER) {
+            ShortAnswerFlashcard shortAnswerFlashcardDtoEntity = (ShortAnswerFlashcard) flashcardDto.mapToEntity();
+            if (shortAnswerFlashcardDtoEntity.getShortAnswer() != null) {
+                ((ShortAnswerFlashcard) flashcard).setShortAnswer(shortAnswerFlashcardDtoEntity.getShortAnswer());
+            }
+        } else if (flashcardDto.getType() == FlashcardType.TRUE_FALSE) {
+            TrueFalseFlashcard trueFalseFlashcardDtoEntity = (TrueFalseFlashcard) flashcardDto.mapToEntity();
+            ((TrueFalseFlashcard) flashcard).setTrueFalseAnswer(trueFalseFlashcardDtoEntity.isTrueFalseAnswer());
         }
 
         Flashcard updatedFlashcard = flashcardRepository.save(flashcard);
@@ -353,7 +361,7 @@ public class FlashcardServiceImpl implements FlashcardService {
 
         if (flashcardDto.getOptions().size() != optionSize) {
             throw new IllegalArgumentException("Number of options cannot be changed");
-        } else if (flashcardDto.getAnswerIndex() > optionSize) {
+        } else if (flashcardDto.getAnswerIndex() >= optionSize) {
             throw new IllegalArgumentException("Answer index is out of range of options");
         }
 
@@ -361,10 +369,9 @@ public class FlashcardServiceImpl implements FlashcardService {
             options.get(i).setText(flashcardDto.getOptions().get(i).getText());
         }
 
-        List<Option> savedOptions = optionRepository.saveAll(options);
-        flashcard.setOptions(savedOptions);
-        flashcard.setAnswerOption(savedOptions.get(flashcardDto.getAnswerIndex() - 1));
+        flashcard.setAnswerOption(options.get(flashcardDto.getAnswerIndex()));
     }
+
 
 
     @Transactional
